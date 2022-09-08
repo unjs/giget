@@ -25,10 +25,8 @@ npx giget@latest <repo> [<dir>]
 
 ### Arguments
 
-- **repo**: A uri describing provider, repository, subpath and branch/ref.
-  - Format is `[provider]:orgOrUser/name[/path][#ref]`. See examples.
-- ***dst**: An absolute or relative path where to extract the repository.
-  - If not provider, name of repo will be used as directory name in current working directory.
+- **repo**: A uri describing provider, repository, subpath and branch/ref. (format is `[provider]:user/name[/path][#ref]`.)
+- **dst**: A relative or absolute path where to extract the repository. (if not provider, name of repo will be used as directory name in current working directory.)
 
 ### Examples
 
@@ -77,7 +75,7 @@ import { downloadRepo } from 'giget'
 const { downloadRepo } = require('giget')
 ```
 
-### `downloadRepo(input, options)`
+### `downloadRepo(source, dst, options?)`
 
 **Example:**
 
@@ -85,14 +83,22 @@ const { downloadRepo } = require('giget')
 const { source, dir } = await downloadRepo('github:unjs/template')
 ```
 
-**Options:**
+**Parameters:**
 
-Options are usually inferred from input string. But you can choose to override them.
+- `source`: (string) Input source in format of `[provider]:user/name[/path][#ref]`.
+- `dst`: (string) Destinition directory to clone to. If not provided, `user-name` will be used relative to current directory.
+- `options`: (object) Options are usually inferred from input string. You can customize them.
+  - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. Default is `github`.
+  - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
+  - `ref`: (string) Git ref (branch or commit or tag). Default is `main`.
+  - `subpathpath`: (string) subpath of repo to clone from. Default is none.
 
-- `provider`: (string) Either `github`, `gitlab` or `bitbucket`. Default is `github`.
-- `repo`: (string) Name of repository in format of `{username}/{reponame}`.
-- `ref`: (string) Git ref (branch or commit or tag). Default is `main`.
-- `subpathpath`: (string) subpath of repo to clone from. Default is none.
+**Return value:**
+
+Return value is a promise that resolves to an object with following properties:
+
+- `dir`: (string) Path to extracted dir.
+- `source`: (string) Normalized version of input source. Useful for logging.
 
 ## 💻 Development
 
