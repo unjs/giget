@@ -19,7 +19,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
   const parsed = parseInput(input)
   const opts = { ...parsed, ..._opts }
 
-  const extractPath = resolve(dir || opts.repo.split('/').pop())
+  const extractPath = resolve(dir || opts.repo.replace('/', '-'))
   if (existsSync(extractPath)) {
     throw new Error(`Destination ${extractPath} already exists.`)
   }
