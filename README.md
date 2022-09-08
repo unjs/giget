@@ -9,13 +9,13 @@
 
 ## Features
 
-✔ Multi-provider support (GitHub, GitLab, and bitbucket)
+✔ Multi-provider support (GitHub, GitLab, and Bitbucket).
 
-✔ Super fast cloning using tarball gzip without depending on local `git` or `tar` commands.
+✔ Super cloning using tarball gzip without depending on local `git` and `tar` commands or downloading history.
 
-✔ Works online and offline with fallback
+✔ Works online to clone latest version with offline fallback.
 
-✔ Support extracting with a subpath
+✔ Support extracting with a subpath.
 
 ## Usage (CLI)
 
@@ -25,8 +25,10 @@ npx giget@latest <repo> [<dir>]
 
 ### Arguments
 
-- **repo**: A URI describing provider, repository, subpath, and branch/ref. (format is `[provider]:user/name[/path][#ref]`.)
-- **dir**: A relative or absolute path where to extract the repository. (if not provided, the name of the repo will be used as the directory name in the current working directory.)
+- **repo**: A URI describing provider, repository, subpath, and branch/ref.
+  - Format is `[provider]:user/name[/path][#ref]`.
+- **dir**: A relative or absolute path where to extract the repository.
+  - If not provided, the name of the org + repo will be used as the name.
 
 ### Examples
 
@@ -75,7 +77,7 @@ import { downloadRepo } from 'giget'
 const { downloadRepo } = require('giget')
 ```
 
-### `downloadRepo(source, dir, options?)`
+### `downloadRepo(source, dir?, options?)`
 
 **Example:**
 
@@ -86,7 +88,7 @@ const { source, dir } = await downloadRepo('github:unjs/template')
 **Parameters:**
 
 - `source`: (string) Input source in format of `[provider]:user/name[/path][#ref]`.
-- `dst`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
+- `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
