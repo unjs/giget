@@ -20,7 +20,7 @@
 ## Usage (CLI)
 
 ```bash
-npx giget@latest <repo> [<dir>]
+npx giget@latest <repo> [<dir>] [--force] [--force-clean]
 ```
 
 ```bash
@@ -35,6 +35,11 @@ npx giget@latest unjs/template my-lib
   - Format is `[provider]:user/name[/path][#ref]`.
 - **dir**: A relative or absolute path where to extract the repository.
   - If not provided, the name of the org + repo will be used as the name.
+
+### Options
+
+- `--force`: Clone to exsiting directory even if exists.
+- `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
 
 ### Examples
 
@@ -100,6 +105,8 @@ const { source, dir } = await downloadRepo('github:unjs/template')
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
   - `subdirpath`: (string) subdir of the repo to clone from. The default value is none.
+  - `force`: (boolean) Extract to the exisiting dir even if already exsists.
+  - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
 
 **Return value:**
 

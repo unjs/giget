@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, rm } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { existsSync } from 'node:fs'
 import { extract } from 'tar'
@@ -7,6 +7,8 @@ import { parseInput, getUrl, getTarUrl, download } from './_utils'
 import type { GitInfo } from './types'
 
 export interface DownloadRepoOptions extends Partial<GitInfo> {
+  force?: boolean
+  forceClean?: boolean
 }
 
 function debug (...args) {
@@ -20,7 +22,10 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
   const opts = { ...parsed, ..._opts }
 
   const extractPath = resolve(dir || opts.repo.replace('/', '-'))
-  if (existsSync(extractPath)) {
+  if (opts.forceClean) {
+    await rm(extractPath, { recursive: true, force: true })
+  }
+  if (!opts.force && existsSync(extractPath)) {
     throw new Error(`Destination ${extractPath} already exists.`)
   }
   await mkdir(extractPath, { recursive: true })

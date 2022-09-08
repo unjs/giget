@@ -14,7 +14,10 @@ async function main () {
     process.exit(1)
   }
 
-  const r = await downloadRepo(input, dir)
+  const r = await downloadRepo(input, dir, {
+    force: args.force,
+    forceClean: args['force-clean']
+  })
   console.log(`✨ Successfully cloned ${cyan(r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
   process.exit(0)
 }
