@@ -56,7 +56,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
   })
 
   return {
-    source: `${opts.provider}:${opts.repo}${pathFilter}#${opts.ref}`,
+    source: `${opts.provider}:${opts.repo}${pathFilter ? `/${pathFilter}` : ''}#${opts.ref}`,
     dir: extractPath
   }
 }
