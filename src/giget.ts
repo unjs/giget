@@ -1,6 +1,6 @@
 import { mkdir, rm } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { existsSync } from 'node:fs'
+import { existsSync, readdirSync } from 'node:fs'
 import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
 import { parseInput, getUrl, getTarUrl, download } from './_utils'
@@ -27,7 +27,7 @@ export async function downloadRepo (input: string, dir?: string, _opts: Download
   if (opts.forceClean) {
     await rm(extractPath, { recursive: true, force: true })
   }
-  if (!opts.force && existsSync(extractPath)) {
+  if (!opts.force && existsSync(extractPath) && readdirSync(extractPath).length) {
     throw new Error(`Destination ${extractPath} already exists.`)
   }
   await mkdir(extractPath, { recursive: true })
