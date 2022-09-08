@@ -9,6 +9,8 @@ import type { GitInfo } from './types'
 export interface DownloadRepoOptions extends Partial<GitInfo> {
   force?: boolean
   forceClean?: boolean
+  offline?: boolean
+  preferOffline?: boolean
 }
 
 function debug (...args) {
@@ -32,16 +34,30 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
 
   const tmpDir = resolve(homedir(), '.giget', opts.provider, opts.repo)
   const tarPath = resolve(tmpDir, opts.ref + '.tar.gz')
-  await mkdir(dirname(tarPath), { recursive: true })
-  const tarUrl = getTarUrl(opts)
-  await download(tarUrl, tarPath).catch((err) => {
-    if (!existsSync(tarPath)) {
-      throw err
-    }
-    // Accept netwrok errors if we have a cached version
-    debug('Download error. Using cached version:', err)
-  })
 
+  if (opts.preferOffline && existsSync(tarPath)) {
+    opts.offline = true
+  }
+  if (!opts.offline) {
+    await mkdir(dirname(tarPath), { recursive: true })
+    const tarUrl = getTarUrl(opts)
+    const s = Date.now()
+    await download(tarUrl, tarPath).catch((err) => {
+      if (!existsSync(tarPath)) {
+        throw err
+      }
+      // Accept netwrok errors if we have a cached version
+      debug('Download error. Using cached version:', err)
+      opts.offline = true
+    })
+    debug(`Downloaded ${tarUrl} in ${Date.now() - s}ms`)
+  }
+
+  if (!existsSync(tarPath)) {
+    throw new Error(`Tarball not found: ${tarPath} (offline: ${opts.offline})`)
+  }
+
+  const s = Date.now()
   const subdir = opts.subdir.replace(/^\//, '')
   await extract({
     file: tarPath,
@@ -59,6 +75,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
       }
     }
   })
+  debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`)
 
   return {
     source: `${opts.provider}:${opts.repo}${subdir ? `/${subdir}` : ''}#${opts.ref}`,

@@ -11,7 +11,7 @@ describe('downloadRepo', () => {
 
   it('clone unjs/template', async () => {
     const dstDir = resolve(__dirname, '.tmp/cloned')
-    const { dir } = await downloadRepo('unjs/template', dstDir)
+    const { dir } = await downloadRepo('unjs/template', dstDir, { preferOffline: true })
     expect(await existsSync(resolve(dir, 'package.json')))
   })
 

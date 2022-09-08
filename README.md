@@ -20,13 +20,13 @@
 ## Usage (CLI)
 
 ```bash
-npx giget@latest <repo> [<dir>] [--force] [--force-clean]
-```
-
-```bash
 npx giget@latest unjs/template my-lib
 
 # ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
+```
+
+```bash
+npx giget@latest <repo> [<dir>] [...options]
 ```
 
 ### Arguments
@@ -40,6 +40,8 @@ npx giget@latest unjs/template my-lib
 
 - `--force`: Clone to exsiting directory even if exists.
 - `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
+- `--offline`: Do not attempt to download and use cached version.
+- `--prefer-offline`: Use cache if exists otherwise try to download.
 
 ### Examples
 
@@ -107,6 +109,8 @@ const { source, dir } = await downloadRepo('github:unjs/template')
   - `subdirpath`: (string) subdir of the repo to clone from. The default value is none.
   - `force`: (boolean) Extract to the exisiting dir even if already exsists.
   - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
+  - `offline`: Do not attempt to download and use cached version.
+  - `preferOffline`: Use cache if exists otherwise try to download.
 
 **Return value:**
 
