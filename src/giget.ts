@@ -9,11 +9,11 @@ import type { GitInfo } from './types'
 export interface DownloadRepoOptions extends Partial<GitInfo> {
 }
 
-export async function downloadRepo (input: string, dst: string, _opts: DownloadRepoOptions = {}) {
+export async function downloadRepo (input: string, dir: string, _opts: DownloadRepoOptions = {}) {
   const parsed = parseInput(input)
   const opts = { ...parsed, ..._opts }
 
-  const extractPath = resolve(dst || opts.repo.split('/').pop())
+  const extractPath = resolve(dir || opts.repo.split('/').pop())
   if (existsSync(extractPath)) {
     throw new Error(`Destination ${extractPath} already exists.`)
   }

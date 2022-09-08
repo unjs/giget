@@ -26,7 +26,7 @@ npx giget@latest <repo> [<dir>]
 ### Arguments
 
 - **repo**: A uri describing provider, repository, subpath and branch/ref. (format is `[provider]:user/name[/path][#ref]`.)
-- **dst**: A relative or absolute path where to extract the repository. (if not provider, name of repo will be used as directory name in current working directory.)
+- **dir**: A relative or absolute path where to extract the repository. (if not provider, name of repo will be used as directory name in current working directory.)
 
 ### Examples
 
@@ -75,7 +75,7 @@ import { downloadRepo } from 'giget'
 const { downloadRepo } = require('giget')
 ```
 
-### `downloadRepo(source, dst, options?)`
+### `downloadRepo(source, dir, options?)`
 
 **Example:**
 

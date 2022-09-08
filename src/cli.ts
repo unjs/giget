@@ -8,14 +8,14 @@ async function main () {
   const args = mri(process.argv.slice(2))
 
   const input = args._[0]
-  const dst = args._[1]
+  const dir = args._[1]
   if (!input) {
-    console.error('Usage: npx getgit@latest <input> [<dst>]')
+    console.error('Usage: npx getgit@latest <input> [<dir>]')
     process.exit(1)
   }
 
-  const { source, dir } = await downloadRepo(input, dst)
-  console.log(`✨ Successfully cloned ${cyan(source)} to ${cyan(relative(process.cwd(), dir))}\n`)
+  const r = await downloadRepo(input, dir)
+  console.log(`✨ Successfully cloned ${cyan(r.source)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
   process.exit(0)
 }
 
