@@ -32,7 +32,7 @@ npx giget@latest <repo> [<dir>] [...options]
 ### Arguments
 
 - **repo**: A URI describing provider, repository, subdir, and branch/ref.
-  - Format is `[provider]:user/name[/path][#ref]`.
+  - Format is `[provider]:repo[/subpath][#ref]`.
 - **dir**: A relative or absolute path where to extract the repository.
   - If not provided, the name of the org + repo will be used as the name.
 
@@ -100,7 +100,7 @@ const { source, dir } = await downloadRepo('github:unjs/template')
 
 **Parameters:**
 
-- `source`: (string) Input source in format of `[provider]:user/name[/path][#ref]`.
+- `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. The default is `github`.
