@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/unjs/giget/compare/v0.0.1...v0.0.2) (2022-09-08)
+
+
+### Features
+
+* force and force-clean options ([8b0c4d6](https://github.com/unjs/giget/commit/8b0c4d6087cda65c941d53c1b004ea7e96fe04e7))
+* generate git url to open in browser ([7220de2](https://github.com/unjs/giget/commit/7220de2b48026dfa3ee824591bfa894da753a0b4))
+* offline and prefer-offline ([623c34c](https://github.com/unjs/giget/commit/623c34ce8fd8a1ec31218c2c5051affc1822415a))
+
+
+### Bug Fixes
+
+* fix normalized source to include path filter leading slash ([b28bdcb](https://github.com/unjs/giget/commit/b28bdcb2b9e5d5fc9c5ac9094f99d3156c17b023))
+
 ### 0.0.1 (2022-09-08)
 
 
