@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/unjs/giget/compare/v0.0.3...v0.0.4) (2022-09-08)
+
+
+### Features
+
+* add experimental `--shell` (resolves [#2](https://github.com/unjs/giget/issues/2)) ([a04fc53](https://github.com/unjs/giget/commit/a04fc538197e03490daa6b6c5ce8bd0c72139f20))
+
+
+### Bug Fixes
+
+* output directory is optional ([#5](https://github.com/unjs/giget/issues/5)) ([50035ef](https://github.com/unjs/giget/commit/50035ef68bbbc17d731a3374b9e6db246a6410c4))
+
 ### [0.0.3](https://github.com/unjs/giget/compare/v0.0.2...v0.0.3) (2022-09-08)
 
 ### [0.0.2](https://github.com/unjs/giget/compare/v0.0.1...v0.0.2) (2022-09-08)
