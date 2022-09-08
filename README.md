@@ -15,7 +15,7 @@
 
 ✔ Works online to clone latest version with offline fallback.
 
-✔ Support extracting with a subpath.
+✔ Support extracting with a subdir.
 
 ## Usage (CLI)
 
@@ -25,7 +25,7 @@ npx giget@latest <repo> [<dir>]
 
 ### Arguments
 
-- **repo**: A URI describing provider, repository, subpath, and branch/ref.
+- **repo**: A URI describing provider, repository, subdir, and branch/ref.
   - Format is `[provider]:user/name[/path][#ref]`.
 - **dir**: A relative or absolute path where to extract the repository.
   - If not provided, the name of the org + repo will be used as the name.
@@ -93,7 +93,7 @@ const { source, dir } = await downloadRepo('github:unjs/template')
   - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
-  - `subpathpath`: (string) subpath of the repo to clone from. The default value is none.
+  - `subdirpath`: (string) subdir of the repo to clone from. The default value is none.
 
 **Return value:**
 

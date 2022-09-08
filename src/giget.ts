@@ -37,16 +37,16 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
     debug('Download error. Using cached version:', err)
   })
 
-  const pathFilter = opts.subpath.replace(/^\//, '')
+  const subdir = opts.subdir.replace(/^\//, '')
   await extract({
     file: tarPath,
     cwd: extractPath,
     onentry (entry) {
       entry.path = entry.path.split('/').splice(1).join('/')
-      if (pathFilter) {
-        if (entry.path.startsWith(pathFilter)) {
+      if (subdir) {
+        if (entry.path.startsWith(subdir)) {
           // Rewrite path
-          entry.path = entry.path.substring(pathFilter.length)
+          entry.path = entry.path.substring(subdir.length)
         } else {
           // Skip
           entry.path = ''
@@ -56,7 +56,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
   })
 
   return {
-    source: `${opts.provider}:${opts.repo}${pathFilter ? `/${pathFilter}` : ''}#${opts.ref}`,
+    source: `${opts.provider}:${opts.repo}${subdir ? `/${subdir}` : ''}#${opts.ref}`,
     dir: extractPath
   }
 }

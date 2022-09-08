@@ -1,6 +1,6 @@
 export interface GitInfo {
   provider: 'github' | 'gitlab' | 'bitbucket'
   repo: string
-  subpath: string
+  subdir: string
   ref: string
 }

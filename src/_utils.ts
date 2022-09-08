@@ -24,14 +24,14 @@ export async function download (url: string, filePath: string) {
   await pipeline(res.body as any, stream)
 }
 
-const inputRegex = /^(?<provider>[^:]+:)?(?<repo>\w+\/\w+)(?<subpath>[^#]+)?(?<ref>#\w+)?/
+const inputRegex = /^(?<provider>[^:]+:)?(?<repo>\w+\/\w+)(?<subdir>[^#]+)?(?<ref>#\w+)?/
 
 export function parseInput (input: string): GitInfo {
   const m = input.match(inputRegex)?.groups
   return <GitInfo> {
     provider: m.provider ? m.provider.substring(0, m.provider.length - 1) : 'github',
     repo: m.repo,
-    subpath: m.subpath || '/',
+    subdir: m.subdir || '/',
     ref: m.ref ? m.ref.substring(1) : 'main'
   }
 }
