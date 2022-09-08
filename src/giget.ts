@@ -9,6 +9,12 @@ import type { GitInfo } from './types'
 export interface DownloadRepoOptions extends Partial<GitInfo> {
 }
 
+function debug (...args) {
+  if (process.env.DEBUG) {
+    console.debug('[giget]', ...args)
+  }
+}
+
 export async function downloadRepo (input: string, dir: string, _opts: DownloadRepoOptions = {}) {
   const parsed = parseInput(input)
   const opts = { ...parsed, ..._opts }
@@ -23,7 +29,13 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
   const tarPath = resolve(tmpDir, opts.ref + '.tar.gz')
   await mkdir(dirname(tarPath), { recursive: true })
   const tarUrl = getTarUrl(opts)
-  await download(tarUrl, tarPath)
+  await download(tarUrl, tarPath).catch((err) => {
+    if (!existsSync(tarPath)) {
+      throw err
+    }
+    // Accept netwrok errors if we have a cached version
+    debug('Download error. Using cached version:', err)
+  })
 
   const pathFilter = opts.subpath.replace(/^\//, '')
   await extract({
