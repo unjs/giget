@@ -1,0 +1,54 @@
+{
+  "name": "giget",
+  "version": "0.0.0",
+  "description": "",
+  "repository": "unjs/giget",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "bin": {
+    "giget": "./dist/cli.mjs"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "vitest dev",
+    "giget": "jiti ./src/cli.ts",
+    "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
+    "prepack": "unbuild",
+    "play": "rm -rf .tmp && pnpm giget unjs/template .tmp/clone",
+    "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
+    "test": "pnpm lint && vitest run --coverage"
+  },
+  "dependencies": {
+    "colorette": "^2.0.19",
+    "mri": "^1.2.0",
+    "node-fetch-native": "^0.1.4",
+    "pathe": "^0.3.7",
+    "tar": "^6.1.11"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@types/node": "^18.7.16",
+    "@types/tar": "^6.1.2",
+    "@vitest/coverage-c8": "^0.23.1",
+    "eslint": "^8.23.0",
+    "jiti": "^1.15.0",
+    "standard-version": "^9.5.0",
+    "typescript": "^4.8.2",
+    "unbuild": "^0.8.10",
+    "vitest": "^0.23.1"
+  },
+  "packageManager": "pnpm@7.11.0"
+}
