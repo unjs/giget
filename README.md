@@ -19,8 +19,14 @@
 
 ## Usage (CLI)
 
-```
+```bash
 npx giget@latest <repo> [<dir>]
+```
+
+```bash
+npx giget@latest unjs/template my-lib
+
+# ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
 ```
 
 ### Arguments
