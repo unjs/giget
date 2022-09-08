@@ -19,7 +19,7 @@ function debug (...args) {
   }
 }
 
-export async function downloadRepo (input: string, dir: string, _opts: DownloadRepoOptions = {}) {
+export async function downloadRepo (input: string, dir?: string, _opts: DownloadRepoOptions = {}) {
   const parsed = parseInput(input)
   const opts = { ...parsed, ..._opts }
 
