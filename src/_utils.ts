@@ -15,6 +15,18 @@ export function getTarUrl (opts: GitInfo) {
   }
 }
 
+export function getUrl (opts: GitInfo) {
+  if (opts.provider === 'github') {
+    return `https://github.com/${opts.repo}/tree/${opts.ref}${opts.subdir}`
+  }
+  if (opts.provider === 'gitlab') {
+    return `https://gitlab.com/${opts.repo}/tree/${opts.ref}${opts.subdir}`
+  }
+  if (opts.provider === 'bitbucket') {
+    return `https://bitbucket.com/${opts.repo}/src/${opts.ref}${opts.subdir}`
+  }
+}
+
 export async function download (url: string, filePath: string) {
   const res = await fetch(url)
   const stream = createWriteStream(filePath)

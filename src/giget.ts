@@ -3,7 +3,7 @@ import { homedir } from 'node:os'
 import { existsSync } from 'node:fs'
 import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
-import { parseInput, getTarUrl, download } from './_utils'
+import { parseInput, getUrl, getTarUrl, download } from './_utils'
 import type { GitInfo } from './types'
 
 export interface DownloadRepoOptions extends Partial<GitInfo> {
@@ -57,6 +57,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
 
   return {
     source: `${opts.provider}:${opts.repo}${subdir ? `/${subdir}` : ''}#${opts.ref}`,
+    url: getUrl(opts),
     dir: extractPath
   }
 }

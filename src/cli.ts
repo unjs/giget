@@ -15,7 +15,7 @@ async function main () {
   }
 
   const r = await downloadRepo(input, dir)
-  console.log(`✨ Successfully cloned ${cyan(r.source)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
+  console.log(`✨ Successfully cloned ${cyan(r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
   process.exit(0)
 }
 

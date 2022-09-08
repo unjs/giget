@@ -100,6 +100,7 @@ const { source, dir } = await downloadRepo('github:unjs/template')
 The return value is a promise that resolves to an object with the following properties:
 
 - `dir`: (string) Path to extracted dir.
+- `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
 - `source`: (string) Normalized version of the input source. Useful for logging.
 
 ## 💻 Development
