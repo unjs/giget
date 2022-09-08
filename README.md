@@ -39,9 +39,10 @@ npx giget@latest <repo> [<dir>] [...options]
 ### Options
 
 - `--force`: Clone to exsiting directory even if exists.
-- `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
 - `--offline`: Do not attempt to download and use cached version.
 - `--prefer-offline`: Use cache if exists otherwise try to download.
+- `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
+- `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental)
 
 ### Examples
 

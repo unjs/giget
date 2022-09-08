@@ -1,6 +1,8 @@
 import { createWriteStream, existsSync } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
+import { spawnSync } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
+import { relative, resolve } from 'pathe'
 import { fetch } from 'node-fetch-native'
 import type { GitInfo } from './types'
 
@@ -60,4 +62,27 @@ export function parseInput (input: string): GitInfo {
     subdir: m.subdir || '/',
     ref: m.ref ? m.ref.substring(1) : 'main'
   }
+}
+
+// -- Experimental --
+
+export function currentShell () {
+  if (process.env.SHELL) {
+    return process.env.SHELL
+  }
+  if (process.platform === 'win32') {
+    return 'cmd.exe'
+  }
+  return '/bin/bash'
+}
+
+export function startShell (cwd: string) {
+  cwd = resolve(cwd)
+  const shell = currentShell()
+  console.info(`(experimental) Opening shell in ${relative(process.cwd(), cwd)}...`)
+  spawnSync(shell, [], {
+    cwd,
+    shell: true,
+    stdio: 'inherit'
+  })
 }
