@@ -9,13 +9,13 @@
 
 ## Features
 
-✔ Multi provider support (github, gitlab and bitbucket)
+✔ Multi-provider support (GitHub, GitLab, and bitbucket)
 
 ✔ Super fast cloning using tarball gzip without depending on local `git` or `tar` commands.
 
 ✔ Works online and offline with fallback
 
-✔ Support extracting with subpath
+✔ Support extracting with a subpath
 
 ## Usage (CLI)
 
@@ -25,13 +25,13 @@ npx giget@latest <repo> [<dir>]
 
 ### Arguments
 
-- **repo**: A uri describing provider, repository, subpath and branch/ref. (format is `[provider]:user/name[/path][#ref]`.)
-- **dir**: A relative or absolute path where to extract the repository. (if not provider, name of repo will be used as directory name in current working directory.)
+- **repo**: A URI describing provider, repository, subpath, and branch/ref. (format is `[provider]:user/name[/path][#ref]`.)
+- **dir**: A relative or absolute path where to extract the repository. (if not provided, the name of the repo will be used as the directory name in the current working directory.)
 
 ### Examples
 
 ```sh
-# Clone main branch of github.com/unjs/template to unjs-template directory
+# Clone the main branch of github.com/unjs/template to unjs-template directory
 npx giget@latest unjs/template
 
 # Clone to myProject directory
@@ -86,19 +86,19 @@ const { source, dir } = await downloadRepo('github:unjs/template')
 **Parameters:**
 
 - `source`: (string) Input source in format of `[provider]:user/name[/path][#ref]`.
-- `dst`: (string) Destinition directory to clone to. If not provided, `user-name` will be used relative to current directory.
-- `options`: (object) Options are usually inferred from input string. You can customize them.
-  - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. Default is `github`.
+- `dst`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
+- `options`: (object) Options are usually inferred from the input string. You can customize them.
+  - `provider`: (string) Either `github`, `gitlab` or `bitbucket`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
-  - `ref`: (string) Git ref (branch or commit or tag). Default is `main`.
-  - `subpathpath`: (string) subpath of repo to clone from. Default is none.
+  - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
+  - `subpathpath`: (string) subpath of the repo to clone from. The default value is none.
 
 **Return value:**
 
-Return value is a promise that resolves to an object with following properties:
+The return value is a promise that resolves to an object with the following properties:
 
 - `dir`: (string) Path to extracted dir.
-- `source`: (string) Normalized version of input source. Useful for logging.
+- `source`: (string) Normalized version of the input source. Useful for logging.
 
 ## 💻 Development
 
