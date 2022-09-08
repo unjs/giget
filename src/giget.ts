@@ -50,7 +50,7 @@ export async function downloadRepo (input: string, dir: string, _opts: DownloadR
       debug('Download error. Using cached version:', err)
       opts.offline = true
     })
-    debug(`Downloaded ${tarUrl} in ${Date.now() - s}ms`)
+    debug(`Downloaded ${tarUrl} to ${tarPath} in ${Date.now() - s}ms`)
   }
 
   if (!existsSync(tarPath)) {

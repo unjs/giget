@@ -13,7 +13,7 @@
 
 ✔ Fast cloning using tarball gzip without depending on local `git` and `tar` commands or downloading history.
 
-✔ Works online to clone latest version with offline fallback.
+✔ Works online and offline with disk cache support.
 
 ✔ Support extracting with a subdir.
 

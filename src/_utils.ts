@@ -1,5 +1,6 @@
-import { createWriteStream } from 'node:fs'
+import { createWriteStream, existsSync } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { fetch } from 'node-fetch-native'
 import type { GitInfo } from './types'
 
@@ -28,12 +29,25 @@ export function getUrl (opts: GitInfo) {
 }
 
 export async function download (url: string, filePath: string) {
+  const infoPath = filePath + '.json'
+  const info: { etag?: string } = JSON.parse(await readFile(infoPath, 'utf8').catch(() => '{}'))
+  const headRes = await fetch(url, { method: 'HEAD' }).catch(() => null)
+  const etag = headRes?.headers.get('etag')
+  if (info.etag === etag && existsSync(filePath)) {
+    // Already downloaded
+    return
+  }
+  info.etag = etag
+
   const res = await fetch(url)
-  const stream = createWriteStream(filePath)
   if (res.status >= 400) {
     throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`)
   }
+
+  const stream = createWriteStream(filePath)
   await pipeline(res.body as any, stream)
+
+  await writeFile(infoPath, JSON.stringify(info), 'utf8')
 }
 
 const inputRegex = /^(?<provider>[^:]+:)?(?<repo>\w+\/\w+)(?<subdir>[^#]+)?(?<ref>#\w+)?/
