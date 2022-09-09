@@ -2,7 +2,7 @@
 import { relative } from 'node:path'
 import mri from 'mri'
 import { cyan } from 'colorette'
-import { downloadRepo } from './giget'
+import { downloadTemplate } from './giget'
 import { startShell } from './_utils'
 
 async function main () {
@@ -15,7 +15,8 @@ async function main () {
     process.exit(1)
   }
 
-  const r = await downloadRepo(input, dir, {
+  const r = await downloadTemplate(input, {
+    dir,
     force: args.force,
     forceClean: args['force-clean'],
     offline: args.offline
