@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/unjs/giget/compare/v0.0.4...v0.1.0) (2022-09-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* custom template provider support
+
+### Features
+
+* custom template provider support ([9678b98](https://github.com/unjs/giget/commit/9678b98de2119daacac34b7c59ae604373e0c9e1))
+* template registry ([ce75c25](https://github.com/unjs/giget/commit/ce75c25e54e663ee1e8a29c529ae176790fefc01))
+
+
+### Bug Fixes
+
+* allow empty dir ([bc4ba5e](https://github.com/unjs/giget/commit/bc4ba5e06047f845270876257b9ea1a7fcddd77f))
+* fix provider regex matcher ([3353d02](https://github.com/unjs/giget/commit/3353d02fcedb9e5af5c0a42aaba9f7267b22286f))
+* update cli ([61e4943](https://github.com/unjs/giget/commit/61e4943d36884e478adb8ff0e3b10b2ff3c7bd35))
+* use github cdn for now ([da327b5](https://github.com/unjs/giget/commit/da327b5a602fa542360b0d2b7588d520c4177dff))
+
 ### [0.0.4](https://github.com/unjs/giget/compare/v0.0.3...v0.0.4) (2022-09-08)
 
 
