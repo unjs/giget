@@ -9,64 +9,90 @@
 
 ## Features
 
-✔ Built in support for popular git providers (GitHub, GitLab, and Bitbucket).
+✔ Support popular git providers (GitHub, GitLab, and Bitbucket) out of the box.
+
+✔ Built-in and custom template registry.
 
 ✔ Fast cloning using tarball gzip without depending on local `git` and `tar`.
 
 ✔ Works online and offline with disk cache support.
 
-✔ Support extracting with a subdir.
-
 ✔ Custom template provider support with programmatic usage.
 
+✔ Support extracting with a subdir.
+
 ## Usage (CLI)
-
-```bash
-npx giget@latest unjs/template my-lib
-
-# ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
-```
 
 ```bash
 npx giget@latest <repo> [<dir>] [...options]
 ```
 
-### Arguments
+```bash
+npx giget@latest unjs/template my-lib
+# ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
+```
+
+**Arguments:**
 
 - **repo**: A URI describing provider, repository, subdir, and branch/ref.
   - Format is `[provider]:repo[/subpath][#ref]`.
 - **dir**: A relative or absolute path where to extract the repository.
   - If not provided, the name of the org + repo will be used as the name.
 
-### Options
+**Options:**
 
 - `--force`: Clone to exsiting directory even if exists.
 - `--offline`: Do not attempt to download and use cached version.
 - `--prefer-offline`: Use cache if exists otherwise try to download.
 - `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
-- `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental)
+- `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental).
+- `--registry`: URL to a custom registry.
+- `--no-registry`: Disable registry lookup and functionality.
 
-### Examples
+**Examples:**
 
 ```sh
 # Clone the main branch of github.com/unjs/template to unjs-template directory
-npx giget@latest unjs/template
+npx giget@latest gh:unjs/template
 
 # Clone to myProject directory
-npx giget@latest unjs/template myProject
+npx giget@latest gh:unjs/template myProject
 
 # Clone dev branch
-npx giget@latest unjs/template#dev
+npx giget@latest gh:unjs/template#dev
 
 # Clone /test directory from main branch
-npx giget@latest unjs/template/test
+npx giget@latest gh:unjs/template/test
 
 # Clone from gitlab
 npx giget@latest gitlab:unjs/template
 
 # Clone from bitbucket
 npx giget@latest bitbucket:unjs/template
+
+# Clone nuxt starter from giget template registry
+npx giget@latest nuxt
 ```
+
+## Template Registry
+
+Giget has a built-in HTTP registry system for resolving templates. This way you can support template name shortcuts and meta-data. Default registry is served from [unjs/giget/templates](./templates/).
+
+If you want to add your template to the built-in registry, just drop a PR to add it to the [./templates](./templates) directory. Slugs are added on first-come first-served basis but this might change in the future.
+
+### Custom Registry
+
+A custom registry should provide one required and one optional endpoint:
+
+- `/:template.json`: (Required) Returns a JSON object same as custom provider response. Keys:
+  - `name`: (required) Name of the template. It will be used as default cloning dir too.
+  - `tar` (required) Link to the tar download link.
+  - `url`: (optional) Webpage of the template.
+  - `subpath` (optional) Subpath of the tar file to clone.
+- `/_info.json`: (Optional) Returns a JSON object with following keys:
+  - `templates`: A string array of possible templates.
+
+Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
 
 ## Usage (Programmatic)
 
@@ -101,7 +127,7 @@ const { downloadTemplate } = require('giget')
 const { source, dir } = await downloadTemplate('github:unjs/template')
 ```
 
-**Parameters:**
+**Options:**
 
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
@@ -115,6 +141,7 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `offline`: (boolean) Do not attempt to download and use cached version.
   - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
+  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry.
 
 **Return value:**
 
@@ -143,6 +170,7 @@ const rainbow: TemplateProvider = async (input) => {
 
 const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow } })
 ```
+
 
 ## 💻 Development
 

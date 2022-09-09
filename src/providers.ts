@@ -33,6 +33,7 @@ export const bitbucket: TemplateProvider = (input) => {
 
 export const providers: Record<string, TemplateProvider> = {
   github,
+  gh: github,
   gitlab,
   bitbucket
 }

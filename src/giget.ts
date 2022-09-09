@@ -5,6 +5,7 @@ import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
 import { download, debug } from './_utils'
 import { providers } from './providers'
+import { createRegistryProvider } from './registry'
 import type { TemplateProvider } from './types'
 
 export interface DownloadTemplateOptions {
@@ -15,12 +16,14 @@ export interface DownloadTemplateOptions {
   preferOffline?: boolean
   providers?: Record<string, TemplateProvider>
   dir?: string
+  registry?: false | string
 }
 
 const sourceProtoRe = /^(\w):\/\//
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
-  let providerName: string = opts.provider || 'github'
+  const registryProvider = opts.registry !== false ? createRegistryProvider(opts.registry) : null
+  let providerName: string = opts.provider || (registryProvider ? 'registry' : 'github')
   let source: string = input
   const sourceProvierMatch = input.match(sourceProtoRe)
   if (sourceProvierMatch) {
@@ -28,11 +31,14 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
     source = input.substring(sourceProvierMatch[0].length)
   }
 
-  const provider = opts.providers?.[providerName] || providers[providerName]
+  const provider = opts.providers?.[providerName] || providers[providerName] || registryProvider
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`)
   }
-  const template = await provider(source)
+  const template = await provider(source).catch((err) => {
+    throw new Error(`Failed to download template from ${providerName}: ${err.message}`)
+  })
+  template.name = template.name.replace(/[^a-zA-Z0-9-]/g, '-')
 
   const extractPath = resolve(opts.dir || template.name)
   if (opts.forceClean) {
