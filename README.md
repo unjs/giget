@@ -5,17 +5,19 @@
 [![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
 
-> Easily download git repositories
+> Download templates and git repositories with pleasure!
 
 ## Features
 
-✔ Multi-provider support (GitHub, GitLab, and Bitbucket).
+✔ Built in support for popular git providers (GitHub, GitLab, and Bitbucket).
 
-✔ Fast cloning using tarball gzip without depending on local `git` and `tar` commands or downloading history.
+✔ Fast cloning using tarball gzip without depending on local `git` and `tar`.
 
 ✔ Works online and offline with disk cache support.
 
 ✔ Support extracting with a subdir.
+
+✔ Custom template provider support with programmatic usage.
 
 ## Usage (CLI)
 
@@ -85,18 +87,18 @@ Import:
 
 ```js
 // ESM
-import { downloadRepo } from 'giget'
+import { downloadTemplate } from 'giget'
 
 // CommonJS
-const { downloadRepo } = require('giget')
+const { downloadTemplate } = require('giget')
 ```
 
-### `downloadRepo(source, dir?, options?)`
+### `downloadTemplate(source, options?)`
 
 **Example:**
 
 ```js
-const { source, dir } = await downloadRepo('github:unjs/template')
+const { source, dir } = await downloadTemplate('github:unjs/template')
 ```
 
 **Parameters:**
@@ -110,16 +112,37 @@ const { source, dir } = await downloadRepo('github:unjs/template')
   - `subdirpath`: (string) subdir of the repo to clone from. The default value is none.
   - `force`: (boolean) Extract to the exisiting dir even if already exsists.
   - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
-  - `offline`: Do not attempt to download and use cached version.
-  - `preferOffline`: Use cache if exists otherwise try to download.
+  - `offline`: (boolean) Do not attempt to download and use cached version.
+  - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
+  - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
 
 **Return value:**
 
-The return value is a promise that resolves to an object with the following properties:
+The return value is a promise that resolves to the resolved template.
 
 - `dir`: (string) Path to extracted dir.
-- `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
-- `source`: (string) Normalized version of the input source. Useful for logging.
+- `source`: (string) Normalized version of the input source without provider.
+- [other provider template keys]
+  - `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
+
+## Custom providers
+
+Using programmatic method, you can make your own custom template providers.
+
+```ts
+import type { TemplateProvider } from 'giget'
+
+const rainbow: TemplateProvider = async (input) => {
+  return {
+    name: 'rainbow',
+    version: input,
+    url: `https://rainbow.template/?variant=${input}`,
+    tar: `https://rainbow.template/dl/rainbow.${input}.tar.gz`
+  }
+}
+
+const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow } })
+```
 
 ## 💻 Development
 

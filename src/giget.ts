@@ -3,27 +3,38 @@ import { homedir } from 'node:os'
 import { existsSync, readdirSync } from 'node:fs'
 import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
-import { parseInput, getUrl, getTarUrl, download } from './_utils'
-import type { GitInfo } from './types'
+import { download, debug } from './_utils'
+import { providers } from './providers'
+import type { TemplateProvider } from './types'
 
-export interface DownloadRepoOptions extends Partial<GitInfo> {
+export interface DownloadTemplateOptions {
+  provider?: string
   force?: boolean
   forceClean?: boolean
   offline?: boolean
   preferOffline?: boolean
+  providers?: Record<string, TemplateProvider>
+  dir?: string
 }
 
-function debug (...args) {
-  if (process.env.DEBUG) {
-    console.debug('[giget]', ...args)
+const sourceProtoRe = /^(\w):\/\//
+
+export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
+  let providerName: string = opts.provider || 'github'
+  let source: string = input
+  const sourceProvierMatch = input.match(sourceProtoRe)
+  if (sourceProvierMatch) {
+    providerName = sourceProvierMatch[1]
+    source = input.substring(sourceProvierMatch[0].length)
   }
-}
 
-export async function downloadRepo (input: string, dir?: string, _opts: DownloadRepoOptions = {}) {
-  const parsed = parseInput(input)
-  const opts = { ...parsed, ..._opts }
+  const provider = opts.providers?.[providerName] || providers[providerName]
+  if (!provider) {
+    throw new Error(`Unsupported provider: ${providerName}`)
+  }
+  const template = await provider(source)
 
-  const extractPath = resolve(dir || opts.repo.replace('/', '-'))
+  const extractPath = resolve(opts.dir || template.name)
   if (opts.forceClean) {
     await rm(extractPath, { recursive: true, force: true })
   }
@@ -32,17 +43,16 @@ export async function downloadRepo (input: string, dir?: string, _opts: Download
   }
   await mkdir(extractPath, { recursive: true })
 
-  const tmpDir = resolve(homedir(), '.giget', opts.provider, opts.repo)
-  const tarPath = resolve(tmpDir, opts.ref + '.tar.gz')
+  const tmpDir = resolve(homedir(), '.giget', opts.provider, template.name)
+  const tarPath = resolve(tmpDir, (template.version || template.name) + '.tar.gz')
 
   if (opts.preferOffline && existsSync(tarPath)) {
     opts.offline = true
   }
   if (!opts.offline) {
     await mkdir(dirname(tarPath), { recursive: true })
-    const tarUrl = getTarUrl(opts)
     const s = Date.now()
-    await download(tarUrl, tarPath).catch((err) => {
+    await download(template.tar, tarPath).catch((err) => {
       if (!existsSync(tarPath)) {
         throw err
       }
@@ -50,7 +60,7 @@ export async function downloadRepo (input: string, dir?: string, _opts: Download
       debug('Download error. Using cached version:', err)
       opts.offline = true
     })
-    debug(`Downloaded ${tarUrl} to ${tarPath} in ${Date.now() - s}ms`)
+    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`)
   }
 
   if (!existsSync(tarPath)) {
@@ -58,7 +68,7 @@ export async function downloadRepo (input: string, dir?: string, _opts: Download
   }
 
   const s = Date.now()
-  const subdir = opts.subdir.replace(/^\//, '')
+  const subdir = template.subdir?.replace(/^\//, '') || ''
   await extract({
     file: tarPath,
     cwd: extractPath,
@@ -78,8 +88,8 @@ export async function downloadRepo (input: string, dir?: string, _opts: Download
   debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`)
 
   return {
-    source: `${opts.provider}:${opts.repo}${subdir ? `/${subdir}` : ''}#${opts.ref}`,
-    url: getUrl(opts),
+    ...template,
+    source,
     dir: extractPath
   }
 }
