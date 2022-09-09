@@ -28,7 +28,7 @@ npx giget@latest <repo> [<dir>] [...options]
 ```
 
 ```bash
-npx giget@latest unjs/template my-lib
+npx giget@latest gh:unjs/template my-lib
 # ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
 ```
 
