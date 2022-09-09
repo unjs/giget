@@ -63,7 +63,7 @@ npx giget@latest unjs/template/test
 npx giget@latest gitlab:unjs/template
 
 # Clone from bitbucket
-npx giget@latest butbucket:unjs/template
+npx giget@latest bitbucket:unjs/template
 ```
 
 ## Usage (Programmatic)
