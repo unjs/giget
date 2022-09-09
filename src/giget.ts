@@ -19,7 +19,7 @@ export interface DownloadTemplateOptions {
   registry?: false | string
 }
 
-const sourceProtoRe = /^(\w):\/\//
+const sourceProtoRe = /^([\w]+):/
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
   const registryProvider = opts.registry !== false ? createRegistryProvider(opts.registry) : null
@@ -35,7 +35,7 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`)
   }
-  const template = await provider(source).catch((err) => {
+  const template = await Promise.resolve().then(() => provider(source)).catch((err) => {
     throw new Error(`Failed to download template from ${providerName}: ${err.message}`)
   })
   template.name = template.name.replace(/[^a-zA-Z0-9-]/g, '-')
