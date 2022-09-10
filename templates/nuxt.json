@@ -1,5 +1,5 @@
 {
   "name": "nuxt-app",
   "url": "https://v3.nuxtjs.org",
-  "tar": "https://github.com/nuxt/starter/archive/refs/heads/v3.tar.gz"
+  "tar": "https://codeload.github.com/nuxt/starter/tar.gz/refs/heads/v3"
 }
