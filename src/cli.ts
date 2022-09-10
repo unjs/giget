@@ -30,7 +30,7 @@ async function main () {
     registry: args.registry
   })
 
-  console.log(`✨ Successfully cloned ${cyan(r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
+  console.log(`✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
 
   if (args.shell) {
     startShell(r.dir)
