@@ -82,15 +82,12 @@ If you want to add your template to the built-in registry, just drop a PR to add
 
 ### Custom Registry
 
-A custom registry should provide one required and one optional endpoint:
+A custom registry should provide an endpoint with dynamic path `/:template.json` that returns a JSON response with keys same as [custom providers](#custom-providers).
 
-- `/:template.json`: (Required) Returns a JSON object same as custom provider response. Keys:
   - `name`: (required) Name of the template. It will be used as default cloning dir too.
   - `tar` (required) Link to the tar download link.
   - `url`: (optional) Webpage of the template.
-  - `subpath` (optional) Subpath of the tar file to clone.
-- `/_info.json`: (Optional) Returns a JSON object with following keys:
-  - `templates`: A string array of possible templates.
+  - `subpath` (optional) Subpath inside the tar file.
 
 Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
 
