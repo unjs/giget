@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/unjs/giget/compare/v0.1.1...v0.1.2) (2022-09-10)
+
+
+### Features
+
+* **cli:** support `--verbose` ([f7cc6e6](https://github.com/unjs/giget/commit/f7cc6e653cc3d4c5c0e6f8837908e97aed4def04))
+
+
+### Bug Fixes
+
+* handle subdir for git providers ([f4d39d2](https://github.com/unjs/giget/commit/f4d39d23403c2e83ef925f7575aac625b13021e0))
+
 ### [0.1.1](https://github.com/unjs/giget/compare/v0.1.0...v0.1.1) (2022-09-10)
 
 
