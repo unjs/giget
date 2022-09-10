@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/unjs/giget/compare/v0.1.4...v0.1.5) (2022-09-10)
+
+
+### Bug Fixes
+
+* **cli:** `--registry` is string ([00447d8](https://github.com/unjs/giget/commit/00447d8ee1f25c4ef3160f1f1b887f5d6a4919fc))
+
 ### [0.1.4](https://github.com/unjs/giget/compare/v0.1.3...v0.1.4) (2022-09-10)
 
 
