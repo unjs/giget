@@ -4,7 +4,7 @@ import type { TemplateInfo, TemplateProvider } from './types'
 // const DEFAULT_REGISTRY = 'https://cdn.jsdelivr.net/gh/unjs/giget/templates'
 const DEFAULT_REGISTRY = 'https://raw.githubusercontent.com/unjs/giget/main/templates'
 
-export const createRegistryProvider = (registryEndpoint: string = DEFAULT_REGISTRY) => {
+export const registryProvider = (registryEndpoint: string = DEFAULT_REGISTRY) => {
   return <TemplateProvider>(async (input) => {
     const registryURL = `${registryEndpoint}/${input}.json`
     const res = await fetch(registryURL)

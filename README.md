@@ -149,7 +149,7 @@ The return value is a promise that resolves to the resolved template.
 - [other provider template keys]
   - `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
 
-## Custom providers
+## Custom Providers
 
 Using programmatic method, you can make your own custom template providers.
 
@@ -168,6 +168,17 @@ const rainbow: TemplateProvider = async (input) => {
 const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow } })
 ```
 
+### Custom Registry Providers
+
+You can define additional [custom registry](#custom-registry) providers using `registryProvider` utility and register to `providers`.
+
+```ts
+import { registryProvider } from 'giget'
+
+const themes = registryProvider('https://raw.githubusercontent.com/unjs/giget/main/templates')
+
+const { source, dir } = await downloadRepo('themes:test', { providers: { themes } })
+```
 
 ## 💻 Development
 

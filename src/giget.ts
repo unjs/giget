@@ -5,7 +5,7 @@ import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
 import { download, debug } from './_utils'
 import { providers } from './providers'
-import { createRegistryProvider } from './registry'
+import { registryProvider } from './registry'
 import type { TemplateProvider } from './types'
 
 export interface DownloadTemplateOptions {
@@ -22,7 +22,7 @@ export interface DownloadTemplateOptions {
 const sourceProtoRe = /^([\w-.]+):/
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
-  const registryProvider = opts.registry !== false ? createRegistryProvider(opts.registry) : null
+  const registry = opts.registry !== false ? registryProvider(opts.registry) : null
   let providerName: string = opts.provider || (registryProvider ? 'registry' : 'github')
   let source: string = input
   const sourceProvierMatch = input.match(sourceProtoRe)
@@ -31,7 +31,7 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
     source = input.substring(sourceProvierMatch[0].length)
   }
 
-  const provider = opts.providers?.[providerName] || providers[providerName] || registryProvider
+  const provider = opts.providers?.[providerName] || providers[providerName] || registry
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`)
   }
