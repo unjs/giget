@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/unjs/giget/compare/v0.1.0...v0.1.1) (2022-09-10)
+
+
+### Features
+
+* expose `registryProvider` ([2d84d26](https://github.com/unjs/giget/commit/2d84d2667100710498f841a8ce296c0618f5d361))
+
+
+### Bug Fixes
+
+* allow dash and dot in input strings ([c322521](https://github.com/unjs/giget/commit/c322521bb86a556e6ef499beab601e70b4d571d5))
+
 ## [0.1.0](https://github.com/unjs/giget/compare/v0.0.4...v0.1.0) (2022-09-09)
 
 
