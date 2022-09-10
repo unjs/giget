@@ -17,6 +17,7 @@ export interface DownloadTemplateOptions {
   providers?: Record<string, TemplateProvider>
   dir?: string
   registry?: false | string
+  cwd?: string
 }
 
 const sourceProtoRe = /^([\w-.]+):/
@@ -43,7 +44,8 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
   template.name = (template.name || 'template').replace(/[^a-z0-9-]/gi, '-')
   template.defaultDir = (template.defaultDir || template.name).replace(/[^a-z0-9-]/gi, '-')
 
-  const extractPath = resolve(opts.dir || template.defaultDir)
+  const cwd = resolve(opts.cwd || '.')
+  const extractPath = resolve(cwd, opts.dir || template.defaultDir)
   if (opts.forceClean) {
     await rm(extractPath, { recursive: true, force: true })
   }

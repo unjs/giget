@@ -42,6 +42,7 @@ npx giget@latest <template> [<dir>] [...options]
 - `--registry`: URL to a custom registry.
 - `--no-registry`: Disable registry lookup and functionality.
 - `--verbose`: Show verbose debugging info.
+- `--cwd`: Set current working directory to resolve dirs relative to it.
 
 ### Examples
 
@@ -134,6 +135,7 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
   - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry.
+  - `cwd`: (string) Current working directory to resolve dirs relative to it.
 
 **Return value:**
 
