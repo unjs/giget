@@ -78,8 +78,9 @@ If you want to add your template to the built-in registry, just drop a PR to add
 
 A custom registry should provide an endpoint with dynamic path `/:template.json` that returns a JSON response with keys same as [custom providers](#custom-providers).
 
-  - `name`: (required) Name of the template. It will be used as default cloning dir too.
+  - `name`: (required) Name of the template.
   - `tar` (required) Link to the tar download link.
+  - `defaultDir`: (optional) Default cloning directory.
   - `url`: (optional) Webpage of the template.
   - `subpath` (optional) Subpath inside the tar file.
 

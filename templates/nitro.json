@@ -1,5 +1,6 @@
 {
-  "name": "nitro-app",
+  "name": "nitro",
+  "defaultDir": "nitro-app",
   "url": "https://nitro.unjs.io",
   "tar": "https://codeload.github.com/unjs/nitro/tar.gz/refs/heads/starter"
 }

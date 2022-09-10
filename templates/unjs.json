@@ -1,5 +1,6 @@
 {
   "name": "unjs-template",
+  "defaultDir": "mylib",
   "url": "https://github.com/unjs/template",
   "tar": "https://codeload.github.com/unjs/template/tar.gz/refs/heads/main"
 }

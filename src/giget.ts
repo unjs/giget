@@ -38,9 +38,12 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
   const template = await Promise.resolve().then(() => provider(source)).catch((err) => {
     throw new Error(`Failed to download template from ${providerName}: ${err.message}`)
   })
-  template.name = template.name.replace(/[^a-zA-Z0-9-]/g, '-')
 
-  const extractPath = resolve(opts.dir || template.name)
+  // Sanetize name and defaultDir
+  template.name = (template.name || 'template').replace(/[^a-z0-9-]/gi, '-')
+  template.defaultDir = (template.defaultDir || template.name).replace(/[^a-z0-9-]/gi, '-')
+
+  const extractPath = resolve(opts.dir || template.defaultDir)
   if (opts.forceClean) {
     await rm(extractPath, { recursive: true, force: true })
   }

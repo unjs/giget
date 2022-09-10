@@ -11,6 +11,7 @@ export interface TemplateInfo {
   version?: string
   subdir?: string
   url?: string
+  defaultDir?: string
 
   // Added by giget
   source?: never
