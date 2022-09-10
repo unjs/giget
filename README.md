@@ -11,7 +11,7 @@
 
 ✔ Support popular git providers (GitHub, GitLab, and Bitbucket) out of the box.
 
-✔ Built-in and custom template registry.
+✔ Built-in and custom [template registry](#template-registry).
 
 ✔ Fast cloning using tarball gzip without depending on local `git` and `tar`.
 
@@ -24,22 +24,15 @@
 ## Usage (CLI)
 
 ```bash
-npx giget@latest <repo> [<dir>] [...options]
+npx giget@latest <template> [<dir>] [...options]
 ```
 
-```bash
-npx giget@latest gh:unjs/template my-lib
-# ✨ Successfully cloned https://github.com/unjs/template/tree/main/ to my-lib
-```
+### Arguments
 
-**Arguments:**
+- **template**: Template name or a a URI describing provider, repository, subdir, and branch/ref. (See [Examples](#examples))
+- **dir**: A relative or absolute path where to extract the template.
 
-- **repo**: A URI describing provider, repository, subdir, and branch/ref.
-  - Format is `[provider]:repo[/subpath][#ref]`.
-- **dir**: A relative or absolute path where to extract the repository.
-  - If not provided, the name of the org + repo will be used as the name.
-
-**Options:**
+### Options
 
 - `--force`: Clone to exsiting directory even if exists.
 - `--offline`: Do not attempt to download and use cached version.
@@ -50,7 +43,7 @@ npx giget@latest gh:unjs/template my-lib
 - `--no-registry`: Disable registry lookup and functionality.
 - `--verbose`: Show verbose debugging info.
 
-**Examples:**
+### Examples
 
 ```sh
 # Clone the main branch of github.com/unjs/template to unjs-template directory
