@@ -21,6 +21,11 @@
 
 ✔ Support extracting with a subdir.
 
+## Comparison
+
+- Does not depend on local git to be installed ([read more](https://github.com/unjs/giget/issues/3#issuecomment-1240667190))
+- Issues with subpath cloning are fixed ([read more](https://github.com/unjs/giget/issues/3#issuecomment-1240667190))
+
 ## Usage (CLI)
 
 ```bash
