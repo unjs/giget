@@ -33,7 +33,6 @@ const inputRegex = /^(?<repo>\w+\/\w+)(?<subdir>[^#]+)?(?<ref>#\w+)?/
 export function parseGitURI (input: string): GitInfo {
   const m = input.match(inputRegex)?.groups
   return <GitInfo> {
-    provider: m.provider ? m.provider.substring(0, m.provider.length - 1) : 'github',
     repo: m.repo,
     subdir: m.subdir || '/',
     ref: m.ref ? m.ref.substring(1) : 'main'

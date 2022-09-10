@@ -2,7 +2,7 @@ import { expect, it, describe } from 'vitest'
 import { parseGitURI } from '../src/_utils'
 
 describe('parseGitURI', () => {
-  const defaults = { repo: 'org/repo', provider: 'github', subdir: '/', ref: 'main' }
+  const defaults = { repo: 'org/repo', subdir: '/', ref: 'main' }
   const tests = [
     { input: 'org/repo', output: {} },
     { input: 'org/repo#ref', output: { ref: 'ref' } },
