@@ -19,7 +19,7 @@ export interface DownloadTemplateOptions {
   registry?: false | string
 }
 
-const sourceProtoRe = /^([\w]+):/
+const sourceProtoRe = /^([\w-.]+):/
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
   const registryProvider = opts.registry !== false ? createRegistryProvider(opts.registry) : null
