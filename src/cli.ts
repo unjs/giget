@@ -6,13 +6,20 @@ import { downloadTemplate } from './giget'
 import { startShell } from './_utils'
 
 async function main () {
-  const args = mri(process.argv.slice(2))
+  const args = mri(process.argv.slice(2), {
+    boolean: ['help', 'force', 'force-clean', 'offline', 'prefer-offline', 'shell', 'registry', 'verbose']
+  })
 
   const input = args._[0]
   const dir = args._[1]
+
   if (!input || args.help || args.h) {
-    console.error('Usage: npx getgit@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry] [--no-registry]')
+    console.error('Usage: npx getgit@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose]')
     process.exit(1)
+  }
+
+  if (args.verbose) {
+    process.env.DEBUG = process.env.DEBUG || 'true'
   }
 
   const r = await downloadTemplate(input, {

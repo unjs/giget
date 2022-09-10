@@ -48,6 +48,7 @@ npx giget@latest gh:unjs/template my-lib
 - `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental).
 - `--registry`: URL to a custom registry.
 - `--no-registry`: Disable registry lookup and functionality.
+- `--verbose`: Show verbose debugging info.
 
 **Examples:**
 
