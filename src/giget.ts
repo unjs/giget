@@ -6,7 +6,7 @@ import { resolve, dirname } from 'pathe'
 import { download, debug } from './_utils'
 import { providers } from './providers'
 import { registryProvider } from './registry'
-import type { TemplateProvider } from './types'
+import type { TemplateInfo, TemplateProvider } from './types'
 
 export interface DownloadTemplateOptions {
   provider?: string
@@ -22,7 +22,9 @@ export interface DownloadTemplateOptions {
 
 const sourceProtoRe = /^([\w-.]+):/
 
-export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}) {
+export type DownloadTemplateResult = Omit<TemplateInfo, 'dir' | 'source'> & { dir: string, source: string }
+
+export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}): Promise<DownloadTemplateResult> {
   const registry = opts.registry !== false ? registryProvider(opts.registry) : null
   let providerName: string = opts.provider || (registryProvider ? 'registry' : 'github')
   let source: string = input
