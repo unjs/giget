@@ -7,7 +7,8 @@ import { startShell } from './_utils'
 
 async function main () {
   const args = mri(process.argv.slice(2), {
-    boolean: ['help', 'force', 'force-clean', 'offline', 'prefer-offline', 'shell', 'registry', 'verbose']
+    boolean: ['help', 'force', 'force-clean', 'offline', 'prefer-offline', 'shell', 'verbose'],
+    string: ['registry']
   })
 
   const input = args._[0]
