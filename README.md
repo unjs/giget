@@ -188,9 +188,7 @@ const { source, dir } = await downloadRepo('themes:test', { providers: { themes 
 
 ## Related projects
 
-Giget wouldn't be possible without inspering from former prijects.
-
-In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, and more features out of the box.
+Giget wouldn't be possible without inspering from former projects. In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
 
 - https://github.com/samsonjs/gitter
 - https://github.com/tiged/tiged
