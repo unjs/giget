@@ -9,7 +9,7 @@
 
 ## Features
 
-✔ Support popular git providers (GitHub, GitLab, and Bitbucket) out of the box.
+✔ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
 
 ✔ Built-in and custom [template registry](#template-registry).
 
@@ -47,6 +47,9 @@ npx giget@latest <template> [<dir>] [...options]
 ### Examples
 
 ```sh
+# Clone nuxt starter from giget template registry
+npx giget@latest nuxt
+
 # Clone the main branch of github.com/unjs/template to unjs-template directory
 npx giget@latest gh:unjs/template
 
@@ -65,8 +68,8 @@ npx giget@latest gitlab:unjs/template
 # Clone from bitbucket
 npx giget@latest bitbucket:unjs/template
 
-# Clone nuxt starter from giget template registry
-npx giget@latest nuxt
+# Clone from sourcehut
+npx giget@latest sourcehut:pi0/unjs-template
 ```
 
 ## Template Registry
