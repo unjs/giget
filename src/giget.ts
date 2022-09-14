@@ -88,7 +88,7 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
     onentry (entry) {
       entry.path = entry.path.split('/').splice(1).join('/')
       if (subdir) {
-        if (entry.path.startsWith(subdir)) {
+        if (entry.path.startsWith(subdir + '/')) {
           // Rewrite path
           entry.path = entry.path.substring(subdir.length)
         } else {
