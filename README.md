@@ -82,11 +82,11 @@ If you want to add your template to the built-in registry, just drop a PR to add
 
 A custom registry should provide an endpoint with dynamic path `/:template.json` that returns a JSON response with keys same as [custom providers](#custom-providers).
 
-  - `name`: (required) Name of the template.
-  - `tar` (required) Link to the tar download link.
-  - `defaultDir`: (optional) Default cloning directory.
-  - `url`: (optional) Webpage of the template.
-  - `subpath` (optional) Subpath inside the tar file.
+- `name`: (required) Name of the template.
+- `tar` (required) Link to the tar download link.
+- `defaultDir`: (optional) Default cloning directory.
+- `url`: (optional) Webpage of the template.
+- `subpath` (optional) Subpath inside the tar file.
 
 Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
 
@@ -180,19 +180,22 @@ const themes = registryProvider('https://raw.githubusercontent.com/unjs/giget/ma
 const { source, dir } = await downloadRepo('themes:test', { providers: { themes } })
 ```
 
+## Related projects
+
+Giget wouldn't be possible without inspering from former prijects.
+
+In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, and more features out of the box.
+
+- https://github.com/samsonjs/gitter
+- https://github.com/tiged/tiged
+- https://github.com/Rich-Harris/degit
+
 ## 💻 Development
 
 - Clone this repository
 - Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)
 - Install dependencies using `pnpm install`
 - Run interactive tests using `pnpm dev`
-
-## Related projects
-
-- https://github.com/samsonjs/gitter
-- https://github.com/tiged/tiged
-- https://github.com/Rich-Harris/degit
-
 
 ## License
 
@@ -201,14 +204,12 @@ Made with 💛
 Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
+
 [npm-version-src]: https://img.shields.io/npm/v/giget?style=flat-square
 [npm-version-href]: https://npmjs.com/package/giget
-
 [npm-downloads-src]: https://img.shields.io/npm/dm/giget?style=flat-square
 [npm-downloads-href]: https://npmjs.com/package/giget
-
 [github-actions-src]: https://img.shields.io/github/workflow/status/unjs/giget/ci/main?style=flat-square
 [github-actions-href]: https://github.com/unjs/giget/actions?query=workflow%3Aci
-
 [codecov-src]: https://img.shields.io/codecov/c/gh/unjs/giget/main?style=flat-square
 [codecov-href]: https://codecov.io/gh/unjs/giget
