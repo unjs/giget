@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/unjs/giget/compare/v0.1.5...v0.1.6) (2022-09-14)
+
+
+### Features
+
+* add sourcehut provider ([#15](https://github.com/unjs/giget/issues/15)) ([aa21643](https://github.com/unjs/giget/commit/aa216438da402d16f3f686ae1d6571fee33e8c51))
+* support `GIGET_REGISTRTY` and `GIGET_AUTH` environment variables ([8cfabff](https://github.com/unjs/giget/commit/8cfabff84da31e5597a817b101126227672dbfdb))
+* support authotization (resolves [#12](https://github.com/unjs/giget/issues/12)) ([8853342](https://github.com/unjs/giget/commit/88533428f239da561f1ada31b68127c746d1837a))
+* support cwd ([9e1a34a](https://github.com/unjs/giget/commit/9e1a34adfebe5b45b254f34a3ab5bd73ad83cdbb))
+
+
+### Bug Fixes
+
+* fix type for `downloadTemplate` to return template info params ([24e34d4](https://github.com/unjs/giget/commit/24e34d4d31880896935e26dc7e06eb78ffb758e6))
+* subdir filter for dirs with shared prefix ([#14](https://github.com/unjs/giget/issues/14)) ([c6ab563](https://github.com/unjs/giget/commit/c6ab5634f2824dafe02bff19426fecadba2e0619))
+
 ### [0.1.5](https://github.com/unjs/giget/compare/v0.1.4...v0.1.5) (2022-09-10)
 
 
