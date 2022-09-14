@@ -6,6 +6,7 @@ specifiers:
   '@types/tar': ^6.1.2
   '@vitest/coverage-c8': ^0.23.2
   colorette: ^2.0.19
+  defu: ^6.1.0
   eslint: ^8.23.1
   jiti: ^1.15.0
   mri: ^1.2.0
@@ -19,6 +20,7 @@ specifiers:
 
 dependencies:
   colorette: 2.0.19
+  defu: 6.1.0
   mri: 1.2.0
   node-fetch-native: 0.1.4
   pathe: 0.3.7
@@ -1293,7 +1295,6 @@ packages:
 
   /defu/6.1.0:
     resolution: {integrity: sha512-pOFYRTIhoKujrmbTRhcW5lYQLBXw/dlTwfI8IguF1QCDJOcJzNH1w+YFjxqy6BAuJrClTy6MUE8q+oKJ2FLsIw==}
-    dev: true
 
   /detect-indent/6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}

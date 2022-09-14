@@ -41,11 +41,11 @@ npx giget@latest <template> [<dir>] [...options]
 - `--prefer-offline`: Use cache if exists otherwise try to download.
 - `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
 - `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental).
-- `--registry`: URL to a custom registry.
+- `--registry`: URL to a custom registry. (Can be overriden with `GIGET_REGISTRTY` environment variable).
 - `--no-registry`: Disable registry lookup and functionality.
 - `--verbose`: Show verbose debugging info.
 - `--cwd`: Set current working directory to resolve dirs relative to it.
-- `--auth`: Custom Authorization token to use for downloading template.
+- `--auth`: Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
 
 ### Examples
 
@@ -141,9 +141,9 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `offline`: (boolean) Do not attempt to download and use cached version.
   - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
-  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry.
+  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overriden with `GIGET_REGISTRTY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
-  - `auth`: (string) Custom Authorization token to use for downloading template.
+  - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
 
 **Return value:**
 

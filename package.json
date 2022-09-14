@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "colorette": "^2.0.19",
+    "defu": "^6.1.0",
     "mri": "^1.2.0",
     "node-fetch-native": "^0.1.4",
     "pathe": "^0.3.7",

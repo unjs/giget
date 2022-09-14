@@ -3,6 +3,7 @@ import { homedir } from 'node:os'
 import { existsSync, readdirSync } from 'node:fs'
 import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
+import { defu } from 'defu'
 import { download, debug } from './_utils'
 import { providers } from './providers'
 import { registryProvider } from './registry'
@@ -26,6 +27,11 @@ const sourceProtoRe = /^([\w-.]+):/
 export type DownloadTemplateResult = Omit<TemplateInfo, 'dir' | 'source'> & { dir: string, source: string }
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}): Promise<DownloadTemplateResult> {
+  opts = defu({
+    registry: process.env.GIGET_REGISTRTY,
+    auth: process.env.GIGET_AUTH
+  }, opts)
+
   const registry = opts.registry !== false ? registryProvider(opts.registry) : null
   let providerName: string = opts.provider || (registryProvider ? 'registry' : 'github')
   let source: string = input
