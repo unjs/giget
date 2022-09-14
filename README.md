@@ -21,11 +21,6 @@
 
 ✔ Support extracting with a subdir.
 
-## Comparison
-
-- Does not depend on local git to be installed ([read more](https://github.com/unjs/giget/issues/3#issuecomment-1240667190))
-- Issues with subpath cloning are fixed ([read more](https://github.com/unjs/giget/issues/3#issuecomment-1240667190))
-
 ## Usage (CLI)
 
 ```bash
@@ -182,18 +177,22 @@ const themes = registryProvider('https://raw.githubusercontent.com/unjs/giget/ma
 const { source, dir } = await downloadRepo('themes:test', { providers: { themes } })
 ```
 
+## Related projects
+
+Giget wouldn't be possible without inspering from former prijects.
+
+In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, and more features out of the box.
+
+- https://github.com/samsonjs/gitter
+- https://github.com/tiged/tiged
+- https://github.com/Rich-Harris/degit
+
 ## 💻 Development
 
 - Clone this repository
 - Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable` (use `npm i -g corepack` for Node.js < 16.10)
 - Install dependencies using `pnpm install`
 - Run interactive tests using `pnpm dev`
-
-## Related projects
-
-- https://github.com/samsonjs/gitter
-- https://github.com/tiged/tiged
-- https://github.com/Rich-Harris/degit
 
 ## License
 
