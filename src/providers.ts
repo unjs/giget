@@ -41,7 +41,7 @@ export const sourcehut: TemplateProvider = (input) => {
     version: parsed.ref,
     subdir: parsed.subdir,
     url: `https://git.sr.ht/~${parsed.repo}/tree/${parsed.ref}/item${parsed.subdir}`,
-    tar: `https://git.sr.ht/~${parsed.repo}/superd/archive/${parsed.ref}.tar.gz`
+    tar: `https://git.sr.ht/~${parsed.repo}/archive/${parsed.ref}.tar.gz`
   }
 }
 
