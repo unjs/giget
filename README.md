@@ -21,6 +21,8 @@
 
 ✔ Support extracting with a subdir.
 
+✔ Authorization support to download private templates
+
 ## Usage (CLI)
 
 ```bash
@@ -43,6 +45,7 @@ npx giget@latest <template> [<dir>] [...options]
 - `--no-registry`: Disable registry lookup and functionality.
 - `--verbose`: Show verbose debugging info.
 - `--cwd`: Set current working directory to resolve dirs relative to it.
+- `--auth`: Custom Authorization token to use for downloading template.
 
 ### Examples
 
@@ -86,7 +89,8 @@ A custom registry should provide an endpoint with dynamic path `/:template.json`
 - `tar` (required) Link to the tar download link.
 - `defaultDir`: (optional) Default cloning directory.
 - `url`: (optional) Webpage of the template.
-- `subpath` (optional) Subpath inside the tar file.
+- `subpath`: (optional) Subpath inside the tar file.
+- `headers`: (optional) Custom headers to send while downloading template.
 
 Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
 
@@ -139,6 +143,7 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
   - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry.
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
+  - `auth`: (string) Custom Authorization token to use for downloading template.
 
 **Return value:**
 
@@ -156,10 +161,11 @@ Using programmatic method, you can make your own custom template providers.
 ```ts
 import type { TemplateProvider } from 'giget'
 
-const rainbow: TemplateProvider = async (input) => {
+const rainbow: TemplateProvider = async (input, { auth }) => {
   return {
     name: 'rainbow',
     version: input,
+    headers: { Authorization: auth },
     url: `https://rainbow.template/?variant=${input}`,
     tar: `https://rainbow.template/dl/rainbow.${input}.tar.gz`
   }

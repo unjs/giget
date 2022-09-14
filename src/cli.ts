@@ -8,14 +8,14 @@ import { startShell } from './_utils'
 async function main () {
   const args = mri(process.argv.slice(2), {
     boolean: ['help', 'force', 'force-clean', 'offline', 'prefer-offline', 'shell', 'verbose'],
-    string: ['registry', 'cwd']
+    string: ['registry', 'cwd', 'auth']
   })
 
   const input = args._[0]
   const dir = args._[1]
 
   if (!input || args.help || args.h) {
-    console.error('Usage: npx getgit@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd]')
+    console.error('Usage: npx getgit@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]')
     process.exit(1)
   }
 
@@ -29,7 +29,8 @@ async function main () {
     forceClean: args['force-clean'],
     offline: args.offline,
     registry: args.registry,
-    cwd: args.cwd
+    cwd: args.cwd,
+    auth: args.auth
   })
 
   console.log(`✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)

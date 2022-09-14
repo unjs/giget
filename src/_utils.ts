@@ -6,10 +6,10 @@ import { relative, resolve } from 'pathe'
 import { fetch } from 'node-fetch-native'
 import type { GitInfo } from './types'
 
-export async function download (url: string, filePath: string) {
+export async function download (url: string, filePath: string, opts: { headers?: Record<string, string> } = {}) {
   const infoPath = filePath + '.json'
   const info: { etag?: string } = JSON.parse(await readFile(infoPath, 'utf8').catch(() => '{}'))
-  const headRes = await fetch(url, { method: 'HEAD' }).catch(() => null)
+  const headRes = await fetch(url, { method: 'HEAD', headers: opts.headers }).catch(() => null)
   const etag = headRes?.headers.get('etag')
   if (info.etag === etag && existsSync(filePath)) {
     // Already downloaded
@@ -17,7 +17,7 @@ export async function download (url: string, filePath: string) {
   }
   info.etag = etag
 
-  const res = await fetch(url)
+  const res = await fetch(url, { headers: opts.headers })
   if (res.status >= 400) {
     throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`)
   }

@@ -1,7 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { existsSync, readdirSync } from 'node:fs'
-import { extract } from 'tar'
+import { extract, t } from 'tar'
 import { resolve, dirname } from 'pathe'
 import { download, debug } from './_utils'
 import { providers } from './providers'
@@ -18,6 +18,7 @@ export interface DownloadTemplateOptions {
   dir?: string
   registry?: false | string
   cwd?: string
+  auth?: string
 }
 
 const sourceProtoRe = /^([\w-.]+):/
@@ -38,7 +39,7 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`)
   }
-  const template = await Promise.resolve().then(() => provider(source)).catch((err) => {
+  const template = await Promise.resolve().then(() => provider(source, { auth: opts.auth })).catch((err) => {
     throw new Error(`Failed to download template from ${providerName}: ${err.message}`)
   })
 
@@ -65,7 +66,7 @@ export async function downloadTemplate (input: string, opts: DownloadTemplateOpt
   if (!opts.offline) {
     await mkdir(dirname(tarPath), { recursive: true })
     const s = Date.now()
-    await download(template.tar, tarPath).catch((err) => {
+    await download(template.tar, tarPath, { headers: template.headers }).catch((err) => {
       if (!existsSync(tarPath)) {
         throw err
       }
