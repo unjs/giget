@@ -28,7 +28,7 @@ export type DownloadTemplateResult = Omit<TemplateInfo, 'dir' | 'source'> & { di
 
 export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}): Promise<DownloadTemplateResult> {
   opts = defu({
-    registry: process.env.GIGET_REGISTRTY,
+    registry: process.env.GIGET_REGISTRY,
     auth: process.env.GIGET_AUTH
   }, opts)
 
