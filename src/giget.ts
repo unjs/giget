@@ -1,7 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { existsSync, readdirSync } from 'node:fs'
-import { extract, t } from 'tar'
+import { extract } from 'tar'
 import { resolve, dirname } from 'pathe'
 import { download, debug } from './_utils'
 import { providers } from './providers'
