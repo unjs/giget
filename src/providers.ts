@@ -34,9 +34,21 @@ export const bitbucket: TemplateProvider = (input) => {
   }
 }
 
+export const sourcehut: TemplateProvider = (input) => {
+  const parsed = parseGitURI(input)
+  return {
+    name: parsed.repo.replace('/', '-'),
+    version: parsed.ref,
+    subdir: parsed.subdir,
+    url: `https://git.sr.ht/~${parsed.repo}/tree/${parsed.ref}/item${parsed.subdir}`,
+    tar: `https://git.sr.ht/~${parsed.repo}/archive/${parsed.ref}.tar.gz`
+  }
+}
+
 export const providers: Record<string, TemplateProvider> = {
   github,
   gh: github,
   gitlab,
-  bitbucket
+  bitbucket,
+  sourcehut
 }
