@@ -1,0 +1,6 @@
+{
+    "name": "sidebase",
+    "defaultDir": "sidebase-app",
+    "url": "https://sidebase.io",
+    "tar": "https://codeload.github.com/sidestream-tech/sidebase/tar.gz/refs/heads/main"
+}
