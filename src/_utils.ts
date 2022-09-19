@@ -1,7 +1,8 @@
 import { createWriteStream, existsSync } from 'node:fs'
-import { pipeline } from 'node:stream/promises'
+import { pipeline } from 'node:stream'
 import { spawnSync } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
+import { promisify } from 'node:util'
 import { relative, resolve } from 'pathe'
 import { fetch } from 'node-fetch-native'
 import type { GitInfo } from './types'
@@ -23,7 +24,7 @@ export async function download (url: string, filePath: string, opts: { headers?:
   }
 
   const stream = createWriteStream(filePath)
-  await pipeline(res.body as any, stream)
+  await promisify(pipeline)(res.body as any, stream)
 
   await writeFile(infoPath, JSON.stringify(info), 'utf8')
 }
