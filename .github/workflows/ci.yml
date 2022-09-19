@@ -10,16 +10,13 @@ on:
 
 jobs:
   ci:
-    strategy:
-      matrix:
-        node: [14, 16]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: corepack enable
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 14
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm lint
