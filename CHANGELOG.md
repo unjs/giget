@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/unjs/giget/compare/v0.1.6...v0.1.7) (2022-09-19)
+
+
+### Bug Fixes
+
+* use non-promise version of pipeline for node 14 support ([#18](https://github.com/unjs/giget/issues/18)) ([822fe2d](https://github.com/unjs/giget/commit/822fe2d02bc3fa9c7ac129c226483fb9790720e7))
+
 ### [0.1.6](https://github.com/unjs/giget/compare/v0.1.5...v0.1.6) (2022-09-14)
 
 
