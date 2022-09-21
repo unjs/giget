@@ -1,0 +1,6 @@
+{
+  "name": "stacks",
+  "defaultDir": "stack-example",
+  "url": "https://stacks.ow3.org",
+  "tar": "https://codeload.github.com/ow3org/stacks/tar.gz/refs/heads/main"
+}
