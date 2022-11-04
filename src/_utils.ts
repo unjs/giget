@@ -5,12 +5,13 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { promisify } from 'node:util'
 import { relative, resolve } from 'pathe'
 import { fetch } from 'node-fetch-native'
+import createHttpsProxyAgent from 'https-proxy-agent'
 import type { GitInfo } from './types'
 
 export async function download (url: string, filePath: string, opts: { headers?: Record<string, string> } = {}) {
   const infoPath = filePath + '.json'
   const info: { etag?: string } = JSON.parse(await readFile(infoPath, 'utf8').catch(() => '{}'))
-  const headRes = await fetch(url, { method: 'HEAD', headers: opts.headers }).catch(() => null)
+  const headRes = await sendFetch(url, { method: 'HEAD', headers: opts.headers }).catch(() => null)
   const etag = headRes?.headers.get('etag')
   if (info.etag === etag && existsSync(filePath)) {
     // Already downloaded
@@ -18,7 +19,7 @@ export async function download (url: string, filePath: string, opts: { headers?:
   }
   info.etag = etag
 
-  const res = await fetch(url, { headers: opts.headers })
+  const res = await sendFetch(url, { headers: opts.headers })
   if (res.status >= 400) {
     throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`)
   }
@@ -44,6 +45,14 @@ export function debug (...args) {
   if (process.env.DEBUG) {
     console.debug('[giget]', ...args)
   }
+}
+
+export async function sendFetch (url: string, options?: RequestInit) {
+  const proxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy
+  const agent = createHttpsProxyAgent(proxy)
+  const requestOptions = proxy ? { agent, ...options } : options
+  // @ts-ignore-error
+  return await fetch(url, requestOptions)
 }
 
 // -- Experimental --
