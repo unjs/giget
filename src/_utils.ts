@@ -51,7 +51,6 @@ export async function sendFetch (url: string, options?: RequestInit) {
   const proxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy
   const agent = createHttpsProxyAgent(proxy)
   const requestOptions = proxy ? { agent, ...options } : options
-  // @ts-ignore-error
   return await fetch(url, requestOptions)
 }
 
