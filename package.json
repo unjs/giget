@@ -37,7 +37,7 @@
     "https-proxy-agent": "^5.0.1",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.0.1",
-    "pathe": "^0.3.9",
+    "pathe": "^1.0.0",
     "tar": "^6.1.12"
   },
   "devDependencies": {
