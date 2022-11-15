@@ -35,7 +35,7 @@
     "colorette": "^2.0.19",
     "defu": "^6.1.0",
     "mri": "^1.2.0",
-    "node-fetch-native": "^0.1.5",
+    "node-fetch-native": "^1.0.1",
     "pathe": "^0.3.8",
     "tar": "^6.1.11"
   },
