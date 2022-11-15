@@ -1,13 +1,13 @@
-import { mkdir, rm } from 'node:fs/promises'
-import { homedir } from 'node:os'
-import { existsSync, readdirSync } from 'node:fs'
-import { extract } from 'tar'
-import { resolve, dirname } from 'pathe'
-import { defu } from 'defu'
-import { download, debug } from './_utils'
-import { providers } from './providers'
-import { registryProvider } from './registry'
-import type { TemplateInfo, TemplateProvider } from './types'
+import { mkdir, rm } from "node:fs/promises";
+import { homedir } from "node:os";
+import { existsSync, readdirSync } from "node:fs";
+import { extract } from "tar";
+import { resolve, dirname } from "pathe";
+import { defu } from "defu";
+import { download, debug } from "./_utils";
+import { providers } from "./providers";
+import { registryProvider } from "./registry";
+import type { TemplateInfo, TemplateProvider } from "./types";
 
 export interface DownloadTemplateOptions {
   provider?: string
@@ -22,94 +22,95 @@ export interface DownloadTemplateOptions {
   auth?: string
 }
 
-const sourceProtoRe = /^([\w-.]+):/
+const sourceProtoRe = /^([\w-.]+):/;
 
-export type DownloadTemplateResult = Omit<TemplateInfo, 'dir' | 'source'> & { dir: string, source: string }
+export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & { dir: string, source: string }
 
-export async function downloadTemplate (input: string, opts: DownloadTemplateOptions = {}): Promise<DownloadTemplateResult> {
-  opts = defu({
+export async function downloadTemplate (input: string, options: DownloadTemplateOptions = {}): Promise<DownloadTemplateResult> {
+  options = defu({
     registry: process.env.GIGET_REGISTRY,
     auth: process.env.GIGET_AUTH
-  }, opts)
+  }, options);
 
-  const registry = opts.registry !== false ? registryProvider(opts.registry) : null
-  let providerName: string = opts.provider || (registryProvider ? 'registry' : 'github')
-  let source: string = input
-  const sourceProvierMatch = input.match(sourceProtoRe)
+  const registry = options.registry !== false ? registryProvider(options.registry) : undefined;
+  let providerName: string = options.provider || (registryProvider ? "registry" : "github");
+  let source: string = input;
+  const sourceProvierMatch = input.match(sourceProtoRe);
   if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1]
-    source = input.substring(sourceProvierMatch[0].length)
+    providerName = sourceProvierMatch[1];
+    source = input.slice(sourceProvierMatch[0].length);
   }
 
-  const provider = opts.providers?.[providerName] || providers[providerName] || registry
+  const provider = options.providers?.[providerName] || providers[providerName] || registry;
   if (!provider) {
-    throw new Error(`Unsupported provider: ${providerName}`)
+    throw new Error(`Unsupported provider: ${providerName}`);
   }
-  const template = await Promise.resolve().then(() => provider(source, { auth: opts.auth })).catch((err) => {
-    throw new Error(`Failed to download template from ${providerName}: ${err.message}`)
-  })
+  const template = await Promise.resolve().then(() => provider(source, { auth: options.auth })).catch((error) => {
+    throw new Error(`Failed to download template from ${providerName}: ${error.message}`);
+  });
 
   // Sanetize name and defaultDir
-  template.name = (template.name || 'template').replace(/[^a-z0-9-]/gi, '-')
-  template.defaultDir = (template.defaultDir || template.name).replace(/[^a-z0-9-]/gi, '-')
+  template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
+  template.defaultDir = (template.defaultDir || template.name).replace(/[^\da-z-]/gi, "-");
 
-  const cwd = resolve(opts.cwd || '.')
-  const extractPath = resolve(cwd, opts.dir || template.defaultDir)
-  if (opts.forceClean) {
-    await rm(extractPath, { recursive: true, force: true })
+  const cwd = resolve(options.cwd || ".");
+  const extractPath = resolve(cwd, options.dir || template.defaultDir);
+  if (options.forceClean) {
+    await rm(extractPath, { recursive: true, force: true });
   }
-  if (!opts.force && existsSync(extractPath) && readdirSync(extractPath).length) {
-    throw new Error(`Destination ${extractPath} already exists.`)
+  if (!options.force && existsSync(extractPath) && readdirSync(extractPath).length > 0) {
+    throw new Error(`Destination ${extractPath} already exists.`);
   }
-  await mkdir(extractPath, { recursive: true })
+  await mkdir(extractPath, { recursive: true });
 
-  const tmpDir = resolve(homedir(), '.giget', opts.provider, template.name)
-  const tarPath = resolve(tmpDir, (template.version || template.name) + '.tar.gz')
+  const temporaryDirectory = resolve(homedir(), ".giget", options.provider, template.name);
+  const tarPath = resolve(temporaryDirectory, (template.version || template.name) + ".tar.gz");
 
-  if (opts.preferOffline && existsSync(tarPath)) {
-    opts.offline = true
+  if (options.preferOffline && existsSync(tarPath)) {
+    options.offline = true;
   }
-  if (!opts.offline) {
-    await mkdir(dirname(tarPath), { recursive: true })
-    const s = Date.now()
-    await download(template.tar, tarPath, { headers: template.headers }).catch((err) => {
+  if (!options.offline) {
+    await mkdir(dirname(tarPath), { recursive: true });
+    const s = Date.now();
+    await download(template.tar, tarPath, { headers: template.headers }).catch((error) => {
       if (!existsSync(tarPath)) {
-        throw err
+        throw error;
       }
       // Accept netwrok errors if we have a cached version
-      debug('Download error. Using cached version:', err)
-      opts.offline = true
-    })
-    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`)
+      debug("Download error. Using cached version:", error);
+      options.offline = true;
+    });
+    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
   }
 
   if (!existsSync(tarPath)) {
-    throw new Error(`Tarball not found: ${tarPath} (offline: ${opts.offline})`)
+    throw new Error(`Tarball not found: ${tarPath} (offline: ${options.offline})`);
   }
 
-  const s = Date.now()
-  const subdir = template.subdir?.replace(/^\//, '') || ''
+  const s = Date.now();
+  const subdir = template.subdir?.replace(/^\//, "") || "";
   await extract({
     file: tarPath,
     cwd: extractPath,
     onentry (entry) {
-      entry.path = entry.path.split('/').splice(1).join('/')
+      entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
-        if (entry.path.startsWith(subdir + '/')) {
+        // eslint-disable-next-line unicorn/prefer-ternary
+        if (entry.path.startsWith(subdir + "/")) {
           // Rewrite path
-          entry.path = entry.path.substring(subdir.length)
+          entry.path = entry.path.slice(subdir.length);
         } else {
           // Skip
-          entry.path = ''
+          entry.path = "";
         }
       }
     }
-  })
-  debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`)
+  });
+  debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`);
 
   return {
     ...template,
     source,
     dir: extractPath
-  }
+  };
 }
