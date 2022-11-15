@@ -10,7 +10,7 @@ specifiers:
   eslint: ^8.23.1
   jiti: ^1.16.0
   mri: ^1.2.0
-  node-fetch-native: ^0.1.5
+  node-fetch-native: ^1.0.1
   pathe: ^0.3.8
   standard-version: ^9.5.0
   tar: ^6.1.11
@@ -22,7 +22,7 @@ dependencies:
   colorette: 2.0.19
   defu: 6.1.0
   mri: 1.2.0
-  node-fetch-native: 0.1.5
+  node-fetch-native: 1.0.1
   pathe: 0.3.8
   tar: 6.1.11
 
@@ -3147,8 +3147,8 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /node-fetch-native/0.1.5:
-    resolution: {integrity: sha512-4NYY0JOTYFsahDjKy4gId6uuf7TPzkIDSDMuvtmlFd2Jf25tj9fQsDD5+kLdzM7sm6BbG8lL/154tdrsgN25Zw==}
+  /node-fetch-native/1.0.1:
+    resolution: {integrity: sha512-VzW+TAk2wE4X9maiKMlT+GsPU4OMmR1U9CrHSmd3DFLn2IcZ9VJ6M6BBugGfYUnPCLSYxXdZy17M0BEJyhUTwg==}
     dev: false
 
   /node-releases/2.0.6:
