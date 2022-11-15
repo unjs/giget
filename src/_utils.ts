@@ -49,8 +49,7 @@ export function debug (...args) {
 
 export async function sendFetch (url: string, options?: RequestInit) {
   const proxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy
-  const agent = createHttpsProxyAgent(proxy)
-  const requestOptions = proxy ? { agent, ...options } : options
+  const requestOptions = proxy ? { agent: createHttpsProxyAgent(proxy), ...options } : options
   return await fetch(url, requestOptions)
 }
 
