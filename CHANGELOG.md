@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/unjs/giget/compare/v0.1.7...v1.0.0) (2022-11-15)
+
+
+### Features
+
+* add `stacks` template ([#22](https://github.com/unjs/giget/issues/22)) ([663acff](https://github.com/unjs/giget/commit/663acff2e58ce6abcb4fb706de59e637478a2fd2))
+* support http proxy ([#24](https://github.com/unjs/giget/issues/24)) ([e579a2f](https://github.com/unjs/giget/commit/e579a2f5347356f3abed42459a90199adcc2df52))
+
 ### [0.1.7](https://github.com/unjs/giget/compare/v0.1.6...v0.1.7) (2022-09-19)
 
 
