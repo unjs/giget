@@ -1,10 +1,9 @@
 import { mkdir, rm } from "node:fs/promises";
-import { homedir } from "node:os";
 import { existsSync, readdirSync } from "node:fs";
 import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
-import { download, debug } from "./_utils";
+import { cacheDirectory, download, debug } from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
 import type { TemplateInfo, TemplateProvider } from "./types";
@@ -63,7 +62,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
   }
   await mkdir(extractPath, { recursive: true });
 
-  const temporaryDirectory = resolve(homedir(), ".giget", options.provider, template.name);
+  const temporaryDirectory = resolve(cacheDirectory(), options.provider, template.name);
   const tarPath = resolve(temporaryDirectory, (template.version || template.name) + ".tar.gz");
 
   if (options.preferOffline && existsSync(tarPath)) {
