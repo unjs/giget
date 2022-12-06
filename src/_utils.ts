@@ -2,7 +2,7 @@ import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import { homedir, platform } from "node:os";
+import { homedir } from "node:os";
 import { promisify } from "node:util";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
@@ -57,14 +57,9 @@ export async function sendFetch (url: string, options?: RequestInit) {
 }
 
 export function cacheDirectory () {
-  const dotGiget = resolve(homedir(), ".giget");
-  if (platform() === "linux" && !existsSync(dotGiget)) {
-    const CACHE_HOME = process.env.XDG_CACHE_HOME || resolve(homedir(), ".cache");
-    const gigetCache = resolve(CACHE_HOME, "giget");
-    return gigetCache;
-  } else {
-    return dotGiget;
-  }
+  return process.env.XDG_CACHE_HOME
+    ? resolve(process.env.XDG_CACHE_HOME, "giget")
+    : resolve(homedir(), ".cache/giget");
 }
 
 // -- Experimental --
