@@ -2,6 +2,7 @@ import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import { promisify } from "node:util";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
@@ -53,6 +54,12 @@ export async function sendFetch (url: string, options?: RequestInit) {
   const proxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
   const requestOptions = proxy ? { agent: createHttpsProxyAgent(proxy), ...options } : options;
   return await fetch(url, requestOptions);
+}
+
+export function cacheDirectory () {
+  return process.env.XDG_CACHE_HOME
+    ? resolve(process.env.XDG_CACHE_HOME, "giget")
+    : resolve(homedir(), ".cache/giget");
 }
 
 // -- Experimental --
