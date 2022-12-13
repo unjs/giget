@@ -1,13 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@types/node': ^18.11.13
+  '@types/node': ^18.11.14
   '@types/tar': ^6.1.3
-  '@vitest/coverage-c8': ^0.25.7
+  '@vitest/coverage-c8': ^0.25.8
   colorette: ^2.0.19
   defu: ^6.1.1
   eslint: ^8.29.0
-  eslint-config-unjs: ^0.0.2
+  eslint-config-unjs: ^0.0.3
   https-proxy-agent: ^5.0.1
   jiti: ^1.16.0
   mri: ^1.2.0
@@ -17,7 +17,7 @@ specifiers:
   tar: ^6.1.13
   typescript: ^4.9.4
   unbuild: ^1.0.2
-  vitest: ^0.25.7
+  vitest: ^0.25.8
 
 dependencies:
   colorette: 2.0.19
@@ -29,16 +29,16 @@ dependencies:
   tar: 6.1.13
 
 devDependencies:
-  '@types/node': 18.11.13
+  '@types/node': 18.11.14
   '@types/tar': 6.1.3
-  '@vitest/coverage-c8': 0.25.7
+  '@vitest/coverage-c8': 0.25.8
   eslint: 8.29.0
-  eslint-config-unjs: 0.0.2_ha6vam6werchizxrnqvarmz2zu
+  eslint-config-unjs: 0.0.3_ha6vam6werchizxrnqvarmz2zu
   jiti: 1.16.0
   standard-version: 9.5.0
   typescript: 4.9.4
   unbuild: 1.0.2
-  vitest: 0.25.7
+  vitest: 0.25.8
 
 packages:
 
@@ -166,11 +166,6 @@ packages:
 
   /@babel/helper-string-parser/7.19.4:
     resolution: {integrity: sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==}
-    engines: {node: '>=6.9.0'}
-    dev: true
-
-  /@babel/helper-validator-identifier/7.18.6:
-    resolution: {integrity: sha512-MmetCkz9ej86nJQV+sFCxoGGrUbU3q02kgLciwkrt9QqEB7cP39oKEY0PakknEO0Gu20SskMRi+AYZ3b1TpN9g==}
     engines: {node: '>=6.9.0'}
     dev: true
 
@@ -487,11 +482,11 @@ packages:
   /@types/chai-subset/1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==}
     dependencies:
-      '@types/chai': 4.3.3
+      '@types/chai': 4.3.4
     dev: true
 
-  /@types/chai/4.3.3:
-    resolution: {integrity: sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==}
+  /@types/chai/4.3.4:
+    resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
   /@types/estree/1.0.0:
@@ -514,8 +509,8 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node/18.11.13:
-    resolution: {integrity: sha512-IASpMGVcWpUsx5xBOrxMj7Bl8lqfuTY7FKAnPmu5cHkfQVWF8GulWS1jbRqA934qZL35xh5xN/+Xe/i26Bod4w==}
+  /@types/node/18.11.14:
+    resolution: {integrity: sha512-0KXV57tENYmmJMl+FekeW9V3O/rlcqGQQJ/hNh9r8pKIj304pskWuEd8fCyNT86g/TpO0gcOTiLzsHLEURFMIQ==}
     dev: true
 
   /@types/normalize-package-data/2.4.1:
@@ -529,7 +524,7 @@ packages:
   /@types/tar/6.1.3:
     resolution: {integrity: sha512-YzDOr5kdAeqS8dcO6NTTHTMJ44MUCBDoLEIyPtwEn7PssKqUYL49R1iCVJPeiPzPlKi6DbH33eZkpeJ27e4vHg==}
     dependencies:
-      '@types/node': 18.11.13
+      '@types/node': 18.11.14
       minipass: 3.3.5
     dev: true
 
@@ -660,11 +655,11 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitest/coverage-c8/0.25.7:
-    resolution: {integrity: sha512-TEoYjW4YIDXKCMmLqduIGpIq2JmlhE3M0Q68apjNM0ljrJyEvYpaDI5b7OyfXbAJjhmZvIlfEZfZnmhbExHLHg==}
+  /@vitest/coverage-c8/0.25.8:
+    resolution: {integrity: sha512-fWgzQoK2KNzTTNnDcLCyibfO9/pbcpPOMtZ9Yvq/Eggpi2X8lewx/OcKZkO5ba5q9dl6+BBn6d5hTcS1709rZw==}
     dependencies:
       c8: 7.12.0
-      vitest: 0.25.7
+      vitest: 0.25.8
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -888,13 +883,13 @@ packages:
     resolution: {integrity: sha512-sS4CaUM+/+vqQUlCvCJ2WtDlV81aWtHhqeEVkLokVJJa3ViN4zDxAGfq9R8i1m90uGHxo99cy10Od+lvn3hf0g==}
     dev: true
 
-  /chai/4.3.6:
-    resolution: {integrity: sha512-bbcp3YfHCUzMOvKqsztczerVgBKSsEijCySNlHHbX3VG1nskvqjz5Rfso1gGwD6w6oOV3eI60pKuMOV5MV7p3Q==}
+  /chai/4.3.7:
+    resolution: {integrity: sha512-HLnAzZ2iupm25PlN0xFreAlBA5zaBSv3og0DdeGA4Ar6h6rJ3A0rolRUKJhSF2V10GZKDgWF/VmAEsNWjCRB+A==}
     engines: {node: '>=4'}
     dependencies:
       assertion-error: 1.1.0
       check-error: 1.0.2
-      deep-eql: 3.0.1
+      deep-eql: 4.1.3
       get-func-name: 2.0.0
       loupe: 2.3.4
       pathval: 1.1.1
@@ -1244,9 +1239,9 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /deep-eql/3.0.1:
-    resolution: {integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw==}
-    engines: {node: '>=0.12'}
+  /deep-eql/4.1.3:
+    resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
+    engines: {node: '>=6'}
     dependencies:
       type-detect: 4.0.8
     dev: true
@@ -1636,8 +1631,8 @@ packages:
       eslint-plugin-promise: 6.0.1_eslint@8.29.0
     dev: true
 
-  /eslint-config-unjs/0.0.2_ha6vam6werchizxrnqvarmz2zu:
-    resolution: {integrity: sha512-6zhni5Fdlpu/DJ+hfcbNEqmUixhGujBQXXB7N9SdZcvh135RlFTNoqor7sowP1ttd0lDY4lTewUzUjXSOVB7Ww==}
+  /eslint-config-unjs/0.0.3_ha6vam6werchizxrnqvarmz2zu:
+    resolution: {integrity: sha512-kL3QJ4uY+oFQu285J3Z1OUuZj9Ou2dAtzXd8d1UdUh6iA4iB+4yiUxPl/tDEEoGrCzu/w+gn4E8gbx3pP5T9KA==}
     peerDependencies:
       eslint: '*'
       typescript: '*'
@@ -1818,7 +1813,7 @@ packages:
     peerDependencies:
       eslint: '>=8.18.0'
     dependencies:
-      '@babel/helper-validator-identifier': 7.18.6
+      '@babel/helper-validator-identifier': 7.19.1
       ci-info: 3.3.2
       clean-regexp: 1.0.0
       eslint: 8.29.0
@@ -3923,8 +3918,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.25.7:
-    resolution: {integrity: sha512-lJ+Ue+v8kHl2JzjaKHJ9u5Yo/loU7zrWK2/Whn8OKQjtq5G7nkeWfXuq3elZaC8xKdkdIuWiiIicaNBG1F5yzg==}
+  /vitest/0.25.8:
+    resolution: {integrity: sha512-X75TApG2wZTJn299E/TIYevr4E9/nBo1sUtZzn0Ci5oK8qnpZAZyhwg0qCeMSakGIWtc6oRwcQFyFfW14aOFWg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -3945,12 +3940,12 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/chai': 4.3.3
+      '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.11.13
+      '@types/node': 18.11.14
       acorn: 8.8.1
       acorn-walk: 8.2.0
-      chai: 4.3.6
+      chai: 4.3.7
       debug: 4.3.4
       local-pkg: 0.4.2
       source-map: 0.6.1
