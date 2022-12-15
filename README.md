@@ -36,7 +36,7 @@ npx giget@latest <template> [<dir>] [...options]
 
 ### Options
 
-- `--force`: Clone to exsiting directory even if exists.
+- `--force`: Clone to existing directory even if exists.
 - `--offline`: Do not attempt to download and use cached version.
 - `--prefer-offline`: Use cache if exists otherwise try to download.
 - `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
@@ -92,7 +92,7 @@ A custom registry should provide an endpoint with dynamic path `/:template.json`
 - `subdir`: (optional) Directory inside the tar file.
 - `headers`: (optional) Custom headers to send while downloading template.
 
-Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
+Because of the simplicity, you can even use a GitHub repository as template registry but also you can build something more powerful by bringing your own API.
 
 ## Usage (Programmatic)
 
@@ -188,7 +188,7 @@ const { source, dir } = await downloadRepo('themes:test', { providers: { themes 
 
 ## Related projects
 
-Giget wouldn't be possible without inspering from former projects. In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
+Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
 
 - https://github.com/samsonjs/gitter
 - https://github.com/tiged/tiged
