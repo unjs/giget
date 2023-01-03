@@ -47,11 +47,11 @@
     "@vitest/coverage-c8": "^0.26.3",
     "eslint": "^8.31.0",
     "eslint-config-unjs": "^0.0.3",
-    "jiti": "^1.16.0",
+    "jiti": "^1.16.1",
     "standard-version": "^9.5.0",
     "typescript": "^4.9.4",
     "unbuild": "^1.0.2",
     "vitest": "^0.26.3"
   },
-  "packageManager": "pnpm@7.21.0"
+  "packageManager": "pnpm@7.22.0"
 }
