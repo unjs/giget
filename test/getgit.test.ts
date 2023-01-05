@@ -17,7 +17,7 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "package.json")));
   });
 
-  it("clone from online unjs/templates/unjs.json custom registry", async () => {
+  it("clone online unjs/templates/unjs.json custom registry", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/registry/unjs");
     const { dir } = await downloadTemplate('themes:unjs', { dir: destinationDirectory, providers: { themes } })
     expect(existsSync(resolve(dir, "package.json")));
