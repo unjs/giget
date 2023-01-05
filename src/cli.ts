@@ -16,7 +16,7 @@ async function main () {
   const dir = arguments_._[1];
 
   if (!input || arguments_.help || arguments_.h) {
-    console.error("Usage: npx getgit@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]");
+    console.error("Usage: npx giget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]");
     process.exit(1);
   }
 
