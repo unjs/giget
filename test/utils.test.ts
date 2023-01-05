@@ -1,5 +1,5 @@
-import { expect, it, describe } from "vitest";
-import { parseGitURI } from "../src/_utils";
+import { expect, expectTypeOf, it, describe, vi, beforeAll } from "vitest";
+import { parseGitURI, cacheDirectory, debug, currentShell } from "../src/_utils";
 
 describe("parseGitURI", () => {
   const defaults = { repo: "org/repo", subdir: "/", ref: "main" };
@@ -15,3 +15,39 @@ describe("parseGitURI", () => {
     });
   }
 });
+
+// Cache directory
+describe("cacheDirectory", () => {
+  const cacheDir = cacheDirectory()
+
+  it("returns giget within string", () => {
+    expect(cacheDir).toContain("giget")
+  })
+})
+
+// Debug
+describe("debug", () => {
+  process.env.DEBUG = "1"
+
+  beforeAll(() => {
+    vi.spyOn(console, 'debug').mockImplementation(() => {});
+  });
+
+  it("debug has been written", () => {
+    debug()
+    expect(console.debug).toHaveBeenCalled()
+  })
+
+  it("debug contains message from args", () => {
+    debug("This is a debug message")
+    expect(console.debug).toHaveBeenCalledWith("[giget]", "This is a debug message")
+  })
+})
+
+// (experimental)
+describe("(experimental)", () => {
+  it("return curretShell dir", () => {
+    const shell = currentShell()
+    expectTypeOf(shell).toBeString()
+  })
+})

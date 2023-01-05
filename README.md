@@ -136,14 +136,14 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
   - `subdir`: (string) Directory of the repo to clone from. The default value is none.
-  - `force`: (boolean) Extract to the exisiting dir even if already exsists.
+  - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use cached version.
   - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
-  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overriden with `GIGET_REGISTRY` environment variable).
+  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
-  - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
+  - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
 
 **Return value:**
 
@@ -152,7 +152,7 @@ The return value is a promise that resolves to the resolved template.
 - `dir`: (string) Path to extracted dir.
 - `source`: (string) Normalized version of the input source without provider.
 - [other provider template keys]
-  - `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
+  - `url`: (string) URL of repository that can be opened in browser. Useful for logging.
 
 ## Custom Providers
 
@@ -179,11 +179,11 @@ const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow
 You can define additional [custom registry](#custom-registry) providers using `registryProvider` utility and register to `providers`.
 
 ```ts
-import { registryProvider } from 'giget'
+import { registryProvider, downloadTemplate } from 'giget'
 
 const themes = registryProvider('https://raw.githubusercontent.com/unjs/giget/main/templates')
 
-const { source, dir } = await downloadRepo('themes:test', { providers: { themes } })
+const { source, dir } = await downloadTemplate('themes:test', { providers: { themes } })
 ```
 
 ## Related projects

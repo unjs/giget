@@ -48,7 +48,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     throw new Error(`Failed to download template from ${providerName}: ${error.message}`);
   });
 
-  // Sanetize name and defaultDir
+  // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
   template.defaultDir = (template.defaultDir || template.name).replace(/[^\da-z-]/gi, "-");
 
@@ -75,7 +75,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
       if (!existsSync(tarPath)) {
         throw error;
       }
-      // Accept netwrok errors if we have a cached version
+      // Accept network errors if we have a cached version
       debug("Download error. Using cached version:", error);
       options.offline = true;
     });
