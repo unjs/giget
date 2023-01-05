@@ -36,7 +36,7 @@ npx giget@latest <template> [<dir>] [...options]
 
 ### Options
 
-- `--force`: Clone to exsiting directory even if exists.
+- `--force`: Clone to existing directory even if exists.
 - `--offline`: Do not attempt to download and use cached version.
 - `--prefer-offline`: Use cache if exists otherwise try to download.
 - `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
@@ -89,10 +89,10 @@ A custom registry should provide an endpoint with dynamic path `/:template.json`
 - `tar` (required) Link to the tar download link.
 - `defaultDir`: (optional) Default cloning directory.
 - `url`: (optional) Webpage of the template.
-- `subpath`: (optional) Subpath inside the tar file.
+- `subdir`: (optional) Directory inside the tar file.
 - `headers`: (optional) Custom headers to send while downloading template.
 
-Because of the simplicity, you can even use a github repository as template registry but also you can build something more powerful by bringing your own API.
+Because of the simplicity, you can even use a GitHub repository as template registry but also you can build something more powerful by bringing your own API.
 
 ## Usage (Programmatic)
 
@@ -135,7 +135,7 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
-  - `subdirpath`: (string) subdir of the repo to clone from. The default value is none.
+  - `subdir`: (string) Directory of the repo to clone from. The default value is none.
   - `force`: (boolean) Extract to the exisiting dir even if already exsists.
   - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use cached version.
@@ -188,7 +188,7 @@ const { source, dir } = await downloadRepo('themes:test', { providers: { themes 
 
 ## Related projects
 
-Giget wouldn't be possible without inspering from former projects. In comparation giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
+Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
 
 - https://github.com/samsonjs/gitter
 - https://github.com/tiged/tiged

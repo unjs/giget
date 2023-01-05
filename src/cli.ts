@@ -1,48 +1,50 @@
 #!/usr/bin/env node
-import { relative } from 'node:path'
-import mri from 'mri'
-import { cyan } from 'colorette'
-import { downloadTemplate } from './giget'
-import { startShell } from './_utils'
+import { relative } from "node:path";
+import mri from "mri";
+import { cyan } from "colorette";
+import { downloadTemplate } from "./giget";
+import { startShell } from "./_utils";
 
 async function main () {
-  const args = mri(process.argv.slice(2), {
-    boolean: ['help', 'force', 'force-clean', 'offline', 'prefer-offline', 'shell', 'verbose'],
-    string: ['registry', 'cwd', 'auth']
-  })
+  const arguments_ = mri(process.argv.slice(2), {
+    boolean: ["help", "force", "force-clean", "offline", "prefer-offline", "shell", "verbose"],
+    string: ["registry", "cwd", "auth"]
+  });
 
-  const input = args._[0]
-  const dir = args._[1]
+  const input = arguments_._[0];
+  // eslint-disable-next-line unicorn/prevent-abbreviations
+  const dir = arguments_._[1];
 
-  if (!input || args.help || args.h) {
-    console.error('Usage: npx gitget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]')
-    process.exit(1)
+  if (!input || arguments_.help || arguments_.h) {
+    console.error("Usage: npx giget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]");
+    process.exit(1);
   }
 
-  if (args.verbose) {
-    process.env.DEBUG = process.env.DEBUG || 'true'
+  if (arguments_.verbose) {
+    process.env.DEBUG = process.env.DEBUG || "true";
   }
 
   const r = await downloadTemplate(input, {
     dir,
-    force: args.force,
-    forceClean: args['force-clean'],
-    offline: args.offline,
-    registry: args.registry,
-    cwd: args.cwd,
-    auth: args.auth
-  })
+    force: arguments_.force,
+    forceClean: arguments_["force-clean"],
+    offline: arguments_.offline,
+    registry: arguments_.registry,
+    cwd: arguments_.cwd,
+    auth: arguments_.auth
+  });
 
-  console.log(`✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`)
+  console.log(`✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(relative(process.cwd(), r.dir))}\n`);
 
-  if (args.shell) {
-    startShell(r.dir)
+  if (arguments_.shell) {
+    startShell(r.dir);
   }
 
-  process.exit(0)
+  process.exit(0);
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+// eslint-disable-next-line unicorn/prefer-top-level-await
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
