@@ -17,8 +17,14 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "package.json")));
   });
 
+  it("clone from online unjs/templates/unjs.json custom registry", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/registry/unjs");
+    const { dir } = await downloadTemplate('themes:unjs', { dir: destinationDirectory, providers: { themes } })
+    expect(existsSync(resolve(dir, "package.json")));
+  })
+
   it("clone from unjs/templates/nuxt.json custom registry", async () => {
-    const destinationDirectory = resolve(__dirname, ".tmp/registry");
+    const destinationDirectory = resolve(__dirname, ".tmp/registry/nuxt");
     const { dir } = await downloadTemplate('themes:nuxt', { dir: destinationDirectory, preferOffline: true, providers: { themes } })
     expect(existsSync(resolve(dir, "package.json")));
   })
