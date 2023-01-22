@@ -31,7 +31,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     auth: process.env.GIGET_AUTH
   }, options);
 
-  const registry = options.registry !== false ? registryProvider(options.registry) : undefined;
+  const registry = options.registry !== false ? registryProvider(options.registry, { auth: options.auth }) : undefined;
   let providerName: string = options.provider || (registryProvider ? "registry" : "github");
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
