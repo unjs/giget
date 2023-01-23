@@ -48,7 +48,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     throw new Error(`Failed to download template from ${providerName}: ${error.message}`);
   });
 
-  // Sanetize name and defaultDir
+  // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
   template.defaultDir = (template.defaultDir || template.name).replace(/[^\da-z-]/gi, "-");
 
@@ -73,8 +73,8 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     const s = Date.now();
     await download(template.tar, tarPath, {
       headers: {
+        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
         ...template.headers,
-        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
       }
     }).catch((error) => {
       if (!existsSync(tarPath)) {
