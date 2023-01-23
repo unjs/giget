@@ -71,7 +71,12 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, { headers: template.headers }).catch((error) => {
+    await download(template.tar, tarPath, {
+      headers: {
+        ...template.headers,
+        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      }
+    }).catch((error) => {
       if (!existsSync(tarPath)) {
         throw error;
       }
