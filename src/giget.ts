@@ -80,7 +80,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
       if (!existsSync(tarPath)) {
         throw error;
       }
-      // Accept netwrok errors if we have a cached version
+      // Accept network errors if we have a cached version
       debug("Download error. Using cached version:", error);
       options.offline = true;
     });
