@@ -130,8 +130,8 @@ const { source, dir } = await downloadTemplate('github:unjs/template')
 **Options:**
 
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
-- `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
+  - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
