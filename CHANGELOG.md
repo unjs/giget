@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.1.0
+
+[compare changes](https://github.com/unjs/giget/compare/v1.0.0...v1.1.0)
+
+
+### 🚀 Enhancements
+
+  - Support `GIGET_GITHUB_URL` and `GIGET_GITLAB_URL` env variables ([#71](https://github.com/unjs/giget/pull/71))
+
+### 🩹 Fixes
+
+  - Respect `XDG_CACHE_HOME` environment variable ([#31](https://github.com/unjs/giget/pull/31))
+  - Cli name typo in usage ([#63](https://github.com/unjs/giget/pull/63))
+  - Pass auth to custom registry ([#77](https://github.com/unjs/giget/pull/77))
+
+### 📖 Documentation
+
+  - Dir is part of options not standalone argument ([#80](https://github.com/unjs/giget/pull/80))
+
+### 🏡 Chore
+
+  - Fix typos ([#50](https://github.com/unjs/giget/pull/50))
+  - Update dependencies ([fc51e23](https://github.com/unjs/giget/commit/fc51e23))
+  - Switch to changelogen for release ([accb900](https://github.com/unjs/giget/commit/accb900))
+  - Add .prettierignore ([37bb7f8](https://github.com/unjs/giget/commit/37bb7f8))
+
+### 🎨 Styles
+
+  - Format with prettier ([02d2661](https://github.com/unjs/giget/commit/02d2661))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Hanzoz <hanzoz@gmail.com>
+- Christian Preston <christianpreston@ymail.com>
+- Peter <peter.placzek1996@gmail.com>
+- Marvin-j97 
+- Burner
+
 ## [1.0.0](https://github.com/unjs/giget/compare/v0.1.7...v1.0.0) (2022-11-15)
 
 
