@@ -8,9 +8,11 @@ export const github: TemplateProvider = (input, options) => {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
-    headers: { Authorization: options.auth ? `Bearer ${options.auth}` : undefined },
+    headers: {
+      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
     url: `${github}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${github}/${parsed.repo}/archive/${parsed.ref}.tar.gz`
+    tar: `${github}/${parsed.repo}/archive/${parsed.ref}.tar.gz`,
   };
 };
 
@@ -21,9 +23,11 @@ export const gitlab: TemplateProvider = (input, options) => {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
-    headers: { Authorization: options.auth ? `Bearer ${options.auth}` : undefined },
+    headers: {
+      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
     url: `${gitlab}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${gitlab}/${parsed.repo}/-/archive/${parsed.ref}.tar.gz`
+    tar: `${gitlab}/${parsed.repo}/-/archive/${parsed.ref}.tar.gz`,
   };
 };
 
@@ -33,9 +37,11 @@ export const bitbucket: TemplateProvider = (input, options) => {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
-    headers: { Authorization: options.auth ? `Bearer ${options.auth}` : undefined },
+    headers: {
+      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
     url: `https://bitbucket.com/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
-    tar: `https://bitbucket.org/${parsed.repo}/get/${parsed.ref}.tar.gz`
+    tar: `https://bitbucket.org/${parsed.repo}/get/${parsed.ref}.tar.gz`,
   };
 };
 
@@ -45,9 +51,11 @@ export const sourcehut: TemplateProvider = (input, options) => {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
-    headers: { Authorization: options.auth ? `Bearer ${options.auth}` : undefined },
+    headers: {
+      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
     url: `https://git.sr.ht/~${parsed.repo}/tree/${parsed.ref}/item${parsed.subdir}`,
-    tar: `https://git.sr.ht/~${parsed.repo}/archive/${parsed.ref}.tar.gz`
+    tar: `https://git.sr.ht/~${parsed.repo}/archive/${parsed.ref}.tar.gz`,
   };
 };
 
@@ -56,5 +64,5 @@ export const providers: Record<string, TemplateProvider> = {
   gh: github,
   gitlab,
   bitbucket,
-  sourcehut
+  sourcehut,
 };

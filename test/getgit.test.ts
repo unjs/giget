@@ -11,7 +11,10 @@ describe("downloadTemplate", () => {
 
   it("clone unjs/template", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/cloned");
-    const { dir } = await downloadTemplate("gh:unjs/template", { dir: destinationDirectory, preferOffline: true });
+    const { dir } = await downloadTemplate("gh:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
     expect(await existsSync(resolve(dir, "package.json")));
   });
 
@@ -19,6 +22,8 @@ describe("downloadTemplate", () => {
     const destinationDirectory = resolve(__dirname, ".tmp/exisiting");
     await mkdir(destinationDirectory).catch(() => {});
     await writeFile(resolve(destinationDirectory, "test.txt"), "test");
-    await expect(downloadTemplate("gh:unjs/template", { dir: destinationDirectory })).rejects.toThrow("already exists");
+    await expect(
+      downloadTemplate("gh:unjs/template", { dir: destinationDirectory })
+    ).rejects.toThrow("already exists");
   });
 });
