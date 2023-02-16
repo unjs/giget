@@ -31,7 +31,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     auth: process.env.GIGET_AUTH
   }, options);
 
-  const registry = options.registry !== false ? registryProvider(options.registry) : undefined;
+  const registry = options.registry !== false ? registryProvider(options.registry, { auth: options.auth }) : undefined;
   let providerName: string = options.provider || (registryProvider ? "registry" : "github");
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
@@ -48,7 +48,7 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
     throw new Error(`Failed to download template from ${providerName}: ${error.message}`);
   });
 
-  // Sanetize name and defaultDir
+  // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
   template.defaultDir = (template.defaultDir || template.name).replace(/[^\da-z-]/gi, "-");
 
@@ -71,11 +71,16 @@ export async function downloadTemplate (input: string, options: DownloadTemplate
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, { headers: template.headers }).catch((error) => {
+    await download(template.tar, tarPath, {
+      headers: {
+        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+        ...template.headers,
+      }
+    }).catch((error) => {
       if (!existsSync(tarPath)) {
         throw error;
       }
-      // Accept netwrok errors if we have a cached version
+      // Accept network errors if we have a cached version
       debug("Download error. Using cached version:", error);
       options.offline = true;
     });
