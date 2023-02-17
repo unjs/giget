@@ -84,7 +84,7 @@ export async function sendFetch(
   }
 
   if (options?.headers) {
-    options.headers = normalizeHeaders(options.headers as any);
+    options.headers = normalizeHeaders(options.headers);
   }
 
   return await fetch(url, options);
@@ -96,7 +96,7 @@ export function cacheDirectory() {
     : resolve(homedir(), ".cache/giget");
 }
 
-export function normalizeHeaders(headers: Record<string, string>) {
+export function normalizeHeaders(headers: Record<string, string> = {}) {
   const normalized: Record<string, string> = {};
   for (const [key, value] of Object.entries(headers)) {
     if (!value) {
