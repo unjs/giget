@@ -103,10 +103,15 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
+    const templateHeaders = Object.fromEntries(
+      Object.entries(template.headers || {})
+        .filter((entry) => entry[1])
+        .map(([key, value]) => [key.toLowerCase(), value])
+    );
     await download(template.tar, tarPath, {
       headers: {
         authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...template.headers,
+        ...templateHeaders,
       },
     }).catch((error) => {
       if (!existsSync(tarPath)) {
