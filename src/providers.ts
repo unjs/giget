@@ -9,7 +9,7 @@ export const github: TemplateProvider = (input, options) => {
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      // Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
     },
     url: `${github}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
     tar: `${github}/${parsed.repo}/archive/${parsed.ref}.tar.gz`,

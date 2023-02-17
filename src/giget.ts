@@ -105,7 +105,7 @@ export async function downloadTemplate(
     const s = Date.now();
     await download(template.tar, tarPath, {
       headers: {
-        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+        // authorization: options.auth ? `Bearer ${options.auth}` : undefined,
         ...template.headers,
       },
     }).catch((error) => {
