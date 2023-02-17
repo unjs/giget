@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { promisify } from "node:util";
+import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
 import createHttpsProxyAgent from "https-proxy-agent";
@@ -62,22 +63,48 @@ export function debug(...arguments_) {
 }
 
 // eslint-disable-next-line no-undef
-export async function sendFetch(url: string, options?: RequestInit) {
-  const proxy =
-    process.env.HTTPS_PROXY ||
-    process.env.https_proxy ||
-    process.env.HTTP_PROXY ||
-    process.env.http_proxy;
-  const requestOptions = proxy
-    ? { agent: createHttpsProxyAgent(proxy), ...options }
-    : options;
-  return await fetch(url, requestOptions);
+interface InternalFetchOptions extends Exclude<RequestInit, "headers"> {
+  headers?: Record<string, string>;
+  agent?: Agent;
+}
+
+export async function sendFetch(
+  url: string,
+  options: InternalFetchOptions = {}
+) {
+  if (!options.agent) {
+    const proxyEnv =
+      process.env.HTTPS_PROXY ||
+      process.env.https_proxy ||
+      process.env.HTTP_PROXY ||
+      process.env.http_proxy;
+    if (proxyEnv) {
+      options.agent = createHttpsProxyAgent(proxyEnv);
+    }
+  }
+
+  if (options?.headers) {
+    options.headers = normalizeHeaders(options.headers as any);
+  }
+
+  return await fetch(url, options);
 }
 
 export function cacheDirectory() {
   return process.env.XDG_CACHE_HOME
     ? resolve(process.env.XDG_CACHE_HOME, "giget")
     : resolve(homedir(), ".cache/giget");
+}
+
+export function normalizeHeaders(headers: Record<string, string>) {
+  const normalized: Record<string, string> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (!value) {
+      continue;
+    }
+    normalized[key.toLowerCase()] = value;
+  }
+  return normalized;
 }
 
 // -- Experimental --

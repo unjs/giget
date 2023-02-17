@@ -3,7 +3,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
-import { cacheDirectory, download, debug } from "./_utils";
+import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
 import type { TemplateInfo, TemplateProvider } from "./types";
@@ -103,15 +103,10 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    const templateHeaders = Object.fromEntries(
-      Object.entries(template.headers || {})
-        .filter((entry) => entry[1])
-        .map(([key, value]) => [key.toLowerCase(), value])
-    );
     await download(template.tar, tarPath, {
       headers: {
         authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...templateHeaders,
+        ...normalizeHeaders(template.headers),
       },
     }).catch((error) => {
       if (!existsSync(tarPath)) {
