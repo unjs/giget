@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.1.2
+
+[compare changes](https://github.com/unjs/giget/compare/v1.1.1...v1.1.2)
+
+
+### 🩹 Fixes
+
+  - Provide empty object for headers ([#83](https://github.com/unjs/giget/pull/83))
+
+### ❤️  Contributors
+
+- Daniel Roe <daniel@roe.dev>
+
 ## v1.1.1
 
 [compare changes](https://github.com/unjs/giget/compare/v1.1.0...v1.1.1)
