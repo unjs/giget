@@ -16,7 +16,7 @@ export const registryProvider = (
 
     const result = await sendFetch(registryURL, {
       headers: {
-        // Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
       },
     });
     if (result.status >= 400) {
