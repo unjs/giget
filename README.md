@@ -113,10 +113,10 @@ Import:
 
 ```js
 // ESM
-import { downloadTemplate } from 'giget'
+import { downloadTemplate } from "giget";
 
 // CommonJS
-const { downloadTemplate } = require('giget')
+const { downloadTemplate } = require("giget");
 ```
 
 ### `downloadTemplate(source, options?)`
@@ -124,7 +124,7 @@ const { downloadTemplate } = require('giget')
 **Example:**
 
 ```js
-const { source, dir } = await downloadTemplate('github:unjs/template')
+const { source, dir } = await downloadTemplate("github:unjs/template");
 ```
 
 **Options:**
@@ -159,19 +159,21 @@ The return value is a promise that resolves to the resolved template.
 Using programmatic method, you can make your own custom template providers.
 
 ```ts
-import type { TemplateProvider } from 'giget'
+import type { TemplateProvider } from "giget";
 
 const rainbow: TemplateProvider = async (input, { auth }) => {
   return {
-    name: 'rainbow',
+    name: "rainbow",
     version: input,
-    headers: { Authorization: auth },
+    headers: { authorization: auth },
     url: `https://rainbow.template/?variant=${input}`,
-    tar: `https://rainbow.template/dl/rainbow.${input}.tar.gz`
-  }
-}
+    tar: `https://rainbow.template/dl/rainbow.${input}.tar.gz`,
+  };
+};
 
-const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow } })
+const { source, dir } = await downloadRepo("rainbow:one", {
+  providers: { rainbow },
+});
 ```
 
 ### Custom Registry Providers
@@ -179,11 +181,15 @@ const { source, dir } = await downloadRepo('rainbow:one', { providers: { rainbow
 You can define additional [custom registry](#custom-registry) providers using `registryProvider` utility and register to `providers`.
 
 ```ts
-import { registryProvider } from 'giget'
+import { registryProvider } from "giget";
 
-const themes = registryProvider('https://raw.githubusercontent.com/unjs/giget/main/templates')
+const themes = registryProvider(
+  "https://raw.githubusercontent.com/unjs/giget/main/templates"
+);
 
-const { source, dir } = await downloadRepo('themes:test', { providers: { themes } })
+const { source, dir } = await downloadRepo("themes:test", {
+  providers: { themes },
+});
 ```
 
 ## Related projects
