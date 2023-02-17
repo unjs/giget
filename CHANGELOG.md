@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.1.1
+
+[compare changes](https://github.com/unjs/giget/compare/v1.1.0...v1.1.1)
+
+
+### 🩹 Fixes
+
+  - Normalize fetch headers ([#82](https://github.com/unjs/giget/pull/82))
+
+### 🏡 Chore
+
+  - Update deps ([62e0504](https://github.com/unjs/giget/commit/62e0504))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+
 ## v1.1.0
 
 [compare changes](https://github.com/unjs/giget/compare/v1.0.0...v1.1.0)
