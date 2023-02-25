@@ -26,4 +26,43 @@ describe("downloadTemplate", () => {
       downloadTemplate("gh:unjs/template", { dir: destinationDirectory })
     ).rejects.toThrow("already exists");
   });
+
+  it("clone bitbucket unjs/template", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-bitbucket");
+    const { dir } = await downloadTemplate("bitbucket:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(await existsSync(resolve(dir, "package.json")));
+  });
+
+  it("clone gitlab unjs/template", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-gitlab");
+    const { dir } = await downloadTemplate("gitlab:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(await existsSync(resolve(dir, "package.json")));
+  });
+
+  it("clone gitlab unjs/template", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-sourcehut");
+    const { dir } = await downloadTemplate("sourcehut:pi0/unjs-template", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(await existsSync(resolve(dir, "package.json")));
+  });
+
+  it("clone tar unjs/template", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-tar");
+    const { dir } = await downloadTemplate(
+      "tar:https://github.com/unjs/unstorage/archive/refs/tags/v0.6.0.tar.gz",
+      {
+        dir: destinationDirectory,
+        preferOffline: true,
+      }
+    );
+    expect(await existsSync(resolve(dir, "package.json")));
+  });
 });

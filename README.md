@@ -73,6 +73,9 @@ npx giget@latest bitbucket:unjs/template
 
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
+
+# Clone from custom registry using tar
+npx giget@latest tar:https://github.com/unjs/unstorage/archive/refs/tags/v0.6.0.tar.gz#name=unstorage
 ```
 
 ## Template Registry
@@ -129,10 +132,10 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 
 **Options:**
 
-- `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
+- `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`. For `tar` provider only format should be `tar:[url]#name=[name]` or simply `tar:[url]#[name]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
-  - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
+  - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut` or `tar`. The default is `github`.
   - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
   - `subdir`: (string) Directory of the repo to clone from. The default value is none.

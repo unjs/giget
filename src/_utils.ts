@@ -8,7 +8,7 @@ import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
 import createHttpsProxyAgent from "https-proxy-agent";
-import type { GitInfo } from "./types";
+import type { GitInfo, TarInfo } from "./types";
 
 export async function download(
   url: string,
@@ -53,6 +53,23 @@ export function parseGitURI(input: string): GitInfo {
     repo: m.repo,
     subdir: m.subdir || "/",
     ref: m.ref ? m.ref.slice(1) : "main",
+  };
+}
+
+const tarInputRegex =
+  /^(?<url>https?:\/\/[\w./-]+)(#(name=)?)?(?<name>[\w.-]+)?((#(version|v)=)(?<version>[\w.-]+))?/;
+
+export function parseTarURI(input: string): TarInfo {
+  const m = input.match(tarInputRegex)?.groups;
+
+  if (!m?.url) {
+    throw new Error(`Failed to parse tar url: ${input}`);
+  }
+
+  return <TarInfo>{
+    url: m.url,
+    name: m.name || "",
+    version: m.version || "",
   };
 }
 

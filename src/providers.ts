@@ -1,5 +1,5 @@
 import type { TemplateProvider } from "./types";
-import { parseGitURI } from "./_utils";
+import { parseGitURI, parseTarURI } from "./_utils";
 
 export const github: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
@@ -59,10 +59,25 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+export const tar: TemplateProvider = (input, options) => {
+  const parsed = parseTarURI(input);
+  return {
+    name: parsed.name,
+    version: parsed.version,
+    subdir: "/",
+    headers: {
+      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
+    url: parsed.url,
+    tar: parsed.url,
+  };
+};
+
 export const providers: Record<string, TemplateProvider> = {
   github,
   gh: github,
   gitlab,
   bitbucket,
   sourcehut,
+  tar,
 };

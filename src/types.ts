@@ -5,6 +5,12 @@ export interface GitInfo {
   ref: string;
 }
 
+export interface TarInfo {
+  url: string;
+  name: string;
+  version: string;
+}
+
 export interface TemplateInfo {
   name: string;
   tar: string;
