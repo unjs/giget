@@ -5,12 +5,25 @@ import { debug, sendFetch } from "./_utils";
 const DEFAULT_REGISTRY =
   "https://raw.githubusercontent.com/unjs/giget/main/templates";
 
+const protocolRegex = /^https?:\/\//;
+
 export const registryProvider = (
   registryEndpoint: string = DEFAULT_REGISTRY,
   options?: { auth?: string }
 ) => {
   options = options || {};
   return <TemplateProvider>(async (input) => {
+
+    // hack to allowd download of direct urls
+    if(protocolRegex.test(input)) {
+      return {
+        name: input.substring(input.lastIndexOf("/") + 1).replace(/\.tar\.gz$|\.tar$|\.zip$/i, ""),
+        tar: input,
+        url:input
+      }
+    }
+
+    
     const start = Date.now();
     const registryURL = `${registryEndpoint}/${input}.json`;
 

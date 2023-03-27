@@ -22,6 +22,7 @@ export interface DownloadTemplateOptions {
 }
 
 const sourceProtoRe = /^([\w-.]+):/;
+const httpProtocolRegex = /^https?:\/\//;
 
 export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
   dir: string;
@@ -48,9 +49,10 @@ export async function downloadTemplate(
     options.provider || (registryProvider ? "registry" : "github");
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
-  if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1];
-    source = input.slice(sourceProvierMatch[0].length);
+  const httpProtocolMatch = input.match(httpProtocolRegex)
+  if (!httpProtocolMatch && sourceProvierMatch) {
+      providerName = sourceProvierMatch[1];
+      source = input.slice(sourceProvierMatch[0].length);
   }
 
   const provider =
