@@ -3,16 +3,16 @@ import { parseGitURI } from "./_utils";
 
 export const github: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
-  const github = process.env.GIGET_GITHUB_URL || "https://github.com";
+  const github = process.env.GIGET_GITHUB_URL || "https://api.github.com";
   return {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      authorization: options.auth ? `token ${options.auth}` : undefined,
     },
     url: `${github}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${github}/${parsed.repo}/archive/${parsed.ref}.tar.gz`,
+    tar: `${github}/repos/${parsed.repo}/tarball/${parsed.ref}`,
   };
 };
 
