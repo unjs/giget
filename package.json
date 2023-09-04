@@ -36,7 +36,7 @@
   "dependencies": {
     "colorette": "^2.0.19",
     "defu": "^6.1.2",
-    "https-proxy-agent": "^5.0.1",
+    "https-proxy-agent": "^7.0.2",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.0.2",
     "pathe": "^1.1.0",
