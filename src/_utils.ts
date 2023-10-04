@@ -13,11 +13,11 @@ import type { GitInfo } from "./types";
 export async function download(
   url: string,
   filePath: string,
-  options: { headers?: Record<string, string> } = {}
+  options: { headers?: Record<string, string> } = {},
 ) {
   const infoPath = filePath + ".json";
   const info: { etag?: string } = JSON.parse(
-    await readFile(infoPath, "utf8").catch(() => "{}")
+    await readFile(infoPath, "utf8").catch(() => "{}"),
   );
   // eslint-disable-next-line unicorn/no-useless-undefined
   const headResponse = await sendFetch(url, {
@@ -34,7 +34,7 @@ export async function download(
   const response = await sendFetch(url, { headers: options.headers });
   if (response.status >= 400) {
     throw new Error(
-      `Failed to download ${url}: ${response.status} ${response.statusText}`
+      `Failed to download ${url}: ${response.status} ${response.statusText}`,
     );
   }
 
@@ -70,7 +70,7 @@ interface InternalFetchOptions extends Exclude<RequestInit, "headers"> {
 
 export async function sendFetch(
   url: string,
-  options: InternalFetchOptions = {}
+  options: InternalFetchOptions = {},
 ) {
   if (!options.agent) {
     const proxyEnv =
@@ -123,7 +123,7 @@ export function startShell(cwd: string) {
   cwd = resolve(cwd);
   const shell = currentShell();
   console.info(
-    `(experimental) Opening shell in ${relative(process.cwd(), cwd)}...`
+    `(experimental) Opening shell in ${relative(process.cwd(), cwd)}...`,
   );
   spawnSync(shell, [], {
     cwd,

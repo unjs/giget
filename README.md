@@ -184,7 +184,7 @@ You can define additional [custom registry](#custom-registry) providers using `r
 import { registryProvider } from "giget";
 
 const themes = registryProvider(
-  "https://raw.githubusercontent.com/unjs/giget/main/templates"
+  "https://raw.githubusercontent.com/unjs/giget/main/templates",
 );
 
 const { source, dir } = await downloadRepo("themes:test", {

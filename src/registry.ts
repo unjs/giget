@@ -7,7 +7,7 @@ const DEFAULT_REGISTRY =
 
 export const registryProvider = (
   registryEndpoint: string = DEFAULT_REGISTRY,
-  options?: { auth?: string }
+  options?: { auth?: string },
 ) => {
   options = options || {};
   return <TemplateProvider>(async (input) => {
@@ -21,19 +21,19 @@ export const registryProvider = (
     });
     if (result.status >= 400) {
       throw new Error(
-        `Failed to download ${input} template info from ${registryURL}: ${result.status} ${result.statusText}`
+        `Failed to download ${input} template info from ${registryURL}: ${result.status} ${result.statusText}`,
       );
     }
     const info = (await result.json()) as TemplateInfo;
     if (!info.tar || !info.name) {
       throw new Error(
-        `Invalid template info from ${registryURL}. name or tar fields are missing!`
+        `Invalid template info from ${registryURL}. name or tar fields are missing!`,
       );
     }
     debug(
       `Fetched ${input} template info from ${registryURL} in ${
         Date.now() - start
-      }ms`
+      }ms`,
     );
     return info;
   });
