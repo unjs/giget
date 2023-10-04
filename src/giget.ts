@@ -30,20 +30,20 @@ export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
 
 export async function downloadTemplate(
   input: string,
-  options: DownloadTemplateOptions = {}
+  options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
   options = defu(
     {
       registry: process.env.GIGET_REGISTRY,
       auth: process.env.GIGET_AUTH,
     },
-    options
+    options,
   );
 
   const registry =
-    options.registry !== false
-      ? registryProvider(options.registry, { auth: options.auth })
-      : undefined;
+    options.registry === false
+      ? undefined
+      : registryProvider(options.registry, { auth: options.auth });
   let providerName: string =
     options.provider || (registryProvider ? "registry" : "github");
   let source: string = input;
@@ -62,7 +62,7 @@ export async function downloadTemplate(
     .then(() => provider(source, { auth: options.auth }))
     .catch((error) => {
       throw new Error(
-        `Failed to download template from ${providerName}: ${error.message}`
+        `Failed to download template from ${providerName}: ${error.message}`,
       );
     });
 
@@ -70,7 +70,7 @@ export async function downloadTemplate(
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
   template.defaultDir = (template.defaultDir || template.name).replace(
     /[^\da-z-]/gi,
-    "-"
+    "-",
   );
 
   const cwd = resolve(options.cwd || ".");
@@ -90,11 +90,11 @@ export async function downloadTemplate(
   const temporaryDirectory = resolve(
     cacheDirectory(),
     options.provider,
-    template.name
+    template.name,
   );
   const tarPath = resolve(
     temporaryDirectory,
-    (template.version || template.name) + ".tar.gz"
+    (template.version || template.name) + ".tar.gz",
   );
 
   if (options.preferOffline && existsSync(tarPath)) {
@@ -121,7 +121,7 @@ export async function downloadTemplate(
 
   if (!existsSync(tarPath)) {
     throw new Error(
-      `Tarball not found: ${tarPath} (offline: ${options.offline})`
+      `Tarball not found: ${tarPath} (offline: ${options.offline})`,
     );
   }
 
