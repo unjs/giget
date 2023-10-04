@@ -45,7 +45,7 @@ export async function downloadTemplate(
       ? undefined
       : registryProvider(options.registry, { auth: options.auth });
   let providerName: string =
-    options.provider || (registryProvider ? "registry" : "github");
+    options.provider || (registry ? "registry" : "github");
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
   if (sourceProvierMatch) {
@@ -65,6 +65,10 @@ export async function downloadTemplate(
         `Failed to download template from ${providerName}: ${error.message}`,
       );
     });
+
+  if (!template) {
+    throw new Error(`Failed to resolve template from ${providerName}`);
+  }
 
   // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
@@ -89,7 +93,7 @@ export async function downloadTemplate(
 
   const temporaryDirectory = resolve(
     cacheDirectory(),
-    options.provider,
+    providerName,
     template.name,
   );
   const tarPath = resolve(
@@ -105,7 +109,7 @@ export async function downloadTemplate(
     const s = Date.now();
     await download(template.tar, tarPath, {
       headers: {
-        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
         ...normalizeHeaders(template.headers),
       },
     }).catch((error) => {

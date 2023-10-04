@@ -12,7 +12,7 @@ export interface TemplateInfo {
   subdir?: string;
   url?: string;
   defaultDir?: string;
-  headers?: Record<string, string>;
+  headers?: Record<string, string | undefined>;
 
   // Added by giget
   source?: never;
