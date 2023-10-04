@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.1.3
+
+[compare changes](https://github.com/unjs/giget/compare/v1.1.2...v1.1.3)
+
+### 🩹 Fixes
+
+- **github:** Use `api.github.com` for private repository support ([#93](https://github.com/unjs/giget/pull/93))
+- Allow `/` in git refs ([#102](https://github.com/unjs/giget/pull/102))
+
+### 💅 Refactors
+
+- Apply strict typescript checks + fixes ([9704865](https://github.com/unjs/giget/commit/9704865))
+- Lazy import `https-proxy-agent` ([8372e55](https://github.com/unjs/giget/commit/8372e55))
+
+### 🏡 Chore
+
+- Update dev dependencies ([f94bb77](https://github.com/unjs/giget/commit/f94bb77))
+- Update all dependencies ([082f95b](https://github.com/unjs/giget/commit/082f95b))
+- Add autofix ci ([adc0ced](https://github.com/unjs/giget/commit/adc0ced))
+- Apply automated fixes ([ae68871](https://github.com/unjs/giget/commit/ae68871))
+- Add `.prettierrc` ([5ea5d96](https://github.com/unjs/giget/commit/5ea5d96))
+
+### 🎨 Styles
+
+- Format with prettier v3 ([9fdb553](https://github.com/unjs/giget/commit/9fdb553))
+
+### 🤖 CI
+
+- Test with node 18 ([9f8c218](https://github.com/unjs/giget/commit/9f8c218))
+
+### ❤️ Contributors
+
+- Nick-genesis 
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Ishan Jain <contact@ishanjain.me>
+
 ## v1.1.2
 
 [compare changes](https://github.com/unjs/giget/compare/v1.1.1...v1.1.2)
