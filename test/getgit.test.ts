@@ -23,7 +23,7 @@ describe("downloadTemplate", () => {
     await mkdir(destinationDirectory).catch(() => {});
     await writeFile(resolve(destinationDirectory, "test.txt"), "test");
     await expect(
-      downloadTemplate("gh:unjs/template", { dir: destinationDirectory })
+      downloadTemplate("gh:unjs/template", { dir: destinationDirectory }),
     ).rejects.toThrow("already exists");
   });
 });

@@ -25,7 +25,7 @@ async function main() {
 
   if (!input || arguments_.help || arguments_.h) {
     console.error(
-      "Usage: npx giget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]"
+      "Usage: npx giget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]",
     );
     process.exit(1);
   }
@@ -46,8 +46,8 @@ async function main() {
 
   console.log(
     `✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(
-      relative(process.cwd(), r.dir)
-    )}\n`
+      relative(process.cwd(), r.dir),
+    )}\n`,
   );
 
   if (arguments_.shell) {

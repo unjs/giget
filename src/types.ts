@@ -12,7 +12,7 @@ export interface TemplateInfo {
   subdir?: string;
   url?: string;
   defaultDir?: string;
-  headers?: Record<string, string>;
+  headers?: Record<string, string | undefined>;
 
   // Added by giget
   source?: never;
@@ -23,5 +23,5 @@ export interface TemplateInfo {
 
 export type TemplateProvider = (
   input: string,
-  options: { auth?: string }
+  options: { auth?: string },
 ) => TemplateInfo | Promise<TemplateInfo> | null;

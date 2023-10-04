@@ -30,22 +30,22 @@ export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
 
 export async function downloadTemplate(
   input: string,
-  options: DownloadTemplateOptions = {}
+  options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
   options = defu(
     {
       registry: process.env.GIGET_REGISTRY,
       auth: process.env.GIGET_AUTH,
     },
-    options
+    options,
   );
 
   const registry =
-    options.registry !== false
-      ? registryProvider(options.registry, { auth: options.auth })
-      : undefined;
+    options.registry === false
+      ? undefined
+      : registryProvider(options.registry, { auth: options.auth });
   let providerName: string =
-    options.provider || (registryProvider ? "registry" : "github");
+    options.provider || (registry ? "registry" : "github");
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
   if (sourceProvierMatch) {
@@ -62,15 +62,19 @@ export async function downloadTemplate(
     .then(() => provider(source, { auth: options.auth }))
     .catch((error) => {
       throw new Error(
-        `Failed to download template from ${providerName}: ${error.message}`
+        `Failed to download template from ${providerName}: ${error.message}`,
       );
     });
+
+  if (!template) {
+    throw new Error(`Failed to resolve template from ${providerName}`);
+  }
 
   // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
   template.defaultDir = (template.defaultDir || template.name).replace(
     /[^\da-z-]/gi,
-    "-"
+    "-",
   );
 
   const cwd = resolve(options.cwd || ".");
@@ -89,12 +93,12 @@ export async function downloadTemplate(
 
   const temporaryDirectory = resolve(
     cacheDirectory(),
-    options.provider,
-    template.name
+    providerName,
+    template.name,
   );
   const tarPath = resolve(
     temporaryDirectory,
-    (template.version || template.name) + ".tar.gz"
+    (template.version || template.name) + ".tar.gz",
   );
 
   if (options.preferOffline && existsSync(tarPath)) {
@@ -105,7 +109,7 @@ export async function downloadTemplate(
     const s = Date.now();
     await download(template.tar, tarPath, {
       headers: {
-        authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
         ...normalizeHeaders(template.headers),
       },
     }).catch((error) => {
@@ -121,7 +125,7 @@ export async function downloadTemplate(
 
   if (!existsSync(tarPath)) {
     throw new Error(
-      `Tarball not found: ${tarPath} (offline: ${options.offline})`
+      `Tarball not found: ${tarPath} (offline: ${options.offline})`,
     );
   }
 
