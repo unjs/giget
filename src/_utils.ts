@@ -7,13 +7,13 @@ import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
-import createHttpsProxyAgent from "https-proxy-agent";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import type { GitInfo } from "./types";
 
 export async function download(
   url: string,
   filePath: string,
-  options: { headers?: Record<string, string> } = {},
+  options: { headers?: Record<string, string | undefined> } = {},
 ) {
   const infoPath = filePath + ".json";
   const info: { etag?: string } = JSON.parse(
@@ -29,7 +29,9 @@ export async function download(
     // Already downloaded
     return;
   }
-  info.etag = etag;
+  if (typeof etag === "string") {
+    info.etag = etag;
+  }
 
   const response = await sendFetch(url, { headers: options.headers });
   if (response.status >= 400) {
@@ -48,7 +50,7 @@ const inputRegex =
   /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w.-]+)?/;
 
 export function parseGitURI(input: string): GitInfo {
-  const m = input.match(inputRegex)?.groups;
+  const m = input.match(inputRegex)?.groups || {};
   return <GitInfo>{
     repo: m.repo,
     subdir: m.subdir || "/",
@@ -56,15 +58,15 @@ export function parseGitURI(input: string): GitInfo {
   };
 }
 
-export function debug(...arguments_) {
+export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
-    console.debug("[giget]", ...arguments_);
+    console.debug("[giget]", ...args);
   }
 }
 
 // eslint-disable-next-line no-undef
-interface InternalFetchOptions extends Exclude<RequestInit, "headers"> {
-  headers?: Record<string, string>;
+interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
+  headers?: Record<string, string | undefined>;
   agent?: Agent;
 }
 
@@ -79,15 +81,14 @@ export async function sendFetch(
       process.env.HTTP_PROXY ||
       process.env.http_proxy;
     if (proxyEnv) {
-      options.agent = createHttpsProxyAgent(proxyEnv);
+      options.agent = new HttpsProxyAgent(proxyEnv);
     }
   }
 
-  if (options?.headers) {
-    options.headers = normalizeHeaders(options.headers);
-  }
-
-  return await fetch(url, options);
+  return await fetch(url, {
+    ...options,
+    headers: normalizeHeaders(options.headers),
+  });
 }
 
 export function cacheDirectory() {
@@ -96,7 +97,9 @@ export function cacheDirectory() {
     : resolve(homedir(), ".cache/giget");
 }
 
-export function normalizeHeaders(headers: Record<string, string> = {}) {
+export function normalizeHeaders(
+  headers: Record<string, string | undefined> = {},
+) {
   const normalized: Record<string, string> = {};
   for (const [key, value] of Object.entries(headers)) {
     if (!value) {

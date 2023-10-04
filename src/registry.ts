@@ -7,9 +7,8 @@ const DEFAULT_REGISTRY =
 
 export const registryProvider = (
   registryEndpoint: string = DEFAULT_REGISTRY,
-  options?: { auth?: string },
+  options: { auth?: string } = {},
 ) => {
-  options = options || {};
   return <TemplateProvider>(async (input) => {
     const start = Date.now();
     const registryURL = `${registryEndpoint}/${input}.json`;
