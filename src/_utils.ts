@@ -7,7 +7,6 @@ import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
-import { HttpsProxyAgent } from "https-proxy-agent";
 import type { GitInfo } from "./types";
 
 export async function download(
@@ -81,6 +80,7 @@ export async function sendFetch(
       process.env.HTTP_PROXY ||
       process.env.http_proxy;
     if (proxyEnv) {
+      const HttpsProxyAgent = await import("https-proxy-agent").then(r => r.HttpsProxyAgent || r.default);
       options.agent = new HttpsProxyAgent(proxyEnv);
     }
   }
