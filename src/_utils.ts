@@ -46,7 +46,7 @@ export async function download(
 }
 
 const inputRegex =
-  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w.-]+)?/;
+  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./-]+)?/;
 
 export function parseGitURI(input: string): GitInfo {
   const m = input.match(inputRegex)?.groups || {};
