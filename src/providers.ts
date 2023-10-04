@@ -14,10 +14,12 @@ export const github: TemplateProvider = (input, options) => {
     subdir: parsed.subdir,
     headers: {
       Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28'
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
     },
-    url: `${githubAPIURL.replace('api.github.com', 'github.com')}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
+    url: `${githubAPIURL.replace("api.github.com", "github.com")}/${
+      parsed.repo
+    }/tree/${parsed.ref}${parsed.subdir}`,
     tar: `${githubAPIURL}/repos/${parsed.repo}/tarball/${parsed.ref}`,
   };
 };
