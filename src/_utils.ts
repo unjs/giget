@@ -80,7 +80,9 @@ export async function sendFetch(
       process.env.HTTP_PROXY ||
       process.env.http_proxy;
     if (proxyEnv) {
-      const HttpsProxyAgent = await import("https-proxy-agent").then(r => r.HttpsProxyAgent || r.default);
+      const HttpsProxyAgent = await import("https-proxy-agent").then(
+        (r) => r.HttpsProxyAgent || r.default,
+      );
       options.agent = new HttpsProxyAgent(proxyEnv);
     }
   }
