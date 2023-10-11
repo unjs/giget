@@ -10,9 +10,9 @@ const mainCommand = defineCommand({
   subCommands: {
     // eslint-disable-next-line unicorn/prefer-top-level-await
     copy: import("./commands/copy").then((m) => m.default),
-  }
-})
+  },
+});
 
 export function runMain() {
-  return _runMain(mainCommand)
+  return _runMain(mainCommand);
 }
