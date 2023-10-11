@@ -7,25 +7,31 @@
   "sideEffects": false,
   "type": "module",
   "bin": {
-    "giget": "./dist/cli.mjs"
+    "giget": "./bin/index.mjs"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "main": "./dist/index.cjs",
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
     "build": "unbuild",
+    "build:stub": "unbuild --stub",
     "dev": "vitest dev",
-    "giget": "jiti ./src/cli.ts",
+    "start": "node ./bin/index.mjs",
     "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --ext .ts,.js,.mjs,.cjs . --fix && prettier -w src test",
     "prepack": "unbuild",
@@ -34,12 +40,15 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
+    "citty": "^0.1.4",
     "colorette": "^2.0.20",
+    "consola": "^3.2.3",
     "defu": "^6.1.2",
     "https-proxy-agent": "^7.0.2",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.4.0",
     "pathe": "^1.1.1",
+    "rc9": "^2.1.1",
     "tar": "^6.2.0"
   },
   "devDependencies": {
