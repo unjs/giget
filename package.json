@@ -29,7 +29,6 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "build:stub": "unbuild --stub",
     "dev": "vitest dev",
     "giget": "jiti ./src/cli.ts",
     "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
