@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 import { defineCommand } from "citty";
 import { consola } from "consola";
-import { cyan } from "colorette";
+import { colorize } from "consola/utils";
 import { downloadTemplate } from "../giget";
 import { startShell } from "../_utils";
 
@@ -67,9 +67,10 @@ export default defineCommand({
     });
 
     consola.log(
-      `✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(
-        relative(process.cwd(), r.dir),
-      )}\n`,
+      `✨ Successfully cloned ${colorize(
+        "cyan",
+        r.name || r.url,
+      )} to ${colorize("cyan", relative(process.cwd(), r.dir))}\n`,
     );
 
     if (args.shell) {

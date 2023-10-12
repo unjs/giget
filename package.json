@@ -7,7 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "bin": {
-    "giget": "./bin/index.mjs"
+    "giget": "./dist/cli.mjs"
   },
   "exports": {
     ".": {
@@ -24,14 +24,13 @@
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs",
   "files": [
-    "bin",
     "dist"
   ],
   "scripts": {
     "build": "unbuild",
     "build:stub": "unbuild --stub",
     "dev": "vitest dev",
-    "start": "node ./bin/index.mjs",
+    "giget": "jiti ./src/cli.ts",
     "lint": "eslint --ext .ts,.js,.mjs,.cjs . && prettier -c src test",
     "lint:fix": "eslint --ext .ts,.js,.mjs,.cjs . --fix && prettier -w src test",
     "prepack": "unbuild",
@@ -41,14 +40,12 @@
   },
   "dependencies": {
     "citty": "^0.1.4",
-    "colorette": "^2.0.20",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
     "https-proxy-agent": "^7.0.2",
     "mri": "^1.2.0",
     "node-fetch-native": "^1.4.0",
     "pathe": "^1.1.1",
-    "rc9": "^2.1.1",
     "tar": "^6.2.0"
   },
   "devDependencies": {

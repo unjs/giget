@@ -1,4 +1,4 @@
-import { defineCommand, runMain as _runMain } from "citty";
+import { defineCommand, runMain } from "citty";
 import pkg from "../package.json" assert { type: "json" };
 
 const mainCommand = defineCommand({
@@ -13,6 +13,4 @@ const mainCommand = defineCommand({
   },
 });
 
-export function runMain() {
-  return _runMain(mainCommand);
-}
+runMain(mainCommand);
