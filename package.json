@@ -43,11 +43,11 @@
     "tar": "^6.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.1",
+    "@types/node": "^20.10.3",
     "@types/tar": "^6.1.10",
     "@vitest/coverage-v8": "^0.34.6",
     "changelogen": "^0.5.5",
-    "eslint": "^8.54.0",
+    "eslint": "^8.55.0",
     "eslint-config-unjs": "^0.2.1",
     "jiti": "^1.21.0",
     "prettier": "^3.1.0",
