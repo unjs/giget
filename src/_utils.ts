@@ -90,6 +90,7 @@ export async function sendFetch(
 
   const res = await fetch(url, {
     ...options,
+    mode: "same-origin",
     headers: normalizeHeaders(options.headers),
   });
 
