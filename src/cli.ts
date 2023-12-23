@@ -1,64 +1,86 @@
-#!/usr/bin/env node
 import { relative } from "node:path";
-import mri from "mri";
-import { cyan } from "colorette";
+import { defineCommand, runMain } from "citty";
+import { consola } from "consola";
+import pkg from "../package.json" assert { type: "json" };
 import { downloadTemplate } from "./giget";
 import { startShell } from "./_utils";
 
-async function main() {
-  const arguments_ = mri(process.argv.slice(2), {
-    boolean: [
-      "help",
-      "force",
-      "force-clean",
-      "offline",
-      "prefer-offline",
-      "shell",
-      "verbose",
-    ],
-    string: ["registry", "cwd", "auth"],
-  });
+const mainCommand = defineCommand({
+  meta: {
+    name: pkg.name,
+    version: pkg.version,
+    description: pkg.description,
+  },
+  args: {
+    // TODO: Make it `-t` in the next major version
+    template: {
+      type: "positional",
+      description:
+        "Template name or a a URI describing provider, repository, subdir, and branch/ref",
+    },
+    dir: {
+      type: "positional",
+      description: "A relative or absolute path where to extract the template",
+      required: false,
+    },
+    auth: {
+      type: "string",
+      description:
+        "Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable)",
+    },
+    cwd: {
+      type: "string",
+      description:
+        "Set current working directory to resolve dirs relative to it",
+    },
+    force: {
+      type: "boolean",
+      description: "Clone to existing directory even if exists",
+    },
+    forceClean: {
+      type: "boolean",
+      description:
+        "Remove any existing directory or file recusively before cloning",
+    },
+    offline: {
+      type: "boolean",
+      description: "o not attempt to download and use cached version",
+    },
+    preferOffline: {
+      type: "boolean",
+      description: "Use cache if exists otherwise try to download",
+    },
+    shell: {
+      type: "boolean",
+      description: "Open a new shell with current working ",
+    },
+    verbose: {
+      type: "boolean",
+      description: "Show verbose debugging info",
+    },
+  },
+  run: async ({ args }) => {
+    if (args.verbose) {
+      process.env.DEBUG = process.env.DEBUG || "true";
+    }
 
-  const input = arguments_._[0];
-  // eslint-disable-next-line unicorn/prevent-abbreviations
-  const dir = arguments_._[1];
+    const r = await downloadTemplate(args.template, {
+      dir: args.dir,
+      force: args.force,
+      forceClean: args.forceClean,
+      offline: args.offline,
+      preferOffline: args.preferOffline,
+      auth: args.auth,
+    });
 
-  if (!input || arguments_.help || arguments_.h) {
-    console.error(
-      "Usage: npx giget@latest <input> [<dir>] [--force] [--force-clean] [--offline] [--prefer-offline] [--shell] [--registry]  [--no-registry] [--verbose] [--cwd] [--auth]",
-    );
-    process.exit(1);
-  }
+    const _from = r.name || r.url;
+    const _to = relative(process.cwd(), r.dir);
+    consola.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
 
-  if (arguments_.verbose) {
-    process.env.DEBUG = process.env.DEBUG || "true";
-  }
-
-  const r = await downloadTemplate(input, {
-    dir,
-    force: arguments_.force,
-    forceClean: arguments_["force-clean"],
-    offline: arguments_.offline,
-    registry: arguments_.registry,
-    cwd: arguments_.cwd,
-    auth: arguments_.auth,
-  });
-
-  console.log(
-    `✨ Successfully cloned ${cyan(r.name || r.url)} to ${cyan(
-      relative(process.cwd(), r.dir),
-    )}\n`,
-  );
-
-  if (arguments_.shell) {
-    startShell(r.dir);
-  }
-
-  process.exit(0);
-}
-
-// eslint-disable-next-line unicorn/prefer-top-level-await
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+    if (args.shell) {
+      startShell(r.dir);
+    }
+  },
 });
+
+runMain(mainCommand);
