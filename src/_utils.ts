@@ -67,6 +67,7 @@ export function debug(...args: unknown[]) {
 interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
   headers?: Record<string, string | undefined>;
   agent?: Agent;
+  validateStatus?: boolean;
 }
 
 export async function sendFetch(
@@ -87,10 +88,16 @@ export async function sendFetch(
     }
   }
 
-  return await fetch(url, {
+  const res = await fetch(url, {
     ...options,
     headers: normalizeHeaders(options.headers),
   });
+
+  if (options.validateStatus && res.status >= 400) {
+    throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+  }
+
+  return res;
 }
 
 export function cacheDirectory() {
