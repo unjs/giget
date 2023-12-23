@@ -74,7 +74,10 @@ const mainCommand = defineCommand({
     });
 
     const _from = r.name || r.url;
-    const _to = relative(process.cwd(), r.dir);
+    const _to =
+      process.cwd() === r.dir
+        ? "the current directory"
+        : relative(process.cwd(), r.dir);
     consola.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
 
     if (args.shell) {
