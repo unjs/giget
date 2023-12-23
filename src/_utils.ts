@@ -90,6 +90,8 @@ export async function sendFetch(
   const res = await fetch(url, {
     ...options,
     headers: normalizeHeaders(options.headers),
+  }).catch((error: any) => {
+    throw new Error(`Failed to download ${url}: ${error}`);
   });
 
   if (options.validateStatus && res.status >= 400) {
