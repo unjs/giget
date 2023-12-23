@@ -92,6 +92,7 @@ export const gitlab: TemplateProvider = (input, options) => {
     subdir: parsed.subdir,
     headers: {
       authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      // https://gitlab.com/gitlab-org/gitlab/-/commit/50c11f278d18fe1f3fb12eb595067216bb58ade2
       "sec-fetch-mode": "same-origin",
     },
     url: `${gitlab}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
