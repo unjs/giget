@@ -7,6 +7,7 @@ import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native";
+import { createProxy } from "node-fetch-native/proxy";
 import type { GitInfo } from "./types";
 
 export async function download(
@@ -74,19 +75,12 @@ export async function sendFetch(
   url: string,
   options: InternalFetchOptions = {},
 ) {
-  if (!options.agent) {
-    const proxyEnv =
-      process.env.HTTPS_PROXY ||
-      process.env.https_proxy ||
-      process.env.HTTP_PROXY ||
-      process.env.http_proxy;
-    if (proxyEnv) {
-      const HttpsProxyAgent = await import("https-proxy-agent").then(
-        (r) => r.HttpsProxyAgent || r.default,
-      );
-      options.agent = new HttpsProxyAgent(proxyEnv);
-    }
-  }
+  // Add proxy support
+  // https://github.com/unjs/node-fetch-native?tab=readme-ov-file#proxy-support
+  options = {
+    ...createProxy(),
+    ...options,
+  };
 
   // https://github.com/nodejs/undici/issues/1305
   if (options.headers?.["sec-fetch-mode"]) {
