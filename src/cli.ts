@@ -15,44 +15,48 @@ const mainCommand = defineCommand({
     // TODO: Make it `-t` in the next major version
     template: {
       type: "positional",
-      description: "Template name or URL",
+      description:
+        "Template name or a a URI describing provider, repository, subdir, and branch/ref",
     },
     dir: {
       type: "positional",
-      description: "Directory to copy the template to",
+      description: "A relative or absolute path where to extract the template",
       required: false,
     },
     auth: {
       type: "string",
-      description: "Authentication token for private templates",
+      description:
+        "Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable)",
     },
     cwd: {
       type: "string",
-      description: "Current working directory",
+      description:
+        "Set current working directory to resolve dirs relative to it",
     },
     force: {
       type: "boolean",
-      description: "Force copy even if the directory is not empty",
+      description: "Clone to existing directory even if exists",
     },
     forceClean: {
       type: "boolean",
-      description: "Force clean the directory before copying",
+      description:
+        "Remove any existing directory or file recusively before cloning",
     },
     offline: {
       type: "boolean",
-      description: "Force offline using local cache",
+      description: "o not attempt to download and use cached version",
     },
     preferOffline: {
       type: "boolean",
-      description: "Prefer offline using local cache if available",
+      description: "Use cache if exists otherwise try to download",
     },
     shell: {
       type: "boolean",
-      description: "Start a shell in the template directory",
+      description: "Open a new shell with current working ",
     },
     verbose: {
       type: "boolean",
-      description: "Enable verbose logging",
+      description: "Show verbose debugging info",
     },
   },
   run: async ({ args }) => {
