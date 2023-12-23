@@ -19,10 +19,7 @@ export const http: TemplateProvider = async (input, options) => {
       },
     });
     const _contentType = head.headers.get("content-type") || "";
-    if (
-      _contentType.includes("application/json") ||
-      _contentType.includes("text/plain") /* GitHub raw */
-    ) {
+    if (_contentType.includes("application/json")) {
       return (await _httpJSON(input, options)) as TemplateInfo;
     }
     const filename = head.headers
