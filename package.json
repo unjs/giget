@@ -6,19 +6,24 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "bin": {
-    "giget": "./dist/cli.mjs"
-  },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "require": "./dist/index.cjs"
+      }
     }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "giget": "./dist/cli.mjs"
+  },
   "files": [
     "dist"
   ],
