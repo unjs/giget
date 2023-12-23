@@ -73,6 +73,12 @@ npx giget@latest bitbucket:unjs/template
 
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
+
+# Clone from https URL (tarball)
+npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
+
+# Clone from https URL (JSON)
+npx giget@latest https://raw.githubusercontent.com/unjs/giget/main/templates/unjs.json
 ```
 
 ## Template Registry

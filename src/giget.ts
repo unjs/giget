@@ -44,13 +44,18 @@ export async function downloadTemplate(
     options.registry === false
       ? undefined
       : registryProvider(options.registry, { auth: options.auth });
+
   let providerName: string =
     options.provider || (registry ? "registry" : "github");
+
   let source: string = input;
   const sourceProvierMatch = input.match(sourceProtoRe);
   if (sourceProvierMatch) {
     providerName = sourceProvierMatch[1];
     source = input.slice(sourceProvierMatch[0].length);
+    if (providerName === "http" || providerName === "https") {
+      source = input;
+    }
   }
 
   const provider =
