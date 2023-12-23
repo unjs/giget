@@ -88,9 +88,13 @@ export async function sendFetch(
     }
   }
 
+  // https://github.com/nodejs/undici/issues/1305
+  if (options.headers?.["sec-fetch-mode"]) {
+    options.mode = options.headers["sec-fetch-mode"] as any;
+  }
+
   const res = await fetch(url, {
     ...options,
-    mode: "same-origin",
     headers: normalizeHeaders(options.headers),
   });
 
