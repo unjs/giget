@@ -54,6 +54,10 @@ const mainCommand = defineCommand({
       type: "boolean",
       description: "Open a new shell with current working ",
     },
+    install: {
+      type: "boolean",
+      description: "Install dependencies after cloning",
+    },
     verbose: {
       type: "boolean",
       description: "Show verbose debugging info",
@@ -71,6 +75,7 @@ const mainCommand = defineCommand({
       offline: args.offline,
       preferOffline: args.preferOffline,
       auth: args.auth,
+      install: args.install,
     });
 
     const _from = r.name || r.url;
