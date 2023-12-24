@@ -42,7 +42,7 @@
     "citty": "^0.1.5",
     "consola": "^3.2.3",
     "defu": "^6.1.3",
-    "node-fetch-native": "^1.5.1",
+    "node-fetch-native": "^1.6.1",
     "nypm": "^0.3.3",
     "ohash": "^1.1.3",
     "pathe": "^1.1.1",
