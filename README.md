@@ -1,4 +1,4 @@
-# ✨ giget
+# giget
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -9,23 +9,23 @@
 
 ## Features
 
-✔ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
 
-✔ Built-in and custom [template registry](#template-registry).
+✨ Built-in and custom [template registry](#template-registry).
 
-✔ Fast cloning using tarball gzip without depending on local `git` and `tar`.
+✨ Fast cloning using tarball gzip without depending on local `git` and `tar`.
 
-✔ Works online and offline with disk cache support.
+✨ Works online and offline with disk cache support.
 
-✔ Custom template provider support with programmatic usage.
+✨ Custom template provider support with programmatic usage.
 
-✔ Support extracting with a subdir.
+✨ Support extracting with a sub dir.
 
-✔ Authorization support to download private templates
+✨ Authorization support to download private templates
 
-✔ Optionally install dependencies after clone using [unjs/nypm](https://github.com/unjs/nypm)
+✨ Optionally install dependencies after clone using [unjs/nypm](https://github.com/unjs/nypm)
 
-✔ HTTP proxy support and native fetch via [unjs/node-fetch-native](https://github.com/unjs/node-fetch-native)
+✨ HTTP proxy support and native fetch via [unjs/node-fetch-native](https://github.com/unjs/node-fetch-native)
 
 ## Usage (CLI)
 
@@ -35,21 +35,21 @@ npx giget@latest <template> [<dir>] [...options]
 
 ### Arguments
 
-- **template**: Template name or a a URI describing provider, repository, subdir, and branch/ref. (See [Examples](#examples))
+- **template**: Template name or a URI describing provider, repository, sub dir, and branch/ref. (See [Examples](#examples))
 - **dir**: A relative or absolute path where to extract the template.
 
 ### Options
 
 - `--force`: Clone to existing directory even if exists.
-- `--offline`: Do not attempt to download and use cached version.
+- `--offline`: Do not attempt to download and use the cached version.
 - `--prefer-offline`: Use cache if exists otherwise try to download.
-- `--force-clean`: ⚠️ Remove any existing directory or file recusively before cloning.
-- `--shell`: ⚠️ Open a new shell with current working directory in cloned dir. (Experimental).
-- `--registry`: URL to a custom registry. (Can be overriden with `GIGET_REGISTRY` environment variable).
+- `--force-clean`: ⚠️ Remove any existing directory or file recursively before cloning.
+- `--shell`: ⚠️ Open a new shell with the current working directory in cloned dir. (Experimental).
+- `--registry`: URL to a custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
 - `--no-registry`: Disable registry lookup and functionality.
 - `--verbose`: Show verbose debugging info.
-- `--cwd`: Set current working directory to resolve dirs relative to it.
-- `--auth`: Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
+- `--cwd`: Set the current working directory to resolve dirs relative to it.
+- `--auth`: Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
 - `--install`: Install dependencies after cloning using [unjs/nypm](https://github.com/unjs/nypm).
 
 ### Examples
@@ -88,13 +88,13 @@ npx giget@latest https://raw.githubusercontent.com/unjs/giget/main/templates/unj
 
 ## Template Registry
 
-Giget has a built-in HTTP registry system for resolving templates. This way you can support template name shortcuts and meta-data. Default registry is served from [unjs/giget/templates](./templates/).
+Giget has a built-in HTTP registry system for resolving templates. This way you can support template name shortcuts and meta-data. The default registry is served from [unjs/giget/templates](./templates/).
 
-If you want to add your template to the built-in registry, just drop a PR to add it to the [./templates](./templates) directory. Slugs are added on first-come first-served basis but this might change in the future.
+If you want to add your template to the built-in registry, just drop a PR to add it to the [./templates](./templates) directory. Slugs are added on a first-come first-served basis but this might change in the future.
 
 ### Custom Registry
 
-A custom registry should provide an endpoint with dynamic path `/:template.json` that returns a JSON response with keys same as [custom providers](#custom-providers).
+A custom registry should provide an endpoint with the dynamic path `/:template.json` that returns a JSON response with keys the same as [custom providers](#custom-providers).
 
 - `name`: (required) Name of the template.
 - `tar` (required) Link to the tar download link.
@@ -103,7 +103,7 @@ A custom registry should provide an endpoint with dynamic path `/:template.json`
 - `subdir`: (optional) Directory inside the tar file.
 - `headers`: (optional) Custom headers to send while downloading template.
 
-Because of the simplicity, you can even use a GitHub repository as template registry but also you can build something more powerful by bringing your own API.
+Because of the simplicity, you can even use a GitHub repository as a template registry but also you can build something more powerful by bringing your own API.
 
 ## Usage (Programmatic)
 
@@ -144,17 +144,17 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
-  - `repo`: (string) Name of repository in format of `{username}/{reponame}`.
+  - `repo`: (string) Name of the repository in the format of `{username}/{reponame}`.
   - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
   - `subdir`: (string) Directory of the repo to clone from. The default value is none.
-  - `force`: (boolean) Extract to the exisiting dir even if already exsists.
-  - `forceClean`: (boolean) ⚠️ Clean ups any existing directory or file before cloning.
-  - `offline`: (boolean) Do not attempt to download and use cached version.
+  - `force`: (boolean) Extract to the existing dir even if already exists.
+  - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
+  - `offline`: (boolean) Do not attempt to download and use the cached version.
   - `preferOffline`: (boolean) Use cache if exists otherwise try to download.
   - `providers`: (object) A map from provider name to custom providers. Can be used to override built-ins too.
-  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overriden with `GIGET_REGISTRY` environment variable).
+  - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
-  - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
+  - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
 
 **Return value:**
 
@@ -163,11 +163,11 @@ The return value is a promise that resolves to the resolved template.
 - `dir`: (string) Path to extracted dir.
 - `source`: (string) Normalized version of the input source without provider.
 - [other provider template keys]
-  - `url`: (string) URL of repostiroy that can be opened in browser. Useful for logging.
+  - `url`: (string) URL of the repository that can be opened in the browser. Useful for logging.
 
 ## Custom Providers
 
-Using programmatic method, you can make your own custom template providers.
+Using the programmatic method, you can make your custom template providers.
 
 ```ts
 import type { TemplateProvider } from "giget";
@@ -205,7 +205,7 @@ const { source, dir } = await downloadRepo("themes:test", {
 
 ## Related projects
 
-Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance, supports custom template providers, auth and many more features out of the box.
+Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance and supports custom template providers, auth, and many more features out of the box.
 
 - https://github.com/samsonjs/gitter
 - https://github.com/tiged/tiged
