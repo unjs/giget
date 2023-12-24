@@ -2,7 +2,7 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![Github Actions][github-actions-src]][github-actions-href]
+[![bundle][bundle-src]][bundle-href]
 [![Codecov][codecov-src]][codecov-href]
 
 > Download templates and git repositories with pleasure!
@@ -224,11 +224,11 @@ Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/giget?style=flat-square
-[npm-version-href]: https://npmjs.com/package/giget
-[npm-downloads-src]: https://img.shields.io/npm/dm/giget?style=flat-square
-[npm-downloads-href]: https://npmjs.com/package/giget
-[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/giget/ci/main?style=flat-square
-[github-actions-href]: https://github.com/unjs/giget/actions?query=workflow%3Aci
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/giget/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/unjs/giget
+[npm-version-src]: https://img.shields.io/npm/v/packageName?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-version-href]: https://npmjs.com/package/packageName
+[npm-downloads-src]: https://img.shields.io/npm/dm/packageName?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-downloads-href]: https://npmjs.com/package/packageName
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/packageName/main?style=flat&colorA=18181B&colorB=F0DB4F
+[codecov-href]: https://codecov.io/gh/unjs/packageName
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/packageName?style=flat&colorA=18181B&colorB=F0DB4F
+[bundle-href]: https://bundlephobia.com/result?p=packageName
