@@ -25,6 +25,8 @@
 
 ✔ Optionally install dependencies after clone using [unjs/nypm](https://github.com/unjs/nypm)
 
+✔ HTTP proxy support and native fetch via [unjs/node-fetch-native](https://github.com/unjs/node-fetch-native)
+
 ## Usage (CLI)
 
 ```bash
