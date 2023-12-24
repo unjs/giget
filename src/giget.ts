@@ -3,6 +3,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
+import { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
@@ -19,6 +20,8 @@ export interface DownloadTemplateOptions {
   registry?: false | string;
   cwd?: string;
   auth?: string;
+  install?: boolean;
+  silent?: boolean;
 }
 
 const sourceProtoRe = /^([\w-.]+):/;
@@ -154,6 +157,14 @@ export async function downloadTemplate(
     },
   });
   debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`);
+
+  if (options.install) {
+    debug("Installing dependencies...");
+    await installDependencies({
+      cwd: extractPath,
+      silent: options.silent,
+    });
+  }
 
   return {
     ...template,

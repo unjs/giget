@@ -23,6 +23,8 @@
 
 ✔ Authorization support to download private templates
 
+✔ Optionally install dependencies after clone using [unjs/nypm](https://github.com/unjs/nypm)
+
 ## Usage (CLI)
 
 ```bash
@@ -46,6 +48,7 @@ npx giget@latest <template> [<dir>] [...options]
 - `--verbose`: Show verbose debugging info.
 - `--cwd`: Set current working directory to resolve dirs relative to it.
 - `--auth`: Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable).
+- `--install`: Install dependencies after cloning using [unjs/nypm](https://github.com/unjs/nypm).
 
 ### Examples
 
