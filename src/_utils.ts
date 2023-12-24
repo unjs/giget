@@ -83,7 +83,7 @@ export async function sendFetch(
     ...options,
     headers: normalizeHeaders(options.headers),
   }).catch((error: any) => {
-    throw new Error(`Failed to download ${url}: ${error}`);
+    throw new Error(`Failed to download ${url}: ${error}`, { cause: error });
   });
 
   if (options.validateStatus && res.status >= 400) {
