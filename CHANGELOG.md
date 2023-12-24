@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.0
+
+[compare changes](https://github.com/unjs/giget/compare/v1.1.3...v1.2.0)
+
+### 🚀 Enhancements
+
+- Support cloning from http(s) inputs ([#129](https://github.com/unjs/giget/pull/129))
+- Support proxy for node.js with native fetch ([#133](https://github.com/unjs/giget/pull/133))
+- Support installing dependencies ([#134](https://github.com/unjs/giget/pull/134))
+
+### 🩹 Fixes
+
+- **http:** Remove `text/plain` check for content type ([1945818](https://github.com/unjs/giget/commit/1945818))
+- **gitlab:** Workaround hotlinking  protection (406 Not Acceptable) ([#123](https://github.com/unjs/giget/pull/123))
+- **cli:** Display the current directory when cloning into current dir ([#132](https://github.com/unjs/giget/pull/132))
+- Add url to undici's `fetch failed` error ([6e2455a](https://github.com/unjs/giget/commit/6e2455a))
+- Create dst dir only after source successfully downloaded ([#119](https://github.com/unjs/giget/pull/119))
+
+### 💅 Refactors
+
+- Use citty for cli ([#113](https://github.com/unjs/giget/pull/113))
+- Use `node-fetch-native/proxy` ([efa4f7a](https://github.com/unjs/giget/commit/efa4f7a))
+- Add error cause for sendFetch ([174bf8d](https://github.com/unjs/giget/commit/174bf8d))
+
+### 📖 Documentation
+
+- Add more info about auth ([ab28a9f](https://github.com/unjs/giget/commit/ab28a9f))
+
+### 📦 Build
+
+- Update types exports ([150c1fe](https://github.com/unjs/giget/commit/150c1fe))
+
+### 🏡 Chore
+
+- **release:** V1.1.3 ([46c34ac](https://github.com/unjs/giget/commit/46c34ac))
+- Update lockfile ([ead082c](https://github.com/unjs/giget/commit/ead082c))
+- Simplify exports ([03053bd](https://github.com/unjs/giget/commit/03053bd))
+- Update badges ([0a43d81](https://github.com/unjs/giget/commit/0a43d81))
+- Add http proxy to the docs ([cde2cb8](https://github.com/unjs/giget/commit/cde2cb8))
+- Update readme ([4fbc0cf](https://github.com/unjs/giget/commit/4fbc0cf))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Uncenter 
+- Andreymart-test 
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+
 ## v1.1.3
 
 [compare changes](https://github.com/unjs/giget/compare/v1.1.2...v1.1.3)
