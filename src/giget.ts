@@ -85,20 +85,7 @@ export async function downloadTemplate(
     "-",
   );
 
-  const cwd = resolve(options.cwd || ".");
-  const extractPath = resolve(cwd, options.dir || template.defaultDir);
-  if (options.forceClean) {
-    await rm(extractPath, { recursive: true, force: true });
-  }
-  if (
-    !options.force &&
-    existsSync(extractPath) &&
-    readdirSync(extractPath).length > 0
-  ) {
-    throw new Error(`Destination ${extractPath} already exists.`);
-  }
-  await mkdir(extractPath, { recursive: true });
-
+  // Download template source
   const temporaryDirectory = resolve(
     cacheDirectory(),
     providerName,
@@ -136,6 +123,21 @@ export async function downloadTemplate(
       `Tarball not found: ${tarPath} (offline: ${options.offline})`,
     );
   }
+
+  // Extract template
+  const cwd = resolve(options.cwd || ".");
+  const extractPath = resolve(cwd, options.dir || template.defaultDir);
+  if (options.forceClean) {
+    await rm(extractPath, { recursive: true, force: true });
+  }
+  if (
+    !options.force &&
+    existsSync(extractPath) &&
+    readdirSync(extractPath).length > 0
+  ) {
+    throw new Error(`Destination ${extractPath} already exists.`);
+  }
+  await mkdir(extractPath, { recursive: true });
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
