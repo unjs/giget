@@ -203,6 +203,12 @@ const { source, dir } = await downloadRepo("themes:test", {
 });
 ```
 
+## Providing token for private repositories
+
+For private repositories and sources, you might need a token. In order to provide it, using CLI, you can use `--auth`, using programmatic API using `auth` option and in both modes also it is possible to use `GIGET_AUTH` environment variable to set it. The value will be set in `Authorization: Bearer ...` header by default.
+
+**Note:** For github private repository access with Fine-grained access tokens, you need to give **Contents** and **Metadata** repository permissions.
+
 ## Related projects
 
 Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance and supports custom template providers, auth, and many more features out of the box.
