@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.1
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.0...v1.2.1)
+
+### 🩹 Fixes
+
+- **cli:** Add missing shebang ([#135](https://github.com/unjs/giget/pull/135))
+
+### 🏡 Chore
+
+- Update badge urls ([d612198](https://github.com/unjs/giget/commit/d612198))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.2.0
 
 [compare changes](https://github.com/unjs/giget/compare/v1.1.3...v1.2.0)
