@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { relative } from "node:path";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
