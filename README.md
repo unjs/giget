@@ -2,7 +2,6 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![bundle][bundle-src]][bundle-href]
 [![Codecov][codecov-src]][codecov-href]
 
 > Download templates and git repositories with pleasure!
@@ -238,5 +237,3 @@ Published under [MIT License](./LICENSE).
 [npm-downloads-href]: https://npmjs.com/package/giget
 [codecov-src]: https://img.shields.io/codecov/c/gh/unjs/giget/main?style=flat&colorA=18181B&colorB=F0DB4F
 [codecov-href]: https://codecov.io/gh/unjs/giget
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/giget?style=flat&colorA=18181B&colorB=F0DB4F
-[bundle-href]: https://bundlephobia.com/result?p=giget
