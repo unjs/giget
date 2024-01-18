@@ -143,9 +143,6 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
-  - `repo`: (string) Name of the repository in the format of `{username}/{reponame}`.
-  - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
-  - `subdir`: (string) Directory of the repo to clone from. The default value is none.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
