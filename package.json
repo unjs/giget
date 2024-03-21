@@ -1,6 +1,6 @@
 {
   "name": "giget",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Download templates and git repositories with pleasure!",
   "repository": "unjs/giget",
   "license": "MIT",

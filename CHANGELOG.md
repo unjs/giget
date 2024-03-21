@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.3
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.2...v1.2.3)
+
+### 🏡 Chore
+
+- **release:** V1.2.2 ([cd3d4d7](https://github.com/unjs/giget/commit/cd3d4d7))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.2.2
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.1...v1.2.2)
