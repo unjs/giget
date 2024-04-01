@@ -178,7 +178,7 @@ const rainbow: TemplateProvider = async (input, { auth }) => {
   };
 };
 
-const { source, dir } = await downloadRepo("rainbow:one", {
+const { source, dir } = await downloadTemplate("rainbow:one", {
   providers: { rainbow },
 });
 ```
@@ -194,7 +194,7 @@ const themes = registryProvider(
   "https://raw.githubusercontent.com/unjs/giget/main/templates",
 );
 
-const { source, dir } = await downloadRepo("themes:test", {
+const { source, dir } = await downloadTemplate("themes:test", {
   providers: { themes },
 });
 ```
