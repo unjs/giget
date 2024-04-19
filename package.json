@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
-    "@types/tar": "^6.1.12",
+    "@types/tar": "^6.1.13",
     "@vitest/coverage-v8": "^1.5.0",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
