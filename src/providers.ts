@@ -137,8 +137,7 @@ export const codeberg: TemplateProvider = (input, options) => {
     headers: {
       authorization: options.auth ? `token ${options.auth}` : undefined,
     },
-    // TODO: branch or commit or tag vs. omit (like in Bitbucket)
-    url: `https://codeberg.org/${parsed.repo}/src/branch/${parsed.ref}${parsed.subdir}`,
+    url: `https://codeberg.org/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
     tar: `https://codeberg.org/${parsed.repo}/archive/${parsed.ref}.tar.gz`,
   };
 };
