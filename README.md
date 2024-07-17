@@ -8,7 +8,7 @@
 
 ## Features
 
-✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut, Codeberg) out of the box.
 
 ✨ Built-in and custom [template registry](#template-registry).
 
