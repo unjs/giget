@@ -135,8 +135,7 @@ export const codeberg: TemplateProvider = (input, options) => {
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      // TODO: Check https://forgejo.org/docs/latest/user/api-usage/#authentication, https://codeberg.org/api/swagger
-      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      authorization: options.auth ? `token ${options.auth}` : undefined,
     },
     // TODO: branch or commit or tag vs. omit (like in Bitbucket)
     url: `https://codeberg.org/${parsed.repo}/src/branch/${parsed.ref}${parsed.subdir}`,
