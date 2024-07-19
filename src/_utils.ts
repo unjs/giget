@@ -7,7 +7,7 @@ import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native/proxy";
-import type { GitInfo } from "./types";
+import type { GitInfo, TemplateInfo } from "./types";
 
 export async function download(
   url: string,
@@ -135,4 +135,13 @@ export function startShell(cwd: string) {
     shell: true,
     stdio: "inherit",
   });
+}
+
+export function defineProvider(
+  provider: (
+    input: string,
+    options: { auth?: string },
+  ) => TemplateInfo | Promise<TemplateInfo> | null,
+) {
+  return provider;
 }
