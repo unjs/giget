@@ -1,6 +1,5 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
@@ -141,6 +140,25 @@ export async function downloadTemplate(
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
+
+  // See https://github.com/oven-sh/bun/issues/12696.
+  const needTarWorkaround =
+    // @ts-expect-error : TS doesn't know about the global Bun.
+    typeof Bun !== "undefined" && process.platform === "win32";
+
+  if (needTarWorkaround) {
+    // We need to fake the platform to make the tar module work on Windows with Bun.
+    process.env.__FAKE_PLATFORM__ = "linux";
+  }
+
+  // We dynamically import `tar` to make sure the platform is faked if needed.
+  const { extract } = await import("tar");
+
+  if (needTarWorkaround) {
+    // Cleaning up the fake platform.
+    delete process.env.__FAKE_PLATFORM__;
+  }
+
   await extract({
     file: tarPath,
     cwd: extractPath,
