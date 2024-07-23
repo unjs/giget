@@ -128,6 +128,20 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+export const codeberg: TemplateProvider = (input, options) => {
+  const parsed = parseGitURI(input);
+  return {
+    name: parsed.repo.replace("/", "-"),
+    version: parsed.ref,
+    subdir: parsed.subdir,
+    headers: {
+      authorization: options.auth ? `token ${options.auth}` : undefined,
+    },
+    url: `https://codeberg.org/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
+    tar: `https://codeberg.org/${parsed.repo}/archive/${parsed.ref}.tar.gz`,
+  };
+};
+
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
@@ -136,4 +150,5 @@ export const providers: Record<string, TemplateProvider> = {
   gitlab,
   bitbucket,
   sourcehut,
+  codeberg,
 };
