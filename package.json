@@ -51,7 +51,7 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^1.5.0",
+    "@vitest/coverage-v8": "^2.0.5",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "eslint-config-unjs": "^0.2.1",
@@ -59,7 +59,7 @@
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "unbuild": "^2.0.0",
-    "vitest": "^1.5.0"
+    "vitest": "^2.0.5"
   },
   "packageManager": "pnpm@9.0.5"
 }
