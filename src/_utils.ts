@@ -2,7 +2,7 @@ import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
+import { homedir, platform, tmpdir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
@@ -94,6 +94,10 @@ export async function sendFetch(
 }
 
 export function cacheDirectory() {
+  if (platform() === "win32") {
+    return resolve(tmpdir(), "giget");
+  }
+
   return process.env.XDG_CACHE_HOME
     ? resolve(process.env.XDG_CACHE_HOME, "giget")
     : resolve(homedir(), ".cache/giget");
