@@ -1,8 +1,8 @@
-import { createWriteStream, existsSync } from "node:fs";
+import { createWriteStream, existsSync, renameSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
+import { homedir, platform, tmpdir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
@@ -94,9 +94,22 @@ export async function sendFetch(
 }
 
 export function cacheDirectory() {
-  return process.env.XDG_CACHE_HOME
+  const cacheDir = process.env.XDG_CACHE_HOME
     ? resolve(process.env.XDG_CACHE_HOME, "giget")
     : resolve(homedir(), ".cache/giget");
+
+  const windowsCacheDir = resolve(tmpdir(), "giget");
+
+  // on windows, move old cache directory to new location
+  if (
+    platform() === "win32" &&
+    !existsSync(windowsCacheDir) &&
+    existsSync(cacheDir)
+  ) {
+    renameSync(cacheDir, windowsCacheDir);
+  }
+
+  return platform() === "win32" ? windowsCacheDir : cacheDir;
 }
 
 export function normalizeHeaders(
