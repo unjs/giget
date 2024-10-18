@@ -1,5 +1,5 @@
 export interface GitInfo {
-  provider: "github" | "gitlab" | "bitbucket" | "sourcehut";
+  provider: "github" | "gitlab" | "bitbucket" | "sourcehut" | "codeberg";
   repo: string;
   subdir: string;
   ref: string;
