@@ -21,8 +21,8 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4
       nypm:
-        specifier: ^0.3.12
-        version: 0.3.12
+        specifier: ^0.4.0
+        version: 0.4.0
       ohash:
         specifier: ^1.1.4
         version: 1.1.4
@@ -1841,6 +1841,11 @@ packages:
 
   nypm@0.3.12:
     resolution: {integrity: sha512-D3pzNDWIvgA+7IORhD/IuWzEk4uXv6GsgOxiid4UU3h9oq5IqV1KtPDi63n4sZJ/xcWlr88c0QM2RgN5VbOhFA==}
+    engines: {node: ^14.16.0 || >=16.10.0}
+    hasBin: true
+
+  nypm@0.4.0:
+    resolution: {integrity: sha512-txBqUMOniS3Apdck3ggLbdfJNm9hoQhibf1Lovj4UUAjmNcxGr9CMfR9tmt2hz6zHCHx9/B+xX99TgjyLb9QZQ==}
     engines: {node: ^14.16.0 || >=16.10.0}
     hasBin: true
 
@@ -4210,6 +4215,15 @@ snapshots:
       execa: 8.0.1
       pathe: 1.1.2
       pkg-types: 1.2.1
+      ufo: 1.5.4
+
+  nypm@0.4.0:
+    dependencies:
+      citty: 0.1.6
+      consola: 3.2.3
+      pathe: 1.1.2
+      pkg-types: 1.2.1
+      tinyexec: 0.3.1
       ufo: 1.5.4
 
   ofetch@1.4.1:
