@@ -1,6 +1,6 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar";
+import { extract } from "tar/extract";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";

@@ -46,7 +46,7 @@
     "nypm": "^0.3.12",
     "ohash": "^1.1.4",
     "pathe": "^1.1.2",
-    "tar": "^6.2.1"
+    "tar": "^7.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
