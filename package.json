@@ -43,23 +43,23 @@
     "consola": "^3.2.3",
     "defu": "^6.1.4",
     "node-fetch-native": "^1.6.4",
-    "nypm": "^0.4.0",
+    "nypm": "^0.4.1",
     "ohash": "^1.1.4",
     "pathe": "^1.1.2",
     "tar": "^7.4.3"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.10.1",
     "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^2.1.6",
+    "@vitest/coverage-v8": "^2.1.8",
     "changelogen": "^0.5.7",
-    "eslint": "^9.15.0",
+    "eslint": "^9.16.0",
     "eslint-config-unjs": "^0.4.2",
-    "jiti": "^2.4.0",
+    "jiti": "^2.4.1",
     "prettier": "^3.4.1",
     "typescript": "^5.7.2",
     "unbuild": "^2.0.0",
-    "vitest": "^2.1.6"
+    "vitest": "^2.1.8"
   },
-  "packageManager": "pnpm@9.14.2"
+  "packageManager": "pnpm@9.14.4"
 }
