@@ -207,7 +207,7 @@ For private repositories and sources, you might need a token. In order to provid
 
 ### GitHub Actions
 
-If your project depends on a private GitHub repository, you need to add the access token as a secret. In your workflow, refer to the token as shown in the example below:
+If your project depends on a private GitHub repository, you need to add the access token as a secret. Please see GitHub Actions docs on [creating secrets for a repository](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository). In your workflow, refer to the token as shown in the example below:
 
 ```yml
 - name: Install packages
