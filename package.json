@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "citty": "^0.1.6",
-    "consola": "^3.3.2",
+    "consola": "^3.3.3",
     "defu": "^6.1.4",
     "node-fetch-native": "^1.6.4",
     "nypm": "^0.4.1",
@@ -58,7 +58,7 @@
     "jiti": "^2.4.2",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
-    "unbuild": "^3.0.1",
+    "unbuild": "^3.1.0",
     "vitest": "^2.1.8"
   },
   "packageManager": "pnpm@9.15.1"
