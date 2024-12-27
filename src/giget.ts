@@ -1,6 +1,6 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar";
+import { extract } from "tar/extract";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
@@ -52,10 +52,10 @@ export async function downloadTemplate(
     options.provider || (registry ? "registry" : "github");
 
   let source: string = input;
-  const sourceProvierMatch = input.match(sourceProtoRe);
-  if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1];
-    source = input.slice(sourceProvierMatch[0].length);
+  const sourceProviderMatch = input.match(sourceProtoRe);
+  if (sourceProviderMatch) {
+    providerName = sourceProviderMatch[1]!;
+    source = input.slice(sourceProviderMatch[0].length);
     if (providerName === "http" || providerName === "https") {
       source = input;
     }
@@ -144,7 +144,7 @@ export async function downloadTemplate(
   await extract({
     file: tarPath,
     cwd: extractPath,
-    onentry(entry) {
+    onReadEntry(entry) {
       entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
         // eslint-disable-next-line unicorn/prefer-ternary

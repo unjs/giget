@@ -18,7 +18,6 @@ export async function download(
   const info: { etag?: string } = JSON.parse(
     await readFile(infoPath, "utf8").catch(() => "{}"),
   );
-  // eslint-disable-next-line unicorn/no-useless-undefined
   const headResponse = await sendFetch(url, {
     method: "HEAD",
     headers: options.headers,
@@ -46,7 +45,7 @@ export async function download(
 }
 
 const inputRegex =
-  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./-]+)?/;
+  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
 
 export function parseGitURI(input: string): GitInfo {
   const m = input.match(inputRegex)?.groups || {};
@@ -63,7 +62,6 @@ export function debug(...args: unknown[]) {
   }
 }
 
-// eslint-disable-next-line no-undef
 interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
   headers?: Record<string, string | undefined>;
   agent?: Agent;

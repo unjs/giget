@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.3
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.2...v1.2.3)
+
+### 🏡 Chore
+
+- **release:** V1.2.2 ([cd3d4d7](https://github.com/unjs/giget/commit/cd3d4d7))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.2.2
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.1...v1.2.2)
+
+### 🩹 Fixes
+
+- **cli:** Add missing shebang ([#135](https://github.com/unjs/giget/pull/135))
+
+### 📖 Documentation
+
+- Correct `downloadTemplate` options ([#144](https://github.com/unjs/giget/pull/144))
+
+### 🏡 Chore
+
+- **release:** V1.2.1 ([1379a03](https://github.com/unjs/giget/commit/1379a03))
+- Remove bundle badge ([#136](https://github.com/unjs/giget/pull/136))
+- Add `maizzle` template ([#138](https://github.com/unjs/giget/pull/138))
+- Update deps and lockfile ([8821ee1](https://github.com/unjs/giget/commit/8821ee1))
+- Update lockfile ([a61d394](https://github.com/unjs/giget/commit/a61d394))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Sunil Pai <threepointone@gmail.com>
+- Cosmin Popovici ([@cossssmin](http://github.com/cossssmin))
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+
 ## v1.2.1
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.0...v1.2.1)

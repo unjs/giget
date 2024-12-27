@@ -143,9 +143,6 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
-  - `repo`: (string) Name of the repository in the format of `{username}/{reponame}`.
-  - `ref`: (string) Git ref (branch or commit or tag). The default value is `main`.
-  - `subdir`: (string) Directory of the repo to clone from. The default value is none.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
@@ -181,7 +178,7 @@ const rainbow: TemplateProvider = async (input, { auth }) => {
   };
 };
 
-const { source, dir } = await downloadRepo("rainbow:one", {
+const { source, dir } = await downloadTemplate("rainbow:one", {
   providers: { rainbow },
 });
 ```
@@ -197,7 +194,7 @@ const themes = registryProvider(
   "https://raw.githubusercontent.com/unjs/giget/main/templates",
 );
 
-const { source, dir } = await downloadRepo("themes:test", {
+const { source, dir } = await downloadTemplate("themes:test", {
   providers: { themes },
 });
 ```
@@ -207,6 +204,18 @@ const { source, dir } = await downloadRepo("themes:test", {
 For private repositories and sources, you might need a token. In order to provide it, using CLI, you can use `--auth`, using programmatic API using `auth` option and in both modes also it is possible to use `GIGET_AUTH` environment variable to set it. The value will be set in `Authorization: Bearer ...` header by default.
 
 **Note:** For github private repository access with Fine-grained access tokens, you need to give **Contents** and **Metadata** repository permissions.
+
+### GitHub Actions
+
+If your project depends on a private GitHub repository, you need to add the access token as a secret. Please see GitHub Actions docs on [creating secrets for a repository](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository). In your workflow, refer to the token as shown in the example below:
+
+```yml
+- name: Install packages
+  run: npm ci
+  env:
+    GIGET_AUTH: ${{ secrets.GIGET_AUTH }}
+```
+
 
 ## Related projects
 
