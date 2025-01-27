@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.4
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.3...v1.2.4)
+
+### 💅 Refactors
+
+- Upgrade to tar v7 ([3d5d7cf](https://github.com/unjs/giget/commit/3d5d7cf))
+- Revert tar upgrade back to v6 ([#208](https://github.com/unjs/giget/pull/208))
+
+### 📖 Documentation
+
+- Correct function name ([#156](https://github.com/unjs/giget/pull/156))
+- Add github actions example for private repo ([#197](https://github.com/unjs/giget/pull/197))
+
+### 🏡 Chore
+
+- **release:** V1.2.3 ([60025b5](https://github.com/unjs/giget/commit/60025b5))
+- Update deps ([b518578](https://github.com/unjs/giget/commit/b518578))
+- Update eslint config ([16941fc](https://github.com/unjs/giget/commit/16941fc))
+- Stricter tsconfig ([6e28106](https://github.com/unjs/giget/commit/6e28106))
+- Use new `onReadEntry` ([d2eb10e](https://github.com/unjs/giget/commit/d2eb10e))
+- Update nypm to 0.4 ([0b4a08b](https://github.com/unjs/giget/commit/0b4a08b))
+- Update deps ([4008d7c](https://github.com/unjs/giget/commit/4008d7c))
+- Update deps ([5c96b19](https://github.com/unjs/giget/commit/5c96b19))
+- Update deps ([6c7a965](https://github.com/unjs/giget/commit/6c7a965))
+- Update deps ([c508000](https://github.com/unjs/giget/commit/c508000))
+- Update nypm to 0.5 ([727c2f5](https://github.com/unjs/giget/commit/727c2f5))
+- Update lock ([65a1efa](https://github.com/unjs/giget/commit/65a1efa))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Martijn Halekor <martijnhalekor@icloud.com>
+- Werheng Zhang ([@werheng](http://github.com/werheng))
+
 ## v1.2.3
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.2...v1.2.3)
