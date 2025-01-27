@@ -144,7 +144,7 @@ export async function downloadTemplate(
   await extract({
     file: tarPath,
     cwd: extractPath,
-    onReadEntry(entry) {
+    onentry(entry) {
       entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
         // eslint-disable-next-line unicorn/prefer-ternary
