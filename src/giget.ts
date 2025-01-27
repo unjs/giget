@@ -1,6 +1,6 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar/extract";
+import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
@@ -144,7 +144,7 @@ export async function downloadTemplate(
   await extract({
     file: tarPath,
     cwd: extractPath,
-    onReadEntry(entry) {
+    onentry(entry) {
       entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
         // eslint-disable-next-line unicorn/prefer-ternary
