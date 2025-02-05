@@ -11,13 +11,9 @@ import type { GitInfo } from "./types";
 import { simpleGit as git } from "simple-git"
 import { create } from "tar"
 
-export async function createTempDir() {
-  return mkdtemp(join(tmpdir(), 'giget-'))
-}
-
 export async function cloneAndArchive(url: string, filePath: string, opts: { version?: string }) {
   // Make temp working directory
-  const tempDir = await createTempDir()
+  const tempDir = await mkdtemp(join(tmpdir(), 'giget-'))
 
   if (opts.version) {
     // If we know it is a branch, we can use --branch=<branch>.
