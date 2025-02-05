@@ -1,51 +1,13 @@
 import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
-import { readFile, writeFile, mkdtemp, rm } from "node:fs/promises";
-import { homedir, tmpdir } from "node:os";
+import { readFile, writeFile } from "node:fs/promises";
+import { homedir, } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
-import { join, relative, resolve } from "pathe";
+import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native/proxy";
 import type { GitInfo } from "./types";
-import { simpleGit as git } from "simple-git"
-import { create } from "tar"
-
-export async function cloneAndArchive(url: string, filePath: string, opts: { version?: string }) {
-  // Make temp working directory
-  const tempDir = await mkdtemp(join(tmpdir(), 'giget-'))
-
-  if (opts.version) {
-    // If we know it is a branch, we can use --branch=<branch>.
-    // Otherwise, we need to clone the entire history, then check out the ref.
-    const branch = opts.version.startsWith('!') && opts.version.slice(1)
-    await git().clone(url, tempDir, {
-      ...(branch && {
-        '--branch': branch,
-        // Need to pass null for simple-git option with no value
-        // eslint-disable-next-line unicorn/no-null
-        '--single-branch': null
-      }),
-    })
-
-    // If it is not a branch, we need to checkout to the specific version
-    if (!branch) {
-      await git({ baseDir: tempDir }).checkout(opts.version)
-    }
-  } else {
-    // If we do not have version, we can speed up via --depth=1.
-    await git().clone(url, tempDir, { '--depth': 1 })
-  }
-
-  // Remove .git
-  await rm(join(tempDir, '.git'), { force: true, recursive: true })
-
-  // Create tar
-  await create({
-    file: filePath,
-    cwd: tempDir,
-  }, ['.'])
-}
 
 export async function download(
   url: string,
@@ -146,6 +108,36 @@ export function normalizeHeaders(
     normalized[key.toLowerCase()] = value;
   }
   return normalized;
+}
+
+export function normalizeGitCloneURI(input: string) {
+  let _git = input.replace(/#.*$/, '')
+
+  const host = /^(.+?:)/.exec(_git)?.at(1)
+  if (host) {
+    switch (host) {
+      case 'github:':
+      case 'gh:': {
+        _git = _git.replace(host, 'github.com:')
+        break
+      }
+      case 'gitlab:': {
+        _git = _git.replace(host, 'gitlab.com:')
+        break
+      }
+    }
+  } else {
+    _git = `${process.env.GIGET_GIT_HOST || 'github.com'}:${_git}`
+  }
+
+  if (!_git.includes('@')) {
+    const username = process.env.GIGET_GIT_USERNAME || 'git'
+    const password = process.env.GIGET_GIT_PASSWORD
+
+    _git = `${password ? `${username}:${password}` : username}@${_git}`
+  }
+
+  return _git
 }
 
 // -- Experimental --

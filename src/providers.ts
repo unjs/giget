@@ -1,6 +1,10 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, parseGitURI, sendFetch } from "./_utils";
+import { debug, normalizeGitCloneURI, parseGitURI, sendFetch } from "./_utils";
+import { mkdtemp, rm } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { create } from "tar"
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -129,33 +133,9 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  let _git = input.replace(/#.*$/, '')
+  const gitUri = normalizeGitCloneURI(input)
 
-  const host = /^(.+?:)/.exec(_git)?.at(1)
-  if (host) {
-    switch (host) {
-      case 'github:':
-      case 'gh:': {
-        _git = _git.replace(host, 'github.com:')
-        break
-      }
-      case 'gitlab:': {
-        _git = _git.replace(host, 'gitlab.com:')
-        break
-      }
-    }
-  } else {
-    _git = `${process.env.GIGET_GIT_HOST || 'github.com'}:${_git}`
-  }
-
-  if (!_git.includes('@')) {
-    const username = process.env.GIGET_GIT_USERNAME || 'git'
-    const password = process.env.GIGET_GIT_PASSWORD
-
-    _git = `${password ? `${username}:${password}` : username}@${_git}`
-  }
-
-  const name = _git
+  const name = gitUri
     .replace(/^.+@/, '')
     .replace(/(\.git)?(#.*)?$/, '')
     .replaceAll(/[:/]/g, '-')
@@ -164,9 +144,44 @@ export const git: TemplateProvider = (input) => {
 
   return {
     name,
-    git: _git,
     version,
-    tar: ''
+    tar: async () => {
+      // Lazily import simple-git so we can mark the dependency as optional
+      const { simpleGit: gitCmd } = await import("simple-git")
+
+      // Make temp working directory
+      const tempDir = await mkdtemp(join(tmpdir(), 'giget-'))
+
+      // If we do not have version, we can speed up via --depth=1.
+      // Otherwise, we need to clone the entire history, then check out the ref.
+      //
+      // NOTE: We can use git ls-remote to find out if it is a branch, instead of
+      // implementing our own custom notation.
+      if (version) {
+        const branch = version.startsWith('!') && version.slice(1)
+        await gitCmd().clone(gitUri, tempDir, {
+          ...(branch && {
+            '--branch': branch,
+            // Need to pass null for simple-git option with no value
+            // eslint-disable-next-line unicorn/no-null
+            '--single-branch': null
+          }),
+        })
+
+        // If it is not a branch, we need to checkout to the specific version
+        if (!branch) {
+          await gitCmd({ baseDir: tempDir }).checkout(version)
+        }
+      } else {
+        await gitCmd().clone(gitUri, tempDir, { '--depth': 1 })
+      }
+
+      // Remove .git
+      await rm(join(tempDir, '.git'), { force: true, recursive: true })
+
+      // Create tar
+      return create({ cwd: tempDir }, ['.'])
+    }
   };
 }
 

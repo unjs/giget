@@ -113,9 +113,7 @@ export async function downloadTemplate(
           },
         });
       } else {
-        const tarStream = await template.tar({
-          auth: options.auth
-        });
+        const tarStream = await template.tar({ auth: options.auth });
 
         const stream = createWriteStream(tarPath);
         await pipeline(tarStream, stream);
