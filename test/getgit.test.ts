@@ -27,7 +27,7 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "package.json"))).toBe(true);
   })
 
-  it.only("clone unjs/template#e24616c using git provider", async () => {
+  it("clone unjs/template#e24616c using git provider", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/cloned-with-git-e24616c");
     const { dir } = await downloadTemplate("git:unjs/template#e24616c", {
       dir: destinationDirectory,

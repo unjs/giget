@@ -16,8 +16,6 @@ export async function createTempDir() {
 }
 
 export async function cloneAndArchive(url: string, filePath: string, opts: { version?: string }) {
-  console.log('cloning', url, filePath)
-
   // Make temp working directory
   const tempDir = await createTempDir()
 
