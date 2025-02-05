@@ -103,4 +103,14 @@ describe('provider: git', () => {
       git: 'git@gitlab.com:unjs/template'
     })
   })
+
+  test('Add version ref if provided', async () => {
+    const input = 'gitlab:unjs/template#abcd1234'
+
+    expect(await git(input, {})).toEqual({
+      name: 'gitlab.com-unjs-template',
+      git: 'git@gitlab.com:unjs/template',
+      version: 'abcd1234'
+    })
+  })
 })

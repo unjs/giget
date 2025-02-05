@@ -129,7 +129,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  let _git = input
+  let _git = input.replace(/#.*$/, '')
 
   const host = /^(.+?:)/.exec(_git)?.at(1)
   if (host) {
@@ -157,12 +157,15 @@ export const git: TemplateProvider = (input) => {
 
   const name = _git
     .replace(/^.+@/, '')
-    .replace(/\.git(#.*)?$/, '')
+    .replace(/(\.git)?(#.*)?$/, '')
     .replaceAll(/[:/]/g, '-')
+
+  const version = /#(.+)$/.exec(input)?.at(1)
 
   return {
     name,
     git: _git,
+    version,
   };
 }
 

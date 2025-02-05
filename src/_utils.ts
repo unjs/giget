@@ -15,14 +15,25 @@ export async function createTempDir() {
   return mkdtemp(join(tmpdir(), 'giget-'))
 }
 
-export async function cloneAndArchive(url: string, filePath: string) {
+export async function cloneAndArchive(url: string, filePath: string, opts: { version?: string }) {
   console.log('cloning', url, filePath)
 
   // Make temp working directory
   const tempDir = await createTempDir()
 
   // Clone the git repository
-  await git().clone(url, tempDir, { '--depth': 1 })
+  // If we have version, checkout the specific version
+  await git().clone(url, tempDir, {
+    // If we do not have version, we can speed up via --depth=1.
+    // Otherwise, we need to clone the entire history, then check out the ref.
+    // NOTE: We can still use --branch if we know it is a branch.
+    ...(!opts.version && {
+      '--depth': 1,
+    })
+  })
+  if (opts.version) {
+    await git({ baseDir: tempDir }).checkout(opts.version)
+  }
 
   // Remove .git
   await rm(join(tempDir, '.git'), { force: true, recursive: true })

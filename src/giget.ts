@@ -104,7 +104,7 @@ export async function downloadTemplate(
     const s = Date.now();
 
     if (template.git) {
-      await cloneAndArchive(template.git, tarPath);
+      await cloneAndArchive(template.git, tarPath, { version: template.version });
 
       debug(`Cloned from ${template.git} to ${tarPath} in ${Date.now() - s}ms`);
     } else if (template.tar) {
