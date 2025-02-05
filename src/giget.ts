@@ -105,7 +105,7 @@ export async function downloadTemplate(
     const s = Date.now();
 
     try {
-      if (typeof template.tar === 'string') {
+      if (typeof template.tar === "string") {
         await download(template.tar, tarPath, {
           headers: {
             Authorization: options.auth ? `Bearer ${options.auth}` : undefined,

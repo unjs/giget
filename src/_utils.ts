@@ -57,35 +57,35 @@ export function parseGitURI(input: string): GitInfo {
 }
 
 export function parseGitCloneURI(input: string) {
-  let uri = input.replace(/#.*$/, '')
+  let uri = input.replace(/#.*$/, "");
 
-  const host = /^(.+?:)/.exec(uri)?.at(1)
+  const host = /^(.+?:)/.exec(uri)?.at(1);
   if (host) {
     switch (host) {
-      case 'github:':
-      case 'gh:': {
-        uri = uri.replace(host, 'github.com:')
-        break
+      case "github:":
+      case "gh:": {
+        uri = uri.replace(host, "github.com:");
+        break;
       }
-      case 'gitlab:': {
-        uri = uri.replace(host, 'gitlab.com:')
-        break
+      case "gitlab:": {
+        uri = uri.replace(host, "gitlab.com:");
+        break;
       }
     }
   } else {
-    uri = `${process.env.GIGET_GIT_HOST || 'github.com'}:${uri}`
+    uri = `${process.env.GIGET_GIT_HOST || "github.com"}:${uri}`;
   }
 
-  if (!uri.includes('@')) {
-    const username = process.env.GIGET_GIT_USERNAME || 'git'
-    const password = process.env.GIGET_GIT_PASSWORD
+  if (!uri.includes("@")) {
+    const username = process.env.GIGET_GIT_USERNAME || "git";
+    const password = process.env.GIGET_GIT_PASSWORD;
 
-    uri = `${password ? `${username}:${password}` : username}@${uri}`
+    uri = `${password ? `${username}:${password}` : username}@${uri}`;
   }
 
-  const version = /#(.+)$/.exec(input)?.at(1)
+  const version = /#(.+)$/.exec(input)?.at(1);
 
-  return { uri, version }
+  return { uri, version };
 }
 
 export function debug(...args: unknown[]) {

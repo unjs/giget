@@ -5,9 +5,6 @@ export default defineConfig({
     coverage: {
       reporter: ["text", "clover", "json"],
     },
-    exclude: [
-      ...defaultExclude,
-      '**/test/.tmp/**'
-    ]
+    exclude: [...defaultExclude, "**/test/.tmp/**"],
   },
 });
