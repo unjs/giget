@@ -1,6 +1,6 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, normalizeGitCloneURI, parseGitURI, sendFetch } from "./_utils";
+import { debug, parseGitCloneURI, parseGitURI, sendFetch } from "./_utils";
 import { mkdtemp, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -133,14 +133,12 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  const gitUri = normalizeGitCloneURI(input)
+  const { uri: gitUri, version } = parseGitCloneURI(input)
 
   const name = gitUri
     .replace(/^.+@/, '')
     .replace(/(\.git)?(#.*)?$/, '')
     .replaceAll(/[:/]/g, '-')
-
-  const version = /#(.+)$/.exec(input)?.at(1)
 
   return {
     name,

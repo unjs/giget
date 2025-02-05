@@ -56,6 +56,38 @@ export function parseGitURI(input: string): GitInfo {
   };
 }
 
+export function parseGitCloneURI(input: string) {
+  let uri = input.replace(/#.*$/, '')
+
+  const host = /^(.+?:)/.exec(uri)?.at(1)
+  if (host) {
+    switch (host) {
+      case 'github:':
+      case 'gh:': {
+        uri = uri.replace(host, 'github.com:')
+        break
+      }
+      case 'gitlab:': {
+        uri = uri.replace(host, 'gitlab.com:')
+        break
+      }
+    }
+  } else {
+    uri = `${process.env.GIGET_GIT_HOST || 'github.com'}:${uri}`
+  }
+
+  if (!uri.includes('@')) {
+    const username = process.env.GIGET_GIT_USERNAME || 'git'
+    const password = process.env.GIGET_GIT_PASSWORD
+
+    uri = `${password ? `${username}:${password}` : username}@${uri}`
+  }
+
+  const version = /#(.+)$/.exec(input)?.at(1)
+
+  return { uri, version }
+}
+
 export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
     console.debug("[giget]", ...args);
@@ -108,36 +140,6 @@ export function normalizeHeaders(
     normalized[key.toLowerCase()] = value;
   }
   return normalized;
-}
-
-export function normalizeGitCloneURI(input: string) {
-  let _git = input.replace(/#.*$/, '')
-
-  const host = /^(.+?:)/.exec(_git)?.at(1)
-  if (host) {
-    switch (host) {
-      case 'github:':
-      case 'gh:': {
-        _git = _git.replace(host, 'github.com:')
-        break
-      }
-      case 'gitlab:': {
-        _git = _git.replace(host, 'gitlab.com:')
-        break
-      }
-    }
-  } else {
-    _git = `${process.env.GIGET_GIT_HOST || 'github.com'}:${_git}`
-  }
-
-  if (!_git.includes('@')) {
-    const username = process.env.GIGET_GIT_USERNAME || 'git'
-    const password = process.env.GIGET_GIT_PASSWORD
-
-    _git = `${password ? `${username}:${password}` : username}@${_git}`
-  }
-
-  return _git
 }
 
 // -- Experimental --
