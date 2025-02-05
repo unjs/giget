@@ -2,7 +2,7 @@ import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import { homedir, } from "node:os";
+import { homedir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
