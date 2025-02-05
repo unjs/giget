@@ -107,7 +107,7 @@ export async function downloadTemplate(
       await cloneAndArchive(template.git, tarPath);
 
       debug(`Cloned from ${template.git} to ${tarPath} in ${Date.now() - s}ms`);
-    } else {
+    } else if (template.tar) {
       await download(template.tar, tarPath, {
         headers: {
           Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
@@ -123,6 +123,8 @@ export async function downloadTemplate(
       });
 
       debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
+    } else {
+      throw new Error('Provider does not provide git or tar URL')
     }
   }
 

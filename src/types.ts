@@ -7,7 +7,7 @@ export interface GitInfo {
 
 export interface TemplateInfo {
   name: string;
-  tar: string;
+  tar?: string;
   git?: string;
   version?: string;
   subdir?: string;
