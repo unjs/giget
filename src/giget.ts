@@ -4,7 +4,7 @@ import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
-import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
+import { cacheDirectory, download, debug, normalizeHeaders, cloneAndArchive } from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
 import type { TemplateInfo, TemplateProvider } from "./types";
@@ -102,20 +102,28 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, {
-      headers: {
-        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...normalizeHeaders(template.headers),
-      },
-    }).catch((error) => {
-      if (!existsSync(tarPath)) {
-        throw error;
-      }
-      // Accept network errors if we have a cached version
-      debug("Download error. Using cached version:", error);
-      options.offline = true;
-    });
-    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
+
+    if (template.git) {
+      await cloneAndArchive(template.git, tarPath);
+
+      debug(`Cloned from ${template.git} to ${tarPath} in ${Date.now() - s}ms`);
+    } else {
+      await download(template.tar, tarPath, {
+        headers: {
+          Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+          ...normalizeHeaders(template.headers),
+        },
+      }).catch((error) => {
+        if (!existsSync(tarPath)) {
+          throw error;
+        }
+        // Accept network errors if we have a cached version
+        debug("Download error. Using cached version:", error);
+        options.offline = true;
+      });
+
+      debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
+    }
   }
 
   if (!existsSync(tarPath)) {

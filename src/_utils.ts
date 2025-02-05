@@ -1,13 +1,38 @@
-import { createWriteStream, existsSync } from "node:fs";
+import { createWriteStream, existsSync, readdirSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
+import { readFile, writeFile, mkdtemp, rm, readdir } from "node:fs/promises";
+import { homedir, tmpdir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
-import { relative, resolve } from "pathe";
+import { join, relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native/proxy";
 import type { GitInfo } from "./types";
+import { simpleGit as git } from "simple-git"
+import { create } from "tar"
+
+export async function createTempDir() {
+  return mkdtemp(join(tmpdir(), 'giget-'))
+}
+
+export async function cloneAndArchive(url: string, filePath: string) {
+  console.log('cloning', url, filePath)
+
+  // Make temp working directory
+  const tempDir = await createTempDir()
+
+  // Clone the git repository
+  await git().clone(url, tempDir, { '--depth': 1 })
+
+  // Remove .git
+  await rm(join(tempDir, '.git'), { force: true, recursive: true })
+
+  // Create tar
+  await create({
+    file: filePath,
+    cwd: tempDir,
+  }, ['.'])
+}
 
 export async function download(
   url: string,
