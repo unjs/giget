@@ -50,6 +50,38 @@ export function parseGitURI(input: string): Omit<GitInfo, "provider"> {
   } satisfies Omit<GitInfo, "provider">;
 }
 
+export function parseGitCloneURI(input: string) {
+  let uri = input.replace(/#.*$/, '')
+
+  const host = /^(.+?:)/.exec(uri)?.at(1)
+  if (host) {
+    switch (host) {
+      case 'github:':
+      case 'gh:': {
+        uri = uri.replace(host, 'github.com:')
+        break
+      }
+      case 'gitlab:': {
+        uri = uri.replace(host, 'gitlab.com:')
+        break
+      }
+    }
+  } else {
+    uri = `${process.env.GIGET_GIT_HOST || 'github.com'}:${uri}`
+  }
+
+  if (!uri.includes('@')) {
+    const username = process.env.GIGET_GIT_USERNAME || 'git'
+    const password = process.env.GIGET_GIT_PASSWORD
+
+    uri = `${password ? `${username}:${password}` : username}@${uri}`
+  }
+
+  const version = /#(.+)$/.exec(input)?.at(1)
+
+  return { uri, version }
+}
+
 export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
     console.debug("[giget]", ...args);
