@@ -19,18 +19,26 @@ export async function cloneAndArchive(url: string, filePath: string, opts: { ver
   // Make temp working directory
   const tempDir = await createTempDir()
 
-  // Clone the git repository
-  // If we have version, checkout the specific version
-  await git().clone(url, tempDir, {
-    // If we do not have version, we can speed up via --depth=1.
-    // Otherwise, we need to clone the entire history, then check out the ref.
-    // NOTE: We can still use --branch if we know it is a branch.
-    ...(!opts.version && {
-      '--depth': 1,
-    })
-  })
   if (opts.version) {
-    await git({ baseDir: tempDir }).checkout(opts.version)
+    // If we know it is a branch, we can use --branch=<branch>.
+    // Otherwise, we need to clone the entire history, then check out the ref.
+    const branch = opts.version.startsWith('!') && opts.version.slice(1)
+    await git().clone(url, tempDir, {
+      ...(branch && {
+        '--branch': branch,
+        // Need to pass null for simple-git option with no value
+        // eslint-disable-next-line unicorn/no-null
+        '--single-branch': null
+      }),
+    })
+
+    // If it is not a branch, we need to checkout to the specific version
+    if (!branch) {
+      await git({ baseDir: tempDir }).checkout(opts.version)
+    }
+  } else {
+    // If we do not have version, we can speed up via --depth=1.
+    await git().clone(url, tempDir, { '--depth': 1 })
   }
 
   // Remove .git
