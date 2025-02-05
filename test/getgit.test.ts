@@ -38,6 +38,15 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, ".eslintrc"))).toBe(true);
   })
 
+  it('clone nuxt/starter#!v3 using git provider (branch mode)', async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/nuxt-starter-v3");
+    const { dir } = await downloadTemplate("git:nuxt/starter#!v3", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(existsSync(resolve(dir, "nuxt.config.ts"))).toBe(true);
+  })
+
   it("do not clone to exisiting dir", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/exisiting");
     await mkdir(destinationDirectory).catch(() => {});
