@@ -7,7 +7,7 @@ export interface GitInfo {
 
 export interface TemplateInfo {
   name: string;
-  tar?: string;
+  tar: string | ((options: { auth?: string }) => ReadableStream<Uint8Array> | Promise<ReadableStream<Uint8Array>>);
   git?: string;
   version?: string;
   subdir?: string;

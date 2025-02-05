@@ -162,6 +162,7 @@ export const git: TemplateProvider = (input) => {
     name,
     git: _git,
     version,
+    tar: ''
   };
 }
 
