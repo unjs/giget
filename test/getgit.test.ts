@@ -20,12 +20,22 @@ describe("downloadTemplate", () => {
 
   it("clone unjs/template using git provider", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/cloned-with-git");
-    // TODO Support ref (git:git@github.com:unjs/template.git#e24616c)
-    const { dir } = await downloadTemplate("git:git@github.com:unjs/template.git", {
+    const { dir } = await downloadTemplate("git:unjs/template", {
       dir: destinationDirectory,
       preferOffline: true,
     });
     expect(existsSync(resolve(dir, "package.json"))).toBe(true);
+  })
+
+  it.only("clone unjs/template#e24616c using git provider", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-with-git-e24616c");
+    const { dir } = await downloadTemplate("git:unjs/template#e24616c", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(existsSync(resolve(dir, "package.json"))).toBe(true);
+    // The initial version of unjs/template still uses .eslintrc
+    expect(existsSync(resolve(dir, ".eslintrc"))).toBe(true);
   })
 
   it("do not clone to exisiting dir", async () => {
