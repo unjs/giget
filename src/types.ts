@@ -1,3 +1,5 @@
+import type { Readable } from "node:stream";
+
 export interface GitInfo {
   provider: "github" | "gitlab" | "bitbucket" | "sourcehut";
   repo: string;
@@ -5,9 +7,11 @@ export interface GitInfo {
   ref: string;
 }
 
+type TarOutput = Readable | ReadableStream<Uint8Array>
+
 export interface TemplateInfo {
   name: string;
-  tar: string | ((options: { auth?: string }) => ReadableStream<Uint8Array> | Promise<ReadableStream<Uint8Array>>);
+  tar: string | ((options: { auth?: string }) => TarOutput | Promise<TarOutput>);
   git?: string;
   version?: string;
   subdir?: string;
