@@ -128,9 +128,48 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+export const git: TemplateProvider = (input) => {
+  let _git = input
+
+  const host = /^(.+?:)/.exec(_git)?.at(1)
+  if (host) {
+    switch (host) {
+      case 'github:':
+      case 'gh:': {
+        _git = _git.replace(host, 'github.com:')
+        break
+      }
+      case 'gitlab:': {
+        _git = _git.replace(host, 'gitlab.com:')
+        break
+      }
+    }
+  } else {
+    _git = `${process.env.GIGET_GIT_HOST || 'github.com'}:${_git}`
+  }
+
+  if (!_git.includes('@')) {
+    const username = process.env.GIGET_GIT_USERNAME || 'git'
+    const password = process.env.GIGET_GIT_PASSWORD
+
+    _git = `${password ? `${username}:${password}` : username}@${_git}`
+  }
+
+  const name = _git
+    .replace(/^.+@/, '')
+    .replace(/\.git(#.*)?$/, '')
+    .replaceAll(/[:/]/g, '-')
+
+  return {
+    name,
+    git: _git,
+  };
+}
+
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
+  git,
   github,
   gh: github,
   gitlab,
