@@ -24,17 +24,6 @@ describe("downloadTemplate", () => {
     const { dir } = await downloadTemplate("git:git@github.com:unjs/template.git", {
       dir: destinationDirectory,
       preferOffline: true,
-      providers: {
-        git() {
-          return {
-            // TODO Improve parseGitURI
-            name: 'unjs-template',
-            git: 'git@github.com:unjs/template.git',
-            // TODO What are the default for this?
-            tar: '',
-          }
-        }
-      }
     });
     expect(existsSync(resolve(dir, "package.json"))).toBe(true);
   })
