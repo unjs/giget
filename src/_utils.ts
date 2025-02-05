@@ -1,7 +1,7 @@
-import { createWriteStream, existsSync, readdirSync } from "node:fs";
+import { createWriteStream, existsSync } from "node:fs";
 import { pipeline } from "node:stream";
 import { spawnSync } from "node:child_process";
-import { readFile, writeFile, mkdtemp, rm, readdir } from "node:fs/promises";
+import { readFile, writeFile, mkdtemp, rm } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
