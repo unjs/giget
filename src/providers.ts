@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
-import { execa } from "execa";
+import { $ } from "zx/core";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -159,7 +159,7 @@ export const git: TemplateProvider = (input) => {
         // so we err on the side of caution if the command fails.
         const isBranch = await (async () => {
           try {
-            const { stdout: output } = await execa`git ls-remote ${gitUri} ${version}`;
+            const { stdout: output } = await $({ quiet: true })`git ls-remote ${gitUri} ${version}`;
             console.log('git ls-remote output', output)
             return Boolean(output);
           } catch {
@@ -167,13 +167,13 @@ export const git: TemplateProvider = (input) => {
           }
         })();
         if (isBranch) {
-          await execa`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
+          await $({ quiet: true })`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
         } else {
-          await execa`git clone ${gitUri} ${tempDir}`;
-          await execa({ cwd: tempDir })`git checkout ${version}`;
+          await $({ quiet: true })`git clone ${gitUri} ${tempDir}`;
+          await $({ quiet: true, cwd: tempDir })`git checkout ${version}`;
         }
       } else {
-        await execa`git clone ${gitUri} ${tempDir} --depth=1`;
+        await $({ quiet: true })`git clone ${gitUri} ${tempDir} --depth=1`;
       }
 
       // Create tar
