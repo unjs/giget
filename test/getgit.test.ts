@@ -3,9 +3,10 @@ import { rm, mkdir, writeFile } from "node:fs/promises";
 import { expect, it, describe, beforeAll } from "vitest";
 import { resolve } from "pathe";
 import { downloadTemplate } from "../src";
+import { createGitProvider } from "../src/providers";
 
 // Disable cache by PREFER_OFFLINE=false vitest
-const preferOffline = process.env.PREFER_OFFLINE !== 'false'
+const preferOffline = process.env.PREFER_OFFLINE !== "false";
 
 describe("downloadTemplate", () => {
   beforeAll(async () => {
@@ -96,6 +97,37 @@ describe("downloadTemplate", () => {
       preferOffline,
     });
     expect(existsSync(resolve(dir, "index.ts"))).toBe(true);
+  });
+
+  it("show error when the git command is not available", async () => {
+    const destinationDirectory = resolve(
+      __dirname,
+      ".tmp/error-invalid-git-repo",
+    );
+
+    await expect(
+      downloadTemplate("gut:unjs/template", {
+        dir: destinationDirectory,
+        preferOffline,
+        providers: {
+          gut: createGitProvider({ gitCmd: "gut" }),
+        },
+      }),
+    ).rejects.toThrow("gut is required to download git repositories. Make sure gut is installed and available in your PATH.");
+  });
+
+  it("show error when the git repository is invalid", async () => {
+    const destinationDirectory = resolve(
+      __dirname,
+      ".tmp/error-invalid-git-repo",
+    );
+
+    await expect(
+      downloadTemplate("git:unjs/templete", {
+        dir: destinationDirectory,
+        preferOffline,
+      }),
+    ).rejects.toThrow("fatal: Could not read from remote repository");
   });
 
   it("do not clone to exisiting dir", async () => {

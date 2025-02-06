@@ -7,6 +7,8 @@ import { tmpdir } from "node:os";
 import { create } from "tar";
 import { execFile } from "node:child_process";
 
+type TemplateProviderFactory<Opts> = (opts: Opts) => TemplateProvider;
+
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
     return (await _httpJSON(input, options)) as TemplateInfo;
@@ -133,75 +135,111 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
-export const git: TemplateProvider = (input) => {
-  const { uri: gitUri, name, version, subdir } = parseGitCloneURI(input);
+export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
+  opts,
+) => {
+  const gitCmd = opts.gitCmd ?? "git";
 
-  const $git = (args: string[], opts: { cwd?: string } = {}) => {
-    return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-      execFile("git", args, { cwd: opts.cwd }, (error, stdout, stderr) => {
-        if (error) {
-          return reject(error)
-        }
+  return (input) => {
+    const { uri: gitUri, name, version, subdir } = parseGitCloneURI(input);
 
-        resolve({ stdout, stderr })
-      })
-    })
-  }
+    return {
+      name,
+      version,
+      subdir,
+      tar: async () => {
+        // Make temp working directory
+        const tempDir = await mkdtemp(join(tmpdir(), "giget-"));
 
-  return {
-    name,
-    version,
-    subdir,
-    tar: async () => {
-      // Make temp working directory
-      const tempDir = await mkdtemp(join(tmpdir(), "giget-"));
+        const $git = async (args: string[], opts: { cwd?: string } = {}) => {
+          return new Promise<{ stdout: string; stderr: string }>(
+            (resolve, reject) => {
+              execFile(
+                gitCmd,
+                args,
+                { cwd: opts.cwd },
+                (error, stdout, stderr) => {
+                  if (error) {
+                    // ENOENT is either command does not exist or cwd not available.
+                    // But we are working with temporary directory here, so ENOENT will
+                    // be definitely command does not exist.
+                    if (error.code === "ENOENT") {
+                      reject(
+                        new Error(`${error.path} is required to download git repositories. Make sure ${error.path} is installed and available in your PATH.`),
+                      );
+                      return;
+                    }
 
-      // If we do not have version, we can speed up via --depth=1.
-      // Otherwise, we need to clone the entire history, then check out the ref.
-      if (version) {
-        // Use git ls-remote to check if the specified version is a branch:
-        //
-        //   git ls-remote git@github.com/nuxt/starter foo => empty string
-        //
-        // This is just an optimization so we can use --branch when cloning.
-        // so we err on the side of caution if the command fails.
-        const isBranch = await (async () => {
-          try {
-            const { stdout: output } = await $git(["ls-remote", gitUri, version]);
-            return Boolean(output);
-          } catch {
-            return false;
+                    return reject(error);
+                  }
+
+                  resolve({ stdout, stderr });
+                },
+              );
+            },
+          );
+        };
+
+        // If we do not have version, we can speed up via --depth=1.
+        // Otherwise, we need to clone the entire history, then check out the ref.
+        if (version) {
+          // Use git ls-remote to check if the specified version is a branch:
+          //
+          //   git ls-remote git@github.com/nuxt/starter foo => empty string
+          //
+          // This is just an optimization so we can use --branch when cloning.
+          // so we err on the side of caution if the command fails.
+          const isBranch = await (async () => {
+            try {
+              const { stdout: output } = await $git([
+                "ls-remote",
+                gitUri,
+                version,
+              ]);
+              return Boolean(output);
+            } catch {
+              return false;
+            }
+          })();
+
+          if (isBranch) {
+            await $git([
+              "clone",
+              gitUri,
+              tempDir,
+              "--branch",
+              version,
+              "--single-branch",
+            ]);
+          } else {
+            await $git(["clone", gitUri, tempDir]);
+            await $git(["checkout", version], { cwd: tempDir });
           }
-        })();
-
-        if (isBranch) {
-          await $git(["clone", gitUri, tempDir, "--branch", version, "--single-branch"]);
         } else {
-          await $git(["clone", gitUri, tempDir]);
-          await $git(["checkout", version], { cwd: tempDir });
+          await $git(["clone", gitUri, tempDir, "--depth=1"]);
         }
-      } else {
-        await $git(["clone", gitUri, tempDir, "--depth=1"]);
-      }
 
-      // Create tar
-      return create(
-        {
-          cwd: tempDir,
-          filter: (path) => {
-            // Example paths:
-            // .
-            // ./README.md
-            // ./.src
-            // ./src/index.ts
-            return !path.startsWith("./.git");
+        // Create tar
+        return create(
+          {
+            cwd: tempDir,
+            filter: (path) => {
+              // Example paths:
+              // .
+              // ./README.md
+              // ./.src
+              // ./src/index.ts
+              return !path.startsWith("./.git");
+            },
           },
-        },
-        ["."],
-      );
-    },
+          ["."],
+        );
+      },
+    };
   };
 };
+
+export const git: TemplateProvider = createGitProvider({});
 
 export const providers: Record<string, TemplateProvider> = {
   http,
