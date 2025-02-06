@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
-import { execFile } from "node:child_process";
+import { execFile, type ExecFileException } from "node:child_process";
 
 type TemplateProviderFactory<Opts> = (opts: Opts) => TemplateProvider;
 
@@ -160,18 +160,6 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
                 { cwd: opts.cwd },
                 (error, stdout, stderr) => {
                   if (error) {
-                    // ENOENT is either command does not exist or cwd not available.
-                    // But we are working with temporary directory here, so ENOENT will
-                    // be definitely command does not exist.
-                    if (error.code === "ENOENT") {
-                      reject(
-                        new Error(
-                          `${error.path} is required to download git repositories. Make sure ${error.path} is installed and available in your PATH.`,
-                        ),
-                      );
-                      return;
-                    }
-
                     return reject(error);
                   }
 
@@ -221,7 +209,16 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
           } else {
             await $git(["clone", gitUri, tempDir, "--depth=1"]);
           }
-        } catch {
+        } catch (error) {
+          // ENOENT is either command does not exist or cwd not available.
+          // But we are working with temporary directory here, so ENOENT will
+          // be definitely command does not exist.
+          if ((error as ExecFileException).code === "ENOENT") {
+            throw new Error(
+              `${gitCmd} is required to download git repositories. Make sure ${gitCmd} is installed and available in your PATH.`,
+            );
+          }
+
           throw new Error(
             `Failed to clone git repository from ${gitUri}${version ? `(ref: ${version})` : ""}. Make sure the repository exists and the provided version is correct.`,
           );

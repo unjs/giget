@@ -127,7 +127,7 @@ describe("downloadTemplate", () => {
         dir: destinationDirectory,
         preferOffline,
       }),
-    ).rejects.toThrow("fatal: Could not read from remote repository");
+    ).rejects.toThrow("Failed to clone git repository from git@github.com:unjs/templete. Make sure the repository exists and the provided version is correct.");
   });
 
   it("do not clone to exisiting dir", async () => {
