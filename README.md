@@ -190,7 +190,8 @@ This allows you to implement custom downloading function, for example:
 const myorg: TemplateProvider = async (input, { auth }) => {
   return {
     name: input,
-    tar: () => (await fetch(`http://my-org.internal/archive/${input}.tar.gz`)).body!,
+    tar: () =>
+      (await fetch(`http://my-org.internal/archive/${input}.tar.gz`)).body!,
   };
 };
 

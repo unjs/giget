@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
-import { $ } from "zx/core";
+import { $ as zx$ } from "zx/core";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -145,6 +145,8 @@ export const git: TemplateProvider = (input) => {
     name,
     version,
     tar: async () => {
+      const $ = zx$({ quiet: true });
+
       // Make temp working directory
       const tempDir = await mkdtemp(join(tmpdir(), "giget-"));
 
@@ -159,35 +161,39 @@ export const git: TemplateProvider = (input) => {
         // so we err on the side of caution if the command fails.
         const isBranch = await (async () => {
           try {
-            const { stdout: output } = await $({ quiet: true })`git ls-remote ${gitUri} ${version}`;
-            console.log('git ls-remote output', output)
+            const { stdout: output } =
+              await $`git ls-remote ${gitUri} ${version}`;
             return Boolean(output);
           } catch {
             return false;
           }
         })();
+
         if (isBranch) {
-          await $({ quiet: true })`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
+          await $`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
         } else {
-          await $({ quiet: true })`git clone ${gitUri} ${tempDir}`;
-          await $({ quiet: true, cwd: tempDir })`git checkout ${version}`;
+          await $`git clone ${gitUri} ${tempDir}`;
+          await $({ cwd: tempDir })`git checkout ${version}`;
         }
       } else {
-        await $({ quiet: true })`git clone ${gitUri} ${tempDir} --depth=1`;
+        await $`git clone ${gitUri} ${tempDir} --depth=1`;
       }
 
       // Create tar
-      return create({
-        cwd: tempDir,
-        filter: (path) => {
-          // Example paths:
-          // .
-          // ./README.md
-          // ./.src
-          // ./src/index.ts
-          return !path.startsWith("./.git")
-        }
-      }, ["."]);
+      return create(
+        {
+          cwd: tempDir,
+          filter: (path) => {
+            // Example paths:
+            // .
+            // ./README.md
+            // ./.src
+            // ./src/index.ts
+            return !path.startsWith("./.git");
+          },
+        },
+        ["."],
+      );
     },
   };
 };
