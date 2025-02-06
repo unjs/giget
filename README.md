@@ -183,6 +183,23 @@ const { source, dir } = await downloadTemplate("rainbow:one", {
 });
 ```
 
+`tar` can be a function that resolves to a `Readable` or `ReadableStream` for a tar file.
+This allows you to implement custom downloading function, for example:
+
+```ts
+const myorg: TemplateProvider = async (input, { auth }) => {
+  return {
+    name: input,
+    tar: () => (await fetch(`http://my-org.internal/archive/${input}.tar.gz`)).body!,
+  };
+};
+
+// Download from http://my-org.internal/archive/my-project.tar.gz
+const { source, dir } = await downloadTemplate("myorg:my-project", {
+  providers: { local },
+});
+```
+
 ### Custom Registry Providers
 
 You can define additional [custom registry](#custom-registry) providers using `registryProvider` utility and register to `providers`.
