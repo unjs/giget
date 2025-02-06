@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
-import { $ as zx$ } from "zx/core";
+import { execFile } from "node:child_process";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -136,13 +136,23 @@ export const sourcehut: TemplateProvider = (input, options) => {
 export const git: TemplateProvider = (input) => {
   const { uri: gitUri, name, version, subdir } = parseGitCloneURI(input);
 
+  const $git = (args: string[], opts: { cwd?: string } = {}) => {
+    return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+      execFile("git", args, { cwd: opts.cwd }, (error, stdout, stderr) => {
+        if (error) {
+          return reject(error)
+        }
+
+        resolve({ stdout, stderr })
+      })
+    })
+  }
+
   return {
     name,
     version,
     subdir,
     tar: async () => {
-      const $ = zx$({ quiet: true });
-
       // Make temp working directory
       const tempDir = await mkdtemp(join(tmpdir(), "giget-"));
 
@@ -157,8 +167,7 @@ export const git: TemplateProvider = (input) => {
         // so we err on the side of caution if the command fails.
         const isBranch = await (async () => {
           try {
-            const { stdout: output } =
-              await $`git ls-remote ${gitUri} ${version}`;
+            const { stdout: output } = await $git(["ls-remote", gitUri, version]);
             return Boolean(output);
           } catch {
             return false;
@@ -166,13 +175,13 @@ export const git: TemplateProvider = (input) => {
         })();
 
         if (isBranch) {
-          await $`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
+          await $git(["clone", gitUri, tempDir, "--branch", version, "--single-branch"]);
         } else {
-          await $`git clone ${gitUri} ${tempDir}`;
-          await $({ cwd: tempDir })`git checkout ${version}`;
+          await $git(["clone", gitUri, tempDir]);
+          await $git(["checkout", version], { cwd: tempDir });
         }
       } else {
-        await $`git clone ${gitUri} ${tempDir} --depth=1`;
+        await $git(["clone", gitUri, tempDir, "--depth=1"]);
       }
 
       // Create tar
