@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, globSync } from "node:fs";
 import { rm, mkdir, writeFile } from "node:fs/promises";
 import { expect, it, describe, beforeAll } from "vitest";
 import { resolve } from "pathe";
@@ -27,7 +27,7 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "package.json"))).toBe(true);
   });
 
-  it("clone unjs/template#e24616c using git provider", async () => {
+  it("clone unjs/template#e24616c using git provider (specific commit)", async () => {
     const destinationDirectory = resolve(
       __dirname,
       ".tmp/cloned-with-git-e24616c",
@@ -36,17 +36,17 @@ describe("downloadTemplate", () => {
       dir: destinationDirectory,
       preferOffline: true,
     });
-    expect(existsSync(resolve(dir, "package.json"))).toBe(true);
-    // The initial version of unjs/template still uses .eslintrc
-    expect(existsSync(resolve(dir, ".eslintrc"))).toBe(true);
+
+    expect(globSync("**/*", { cwd: dir }).sort()).toMatchSnapshot();
   });
 
-  it("clone nuxt/starter#!v3 using git provider (branch mode)", async () => {
+  it("clone nuxt/starter#v3 using git provider (specific branch)", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/nuxt-starter-v3");
-    const { dir } = await downloadTemplate("git:nuxt/starter#!v3", {
+    const { dir } = await downloadTemplate("git:nuxt/starter#v3", {
       dir: destinationDirectory,
       preferOffline: true,
     });
+
     expect(existsSync(resolve(dir, "nuxt.config.ts"))).toBe(true);
   });
 

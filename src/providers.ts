@@ -152,22 +152,30 @@ export const git: TemplateProvider = (input) => {
 
       // If we do not have version, we can speed up via --depth=1.
       // Otherwise, we need to clone the entire history, then check out the ref.
-      //
-      // NOTE: We can use git ls-remote to find out if it is a branch, instead of
-      // implementing our own custom notation.
       if (version) {
-        const branch = version.startsWith("!") && version.slice(1);
-        await gitCmd().clone(gitUri, tempDir, {
-          ...(branch && {
-            "--branch": branch,
+        // Use git ls-remote to check if the specified version is a branch:
+        //
+        //   git ls-remote git@github.com/nuxt/starter foo => empty string
+        //
+        // This is just an optimization so we can use --branch when cloning.
+        // so we err on the side of caution if the command fails.
+        const isBranch = await (async () => {
+          try {
+            const output = await gitCmd().listRemote([gitUri, version]);
+            return Boolean(output);
+          } catch {
+            return false;
+          }
+        })();
+        if (isBranch) {
+          await gitCmd().clone(gitUri, tempDir, {
+            "--branch": version,
             // Need to pass null for simple-git option with no value
             // eslint-disable-next-line unicorn/no-null
             "--single-branch": null,
-          }),
-        });
-
-        // If it is not a branch, we need to checkout to the specific version
-        if (!branch) {
+          });
+        } else {
+          await gitCmd().clone(gitUri, tempDir);
           await gitCmd({ baseDir: tempDir }).checkout(version);
         }
       } else {
