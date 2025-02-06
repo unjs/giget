@@ -79,7 +79,12 @@ export function parseGitCloneURI(input: string) {
 
   const version = /#(.+)$/.exec(input)?.at(1);
 
-  return { uri, version };
+  const name = uri
+    .replace(/^.+@/, "")
+    .replace(/(\.git)?(#.*)?$/, "")
+    .replaceAll(/[:/]/g, "-");
+
+  return { uri, version, name };
 }
 
 export function debug(...args: unknown[]) {
