@@ -18,6 +18,28 @@ describe("downloadTemplate", () => {
     expect(await existsSync(resolve(dir, "package.json")));
   });
 
+  it("clone unjs/template using custom provider that returns stream", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-custom");
+    const { dir } = await downloadTemplate("custom:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline: true,
+      providers: {
+        custom: async (input) => {
+          return {
+            name: input.replaceAll("/", "-"),
+            tar: async () => {
+              const response = await fetch(
+                `https://api.github.com/repos/${input}/tarball`,
+              );
+              return response.body!;
+            },
+          };
+        },
+      },
+    });
+    expect(await existsSync(resolve(dir, "package.json")));
+  });
+
   it("clone unjs/template using git provider", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/cloned-with-git");
     const { dir } = await downloadTemplate("git:unjs/template", {
