@@ -83,14 +83,19 @@ export function parseGitCloneURI(input: string) {
     uri = `${password ? `${username}:${password}` : username}@${uri}`;
   }
 
-  const version = /#(.+)$/.exec(input)?.at(1);
-
   const name = uri
     .replace(/^.+@/, "")
     .replace(/(\.git)?(#.*)?$/, "")
     .replaceAll(/[:/]/g, "-");
 
-  return { uri, version, name };
+  const [version, subdir] = /#(.+)$/.exec(input)?.at(1)?.split(":") ?? [];
+
+  return {
+    uri,
+    name,
+    ...(version && { version }),
+    ...(subdir && { subdir }),
+  };
 }
 
 export function debug(...args: unknown[]) {

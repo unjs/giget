@@ -134,11 +134,12 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  const { uri: gitUri, name, version } = parseGitCloneURI(input);
+  const { uri: gitUri, name, version, subdir } = parseGitCloneURI(input);
 
   return {
     name,
     version,
+    subdir,
     tar: async () => {
       const $ = zx$({ quiet: true });
 

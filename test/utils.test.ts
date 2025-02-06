@@ -26,38 +26,81 @@ describe("parseGitCloneURI", () => {
   const tests = [
     {
       input: "git@github.com:unjs/template.git",
-      output: "git@github.com:unjs/template.git",
+      output: {
+        uri: "git@github.com:unjs/template.git",
+        name: "github.com-unjs-template",
+      },
     },
     // .git does not matter in git URL, but remove it from name
     {
       input: "github.com:unjs/template",
-      output: "git@github.com:unjs/template",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+      },
     },
     // Provide git@ user if not provided
     {
       input: "github.com:unjs/template",
-      output: "git@github.com:unjs/template",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+      },
     },
     // Add github.com as host
-    { input: "github:unjs/template", output: "git@github.com:unjs/template" },
-    { input: "gh:unjs/template", output: "git@github.com:unjs/template" },
-    { input: "unjs/template", output: "git@github.com:unjs/template" },
+    {
+      input: "github:unjs/template",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+      },
+    },
+    {
+      input: "gh:unjs/template",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+      },
+    },
+    {
+      input: "unjs/template",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+      },
+    },
     // Add gitlab.com as host
-    { input: "gitlab:unjs/template", output: "git@gitlab.com:unjs/template" },
+    {
+      input: "gitlab:unjs/template",
+      output: {
+        uri: "git@gitlab.com:unjs/template",
+        name: "gitlab.com-unjs-template",
+      },
+    },
     // Add version ref if provided
     {
       input: "unjs/template#abcd1234",
-      output: "git@github.com:unjs/template",
-      version: "abcd1234",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+        version: "abcd1234",
+      },
+    },
+    // Add subdir if provided
+    {
+      input: "unjs/template#abcd1234:/my/subdir",
+      output: {
+        uri: "git@github.com:unjs/template",
+        name: "github.com-unjs-template",
+        version: "abcd1234",
+        subdir: "/my/subdir",
+      },
     },
   ];
 
-  for (const { input, output, version } of tests) {
+  for (const { input, output } of tests) {
     it(input, () => {
-      expect(parseGitCloneURI(input)).toEqual({
-        uri: output,
-        version,
-      });
+      expect(parseGitCloneURI(input)).toEqual(output);
     });
   }
 
@@ -74,7 +117,10 @@ describe("parseGitCloneURI", () => {
       const input = "github.com:unjs/template";
       const output = "custom-git-user@github.com:unjs/template";
 
-      expect(parseGitCloneURI(input)).toEqual({ uri: output });
+      expect(parseGitCloneURI(input)).toEqual({
+        uri: output,
+        name: "github.com-unjs-template",
+      });
     });
 
     test("Use GIGET_GIT_PASSWORD if provided", async () => {
@@ -85,7 +131,10 @@ describe("parseGitCloneURI", () => {
       const output =
         "custom-git-user:custom-git-password@github.com:unjs/template";
 
-      expect(parseGitCloneURI(input)).toEqual({ uri: output });
+      expect(parseGitCloneURI(input)).toEqual({
+        uri: output,
+        name: "github.com-unjs-template",
+      });
     });
 
     test("Use GIGET_GIT_HOST instead of github.com if host is not provided", async () => {
@@ -94,7 +143,10 @@ describe("parseGitCloneURI", () => {
       const input = "unjs/template";
       const output = "git@git.mycompany.com:unjs/template";
 
-      expect(parseGitCloneURI(input)).toEqual({ uri: output });
+      expect(parseGitCloneURI(input)).toEqual({
+        uri: output,
+        name: "git.mycompany.com-unjs-template",
+      });
     });
   });
 });

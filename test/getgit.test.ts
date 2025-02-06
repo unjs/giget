@@ -73,6 +73,27 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "nuxt.config.ts"))).toBe(true);
   });
 
+  it("clone nuxt/starter#v3:public subdir (specific subdir)", async () => {
+    const destinationDirectory = resolve(
+      __dirname,
+      ".tmp/nuxt3-starter-v3-public",
+    );
+    const { dir } = await downloadTemplate("git:nuxt/starter#v3:public", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(existsSync(resolve(dir, "favicon.ico"))).toBe(true);
+  });
+
+  it("clone unjs/template#:src (default branch, specific subdir)", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/unjs-template-src");
+    const { dir } = await downloadTemplate("git:unjs/template#:src", {
+      dir: destinationDirectory,
+      preferOffline: true,
+    });
+    expect(existsSync(resolve(dir, "index.ts"))).toBe(true);
+  });
+
   it("do not clone to exisiting dir", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/exisiting");
     await mkdir(destinationDirectory).catch(() => {});
