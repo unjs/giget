@@ -47,6 +47,7 @@ describe("downloadTemplate", () => {
       preferOffline: true,
     });
     expect(existsSync(resolve(dir, "package.json"))).toBe(true);
+    expect(existsSync(resolve(dir, ".git"))).toBe(false);
   });
 
   it("clone unjs/template#e24616c using git provider (specific commit)", async () => {

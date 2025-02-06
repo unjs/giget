@@ -1,7 +1,7 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types";
 import { debug, parseGitCloneURI, parseGitURI, sendFetch } from "./_utils";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
@@ -182,11 +182,18 @@ export const git: TemplateProvider = (input) => {
         await gitCmd().clone(gitUri, tempDir, { "--depth": 1 });
       }
 
-      // Remove .git
-      await rm(join(tempDir, ".git"), { force: true, recursive: true });
-
       // Create tar
-      return create({ cwd: tempDir }, ["."]);
+      return create({
+        cwd: tempDir,
+        filter: (path) => {
+          // Example paths:
+          // .
+          // ./README.md
+          // ./.src
+          // ./src/index.ts
+          return !path.startsWith("./.git")
+        }
+      }, ["."]);
     },
   };
 };
