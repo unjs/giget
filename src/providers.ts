@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
-import { simpleGit as gitCmd } from "simple-git";
+import { execa } from "execa";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -159,25 +159,21 @@ export const git: TemplateProvider = (input) => {
         // so we err on the side of caution if the command fails.
         const isBranch = await (async () => {
           try {
-            const output = await gitCmd().listRemote([gitUri, version]);
+            const { stdout: output } = await execa`git ls-remote ${gitUri} ${version}`;
+            console.log('git ls-remote output', output)
             return Boolean(output);
           } catch {
             return false;
           }
         })();
         if (isBranch) {
-          await gitCmd().clone(gitUri, tempDir, {
-            "--branch": version,
-            // Need to pass null for simple-git option with no value
-            // eslint-disable-next-line unicorn/no-null
-            "--single-branch": null,
-          });
+          await execa`git clone ${gitUri} ${tempDir} --branch ${version} --single-branch`;
         } else {
-          await gitCmd().clone(gitUri, tempDir);
-          await gitCmd({ baseDir: tempDir }).checkout(version);
+          await execa`git clone ${gitUri} ${tempDir}`;
+          await execa({ cwd: tempDir })`git checkout ${version}`;
         }
       } else {
-        await gitCmd().clone(gitUri, tempDir, { "--depth": 1 });
+        await execa`git clone ${gitUri} ${tempDir} --depth=1`;
       }
 
       // Create tar
