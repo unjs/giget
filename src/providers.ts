@@ -134,12 +134,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  const { uri: gitUri, version } = parseGitCloneURI(input);
-
-  const name = gitUri
-    .replace(/^.+@/, "")
-    .replace(/(\.git)?(#.*)?$/, "")
-    .replaceAll(/[:/]/g, "-");
+  const { uri: gitUri, name, version } = parseGitCloneURI(input);
 
   return {
     name,
