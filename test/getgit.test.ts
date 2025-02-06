@@ -113,7 +113,9 @@ describe("downloadTemplate", () => {
           gut: createGitProvider({ gitCmd: "gut" }),
         },
       }),
-    ).rejects.toThrow("gut is required to download git repositories. Make sure gut is installed and available in your PATH.");
+    ).rejects.toThrow(
+      "gut is required to download git repositories. Make sure gut is installed and available in your PATH.",
+    );
   });
 
   it("show error when the git repository is invalid", async () => {
@@ -127,7 +129,9 @@ describe("downloadTemplate", () => {
         dir: destinationDirectory,
         preferOffline,
       }),
-    ).rejects.toThrow("Failed to clone git repository from git@github.com:unjs/templete. Make sure the repository exists and the provided version is correct.");
+    ).rejects.toThrow(
+      "Failed to clone git repository from git@github.com:unjs/templete. Make sure the repository exists and the provided version is correct.",
+    );
   });
 
   it("do not clone to exisiting dir", async () => {
