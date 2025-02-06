@@ -165,7 +165,9 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
                     // be definitely command does not exist.
                     if (error.code === "ENOENT") {
                       reject(
-                        new Error(`${error.path} is required to download git repositories. Make sure ${error.path} is installed and available in your PATH.`),
+                        new Error(
+                          `${error.path} is required to download git repositories. Make sure ${error.path} is installed and available in your PATH.`,
+                        ),
                       );
                       return;
                     }
@@ -180,43 +182,49 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
           );
         };
 
-        // If we do not have version, we can speed up via --depth=1.
-        // Otherwise, we need to clone the entire history, then check out the ref.
-        if (version) {
-          // Use git ls-remote to check if the specified version is a branch:
-          //
-          //   git ls-remote git@github.com/nuxt/starter foo => empty string
-          //
-          // This is just an optimization so we can use --branch when cloning.
-          // so we err on the side of caution if the command fails.
-          const isBranch = await (async () => {
-            try {
-              const { stdout: output } = await $git([
-                "ls-remote",
-                gitUri,
-                version,
-              ]);
-              return Boolean(output);
-            } catch {
-              return false;
-            }
-          })();
+        try {
+          // If we do not have version, we can speed up via --depth=1.
+          // Otherwise, we need to clone the entire history, then check out the ref.
+          if (version) {
+            // Use git ls-remote to check if the specified version is a branch:
+            //
+            //   git ls-remote git@github.com/nuxt/starter foo => empty string
+            //
+            // This is just an optimization so we can use --branch when cloning.
+            // so we err on the side of caution if the command fails.
+            const isBranch = await (async () => {
+              try {
+                const { stdout: output } = await $git([
+                  "ls-remote",
+                  gitUri,
+                  version,
+                ]);
+                return Boolean(output);
+              } catch {
+                return false;
+              }
+            })();
 
-          if (isBranch) {
-            await $git([
-              "clone",
-              gitUri,
-              tempDir,
-              "--branch",
-              version,
-              "--single-branch",
-            ]);
+            if (isBranch) {
+              await $git([
+                "clone",
+                gitUri,
+                tempDir,
+                "--branch",
+                version,
+                "--single-branch",
+              ]);
+            } else {
+              await $git(["clone", gitUri, tempDir]);
+              await $git(["checkout", version], { cwd: tempDir });
+            }
           } else {
-            await $git(["clone", gitUri, tempDir]);
-            await $git(["checkout", version], { cwd: tempDir });
+            await $git(["clone", gitUri, tempDir, "--depth=1"]);
           }
-        } else {
-          await $git(["clone", gitUri, tempDir, "--depth=1"]);
+        } catch {
+          throw new Error(
+            `Failed to clone git repository from ${gitUri}${version ? `(ref: ${version})` : ""}. Make sure the repository exists and the provided version is correct.`,
+          );
         }
 
         // Create tar
