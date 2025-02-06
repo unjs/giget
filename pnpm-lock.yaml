@@ -29,9 +29,6 @@ importers:
       pathe:
         specifier: ^2.0.2
         version: 2.0.2
-      simple-git:
-        specifier: ^3.27.0
-        version: 3.27.0
       tar:
         specifier: ^6.2.1
         version: 6.2.1
@@ -60,6 +57,9 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
+      simple-git:
+        specifier: ^3.27.0
+        version: 3.27.0
       typescript:
         specifier: ^5.7.3
         version: 5.7.3

@@ -5,6 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { create } from "tar";
+import { simpleGit as gitCmd } from "simple-git";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -144,9 +145,6 @@ export const git: TemplateProvider = (input) => {
     name,
     version,
     tar: async () => {
-      // Lazily import simple-git so we can mark the dependency as optional
-      const { simpleGit: gitCmd } = await import("simple-git");
-
       // Make temp working directory
       const tempDir = await mkdtemp(join(tmpdir(), "giget-"));
 
