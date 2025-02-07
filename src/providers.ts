@@ -143,6 +143,10 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
   return (input) => {
     const { uri: gitUri, name, version, subdir } = parseGitCloneURI(input);
 
+    if (gitUri.startsWith('/') && process.env.GIGET_GIT_ALLOW_LOCAL !== 'true') {
+      throw new Error('Cloning from local path is not allowed');
+    }
+
     return {
       name,
       version,

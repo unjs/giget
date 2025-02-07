@@ -11,6 +11,7 @@ const preferOffline = process.env.PREFER_OFFLINE !== "false";
 describe("downloadTemplate", () => {
   beforeAll(async () => {
     await rm(resolve(__dirname, ".tmp"), { recursive: true, force: true });
+    process.env.GIGET_GIT_ALLOW_LOCAL = 'true';
   });
 
   it("clone unjs/template", async () => {
@@ -98,6 +99,40 @@ describe("downloadTemplate", () => {
     });
     expect(existsSync(resolve(dir, "index.ts"))).toBe(true);
   });
+
+  describe('local git repo', () => {
+    it('clone from local repository', async () => {
+      const destinationDirectory = resolve(__dirname, ".tmp/giget");
+      const { dir } = await downloadTemplate("git:.", {
+        dir: destinationDirectory,
+        preferOffline,
+      });
+      expect(existsSync(resolve(dir, "src/giget.ts"))).toBe(true);
+    })
+
+    it('clone from local repository (with version and subdir)', async () => {
+      const destinationDirectory = resolve(__dirname, ".tmp/giget-version-subdir");
+      const { dir } = await downloadTemplate("git:.#9d04ea77:src", {
+        dir: destinationDirectory,
+        preferOffline,
+      });
+      expect(existsSync(resolve(dir, "giget.ts"))).toBe(true);
+    })
+
+    it('show error when cloning from local repository but GIGET_GIT_ALLOW_LOCAL is not true', async () => {
+      delete process.env.GIGET_GIT_ALLOW_LOCAL;
+
+      const destinationDirectory = resolve(__dirname, ".tmp/giget-local-disabled");
+      await expect(
+        downloadTemplate("git:.", {
+          dir: destinationDirectory,
+          preferOffline,
+        }),
+      ).rejects.toThrow(
+        "Cloning from local path is not allowed",
+      );
+    });
+  })
 
   it("show error when the git command is not available", async () => {
     const destinationDirectory = resolve(

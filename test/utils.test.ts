@@ -149,4 +149,35 @@ describe("parseGitCloneURI", () => {
       });
     });
   });
+
+  describe('local git path', () => {
+    test("relative path", async () => {
+      const input = "./local/repo";
+
+      expect(parseGitCloneURI(input, { cwd: '/cwd' })).toEqual({
+        uri: '/cwd/local/repo',
+        name: "cwd-local-repo",
+      });
+    });
+
+    test("absolute path", async () => {
+      const input = "/absolute/local/repo";
+
+      expect(parseGitCloneURI(input, { cwd: '/cwd' })).toEqual({
+        uri: '/absolute/local/repo',
+        name: "absolute-local-repo",
+      });
+    });
+
+    test("should still support version and hash", async () => {
+      const input = "/absolute/local/repo#abcd1234:/my/subdir";
+
+      expect(parseGitCloneURI(input, { cwd: '/cwd' })).toEqual({
+        uri: '/absolute/local/repo',
+        name: "absolute-local-repo",
+        version: 'abcd1234',
+        subdir: '/my/subdir',
+      });
+    });
+  })
 });
