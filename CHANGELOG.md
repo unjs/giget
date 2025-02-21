@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.5
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.4...v1.2.5)
+
+### 🏡 Chore
+
+- Remove unused ohash dependency ([be5888c](https://github.com/unjs/giget/commit/be5888c))
+- Update dependencies ([4eab58e](https://github.com/unjs/giget/commit/4eab58e))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.2.4
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.3...v1.2.4)
