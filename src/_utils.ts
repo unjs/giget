@@ -98,7 +98,9 @@ export function cacheDirectory() {
 
   if (process.platform === "win32") {
     const windowsCacheDir = resolve(tmpdir(), "giget");
-    // on windows, move old cache directory to new location
+    // Migrate cache dir to new location
+    // https://github.com/unjs/giget/pull/182/
+    // TODO: remove in next releases
     if (!existsSync(windowsCacheDir) && existsSync(cacheDir)) {
       try {
         renameSync(cacheDir, windowsCacheDir);
