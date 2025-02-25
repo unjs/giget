@@ -205,6 +205,18 @@ For private repositories and sources, you might need a token. In order to provid
 
 **Note:** For github private repository access with Fine-grained access tokens, you need to give **Contents** and **Metadata** repository permissions.
 
+### GitHub Actions
+
+If your project depends on a private GitHub repository, you need to add the access token as a secret. Please see GitHub Actions docs on [creating secrets for a repository](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository). In your workflow, refer to the token as shown in the example below:
+
+```yml
+- name: Install packages
+  run: npm ci
+  env:
+    GIGET_AUTH: ${{ secrets.GIGET_AUTH }}
+```
+
+
 ## Related projects
 
 Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance and supports custom template providers, auth, and many more features out of the box.

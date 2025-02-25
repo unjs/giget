@@ -12,14 +12,14 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-      - run: corepack enable
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - run: npm i -fg corepack && corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm build
       - run: pnpm vitest --coverage
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5

@@ -52,10 +52,10 @@ export async function downloadTemplate(
     options.provider || (registry ? "registry" : "github");
 
   let source: string = input;
-  const sourceProvierMatch = input.match(sourceProtoRe);
-  if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1];
-    source = input.slice(sourceProvierMatch[0].length);
+  const sourceProviderMatch = input.match(sourceProtoRe);
+  if (sourceProviderMatch) {
+    providerName = sourceProviderMatch[1]!;
+    source = input.slice(sourceProviderMatch[0].length);
     if (providerName === "http" || providerName === "https") {
       source = input;
     }
