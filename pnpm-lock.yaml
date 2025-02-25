@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  tar:
+    hash: bb65a63b0a70c4bc0f0bb4105dbab29307c2cfa90445b6b63ac1c3a27009436e
+    path: patches/tar.patch
+
 importers:
 
   .:
@@ -56,7 +61,7 @@ importers:
         version: 3.5.2
       tar:
         specifier: ^6.2.1
-        version: 6.2.1
+        version: 6.2.1(patch_hash=bb65a63b0a70c4bc0f0bb4105dbab29307c2cfa90445b6b63ac1c3a27009436e)
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -3514,7 +3519,7 @@ snapshots:
       node-fetch-native: 1.6.6
       nypm: 0.5.4
       pathe: 2.0.3
-      tar: 6.2.1
+      tar: 6.2.1(patch_hash=bb65a63b0a70c4bc0f0bb4105dbab29307c2cfa90445b6b63ac1c3a27009436e)
 
   glob-parent@5.1.2:
     dependencies:
@@ -4292,7 +4297,7 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
 
-  tar@6.2.1:
+  tar@6.2.1(patch_hash=bb65a63b0a70c4bc0f0bb4105dbab29307c2cfa90445b6b63ac1c3a27009436e):
     dependencies:
       chownr: 2.0.0
       fs-minipass: 2.1.0

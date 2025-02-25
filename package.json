@@ -53,5 +53,10 @@
     "unbuild": "^3.3.1",
     "vitest": "^3.0.7"
   },
-  "packageManager": "pnpm@10.5.0"
+  "packageManager": "pnpm@10.5.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "tar": "patches/tar.patch"
+    }
+  }
 }
