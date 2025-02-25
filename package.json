@@ -43,6 +43,7 @@
     "@types/tar": "^6.1.13",
     "@vitest/coverage-v8": "^3.0.7",
     "changelogen": "^0.5.7",
+    "esbuild": "^0.25.0",
     "eslint": "^9.21.0",
     "eslint-config-unjs": "^0.4.2",
     "jiti": "^2.4.2",
