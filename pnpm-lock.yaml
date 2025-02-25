@@ -26,9 +26,6 @@ importers:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
-      tar:
-        specifier: ^6.2.1
-        version: 6.2.1
     devDependencies:
       '@types/node':
         specifier: ^22.13.5
@@ -54,6 +51,9 @@ importers:
       prettier:
         specifier: ^3.5.2
         version: 3.5.2
+      tar:
+        specifier: ^6.2.1
+        version: 6.2.1
       typescript:
         specifier: ^5.7.3
         version: 5.7.3

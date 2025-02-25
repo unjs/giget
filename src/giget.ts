@@ -1,6 +1,8 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar";
+// @ts-ignore
+import tarExtract from "tar/lib/extract.js";
+import type { ExtractOptions } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
@@ -141,7 +143,7 @@ export async function downloadTemplate(
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
-  await extract({
+  await tarExtract(<ExtractOptions>{
     file: tarPath,
     cwd: extractPath,
     onentry(entry) {
