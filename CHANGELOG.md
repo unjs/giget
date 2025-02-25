@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v2.0.0
+
+[compare changes](https://github.com/unjs/giget/compare/v1.2.5...v2.0.0)
+
+### 🩹 Fixes
+
+- ⚠️  Use correct temp dir in windows for cache ([#182](https://github.com/unjs/giget/pull/182))
+- Patch tar for bun on windows ([#217](https://github.com/unjs/giget/pull/217))
+
+### 📦 Build
+
+- ⚠️  Esm-only dist ([d708f2b](https://github.com/unjs/giget/commit/d708f2b))
+- Bundle tar ([#214](https://github.com/unjs/giget/pull/214))
+- Minify bundled tar dependencies ([946ea3f](https://github.com/unjs/giget/commit/946ea3f))
+
+### 🏡 Chore
+
+- Update ci ([96f9bb0](https://github.com/unjs/giget/commit/96f9bb0))
+- Update ci ([0764410](https://github.com/unjs/giget/commit/0764410))
+- Update deps ([567c304](https://github.com/unjs/giget/commit/567c304))
+- Update to nypm 0.6 ([6d47921](https://github.com/unjs/giget/commit/6d47921))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Use correct temp dir in windows for cache ([#182](https://github.com/unjs/giget/pull/182))
+- ⚠️  Esm-only dist ([d708f2b](https://github.com/unjs/giget/commit/d708f2b))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v1.2.5
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.4...v1.2.5)
