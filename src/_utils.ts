@@ -97,7 +97,7 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
     // Remove trailing git and hash
     .replace(/(\.git)?(#.*)?$/, "")
     // Remove non-words before name
-    .replace(/^\W+/, '')
+    .replace(/^\W+/, "")
     // Replace special characters with -
     .replaceAll(/[:/]/g, "-");
 
