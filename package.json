@@ -1,6 +1,6 @@
 {
   "name": "giget",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "Download templates and git repositories with pleasure!",
   "repository": "unjs/giget",
   "license": "MIT",
@@ -8,19 +8,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "bin": {
     "giget": "./dist/cli.mjs"
   },
@@ -43,23 +35,28 @@
     "consola": "^3.4.0",
     "defu": "^6.1.4",
     "node-fetch-native": "^1.6.6",
-    "nypm": "^0.5.1",
-    "ohash": "^1.1.4",
-    "pathe": "^2.0.2",
-    "tar": "^6.2.1"
+    "nypm": "^0.6.0",
+    "pathe": "^2.0.3"
   },
   "devDependencies": {
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.5",
     "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^3.0.4",
+    "@vitest/coverage-v8": "^3.0.7",
     "changelogen": "^0.5.7",
-    "eslint": "^9.19.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.21.0",
     "eslint-config-unjs": "^0.4.2",
     "jiti": "^2.4.2",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.2",
+    "tar": "^6.2.1",
     "typescript": "^5.7.3",
     "unbuild": "^3.3.1",
-    "vitest": "^3.0.4"
+    "vitest": "^3.0.7"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@10.5.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "tar": "patches/tar.patch"
+    }
+  }
 }
