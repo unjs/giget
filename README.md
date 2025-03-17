@@ -129,6 +129,8 @@ import { downloadTemplate } from "giget";
 const { downloadTemplate } = require("giget");
 ```
 
+> Previously, we supported both ESM and CJS, but from v2 onward, we support only ESM.
+
 ### `downloadTemplate(source, options?)`
 
 **Example:**
