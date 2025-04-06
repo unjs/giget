@@ -1,5 +1,5 @@
-import { expect, it, describe } from "vitest";
-import { parseGitURI } from "../src/_utils";
+import { expect, it, describe, vi } from "vitest";
+import { parseGitURI, currentShell, startShell } from "../src/_utils";
 
 describe("parseGitURI", () => {
   const defaults = { repo: "org/repo", subdir: "/", ref: "main" };
@@ -20,4 +20,42 @@ describe("parseGitURI", () => {
       });
     });
   }
+});
+
+describe("currentShell", () => {
+  it("returns the current shell", () => {
+    process.env.SHELL = "/bin/bash";
+    expect(currentShell()).toBe("/bin/bash");
+    delete process.env.SHELL;
+  });
+
+  it("returns the default shell if SHELL is not set", () => {
+    process.env.SHELL = "";
+    expect(currentShell()).toBe("/bin/bash");
+    delete process.env.SHELL;
+  });
+});
+
+describe("startShell", () => {
+  it("returns the current shell", async () => {
+    const spawnSyncMock = await vi.hoisted(async () => {
+      await import("node:child_process");
+      return vi.fn();
+    });
+    vi.mock(import("node:child_process"), async (importOriginal) => {
+      const actual = await importOriginal();
+      return {
+        ...actual,
+        spawnSync: spawnSyncMock,
+      };
+    });
+    process.env.SHELL = "/bin/bash";
+    startShell("/tmp");
+    expect(spawnSyncMock).toHaveBeenCalledWith("/bin/bash", [], {
+      shell: true,
+      cwd: "/tmp",
+      stdio: "inherit",
+    });
+    delete process.env.SHELL;
+  });
 });
