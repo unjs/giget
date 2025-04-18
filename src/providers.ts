@@ -228,6 +228,7 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
 
           throw new Error(
             `Failed to clone git repository from ${gitUri}${version ? `(ref: ${version})` : ""}. Make sure the repository exists and the provided version is correct.`,
+            { cause: error }
           );
         }
 
