@@ -8,6 +8,10 @@ import { createGitProvider } from "../src/providers";
 // Disable cache by PREFER_OFFLINE=false vitest
 const preferOffline = process.env.PREFER_OFFLINE !== "false";
 
+// Use a larger timeout for tests that perform slow git clone that needs to
+// clone the entire git history.
+const GIT_SLOW_TEST_TIMEOUT = 10_000;
+
 describe("downloadTemplate", () => {
   beforeAll(async () => {
     await rm(resolve(__dirname, ".tmp"), { recursive: true, force: true });
@@ -55,41 +59,53 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, ".git"))).toBe(false);
   });
 
-  it("clone unjs/template#e24616c using git provider (specific commit)", async () => {
-    const destinationDirectory = resolve(
-      __dirname,
-      ".tmp/cloned-with-git-e24616c",
-    );
-    const { dir } = await downloadTemplate("git:unjs/template#e24616c", {
-      dir: destinationDirectory,
-      preferOffline,
-    });
+  it(
+    "clone unjs/template#e24616c using git provider (specific commit)",
+    { timeout: GIT_SLOW_TEST_TIMEOUT },
+    async () => {
+      const destinationDirectory = resolve(
+        __dirname,
+        ".tmp/cloned-with-git-e24616c",
+      );
+      const { dir } = await downloadTemplate("git:unjs/template#e24616c", {
+        dir: destinationDirectory,
+        preferOffline,
+      });
 
-    // The initial version of unjs/template still has .eslintrc
-    expect(existsSync(resolve(dir, ".eslintrc"))).toBe(true);
-  });
+      // The initial version of unjs/template still has .eslintrc
+      expect(existsSync(resolve(dir, ".eslintrc"))).toBe(true);
+    },
+  );
 
-  it("clone nuxt/starter#v3 using git provider (specific branch)", async () => {
-    const destinationDirectory = resolve(__dirname, ".tmp/nuxt-starter-v3");
-    const { dir } = await downloadTemplate("git:nuxt/starter#v3", {
-      dir: destinationDirectory,
-      preferOffline,
-    });
+  it(
+    "clone nuxt/starter#v3 using git provider (specific branch)",
+    { timeout: GIT_SLOW_TEST_TIMEOUT },
+    async () => {
+      const destinationDirectory = resolve(__dirname, ".tmp/nuxt-starter-v3");
+      const { dir } = await downloadTemplate("git:nuxt/starter#v3", {
+        dir: destinationDirectory,
+        preferOffline,
+      });
 
-    expect(existsSync(resolve(dir, "nuxt.config.ts"))).toBe(true);
-  });
+      expect(existsSync(resolve(dir, "nuxt.config.ts"))).toBe(true);
+    },
+  );
 
-  it("clone nuxt/starter#v3:public subdir (specific subdir)", async () => {
-    const destinationDirectory = resolve(
-      __dirname,
-      ".tmp/nuxt3-starter-v3-public",
-    );
-    const { dir } = await downloadTemplate("git:nuxt/starter#v3:public", {
-      dir: destinationDirectory,
-      preferOffline,
-    });
-    expect(existsSync(resolve(dir, "favicon.ico"))).toBe(true);
-  });
+  it(
+    "clone nuxt/starter#v3:public subdir (specific subdir)",
+    { timeout: GIT_SLOW_TEST_TIMEOUT },
+    async () => {
+      const destinationDirectory = resolve(
+        __dirname,
+        ".tmp/nuxt3-starter-v3-public",
+      );
+      const { dir } = await downloadTemplate("git:nuxt/starter#v3:public", {
+        dir: destinationDirectory,
+        preferOffline,
+      });
+      expect(existsSync(resolve(dir, "favicon.ico"))).toBe(true);
+    },
+  );
 
   it("clone unjs/template#:src (default branch, specific subdir)", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/unjs-template-src");
