@@ -205,7 +205,7 @@ describe("downloadTemplate", () => {
         preferOffline,
       }),
     ).rejects.toThrow(
-      "Failed to clone git repository from git@github.com:unjs/templete. Make sure the repository exists and the provided version is correct.",
+      "Failed to clone git repository from git@github.com:unjs/templete",
     );
   });
 
