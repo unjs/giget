@@ -135,9 +135,9 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
-export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
-  opts,
-) => {
+export const createGitProvider: TemplateProviderFactory<{
+  gitCmd?: string;
+}> = (opts) => {
   const gitCmd = opts.gitCmd ?? "git";
 
   return (input) => {
@@ -227,7 +227,7 @@ export const createGitProvider: TemplateProviderFactory<{ gitCmd?: string }> = (
           }
 
           throw new Error(
-            `Failed to clone git repository from ${gitUri}${version ? `(ref: ${version})` : ""}. Make sure the repository exists and the provided version is correct.`,
+            `Failed to clone git repository from ${gitUri}${version ? `(ref: ${version})` : ""}. Make sure the repository exists and you have access to the git repository (try cloning the repository).`,
             { cause: error },
           );
         }

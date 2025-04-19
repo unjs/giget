@@ -180,4 +180,46 @@ describe("parseGitCloneURI", () => {
       });
     });
   });
+
+  describe("https git url", () => {
+    test("allow using https git URL if provided", () => {
+      expect(parseGitCloneURI("https://github.com/unjs/template.git")).toEqual({
+        uri: "https://github.com/unjs/template.git",
+        name: "github.com-unjs-template",
+      });
+    });
+
+    test("add version if provided", () => {
+      expect(
+        parseGitCloneURI("https://github.com/unjs/template.git#abcd1234"),
+      ).toEqual({
+        uri: "https://github.com/unjs/template.git",
+        name: "github.com-unjs-template",
+        version: "abcd1234",
+      });
+    });
+
+    test("add path if provided", () => {
+      expect(
+        parseGitCloneURI("https://github.com/unjs/template.git#:/my/subdir"),
+      ).toEqual({
+        uri: "https://github.com/unjs/template.git",
+        name: "github.com-unjs-template",
+        subdir: "/my/subdir",
+      });
+    });
+
+    test("add version and path if provided", () => {
+      expect(
+        parseGitCloneURI(
+          "https://github.com/unjs/template.git#abcd1234:/my/subdir",
+        ),
+      ).toEqual({
+        uri: "https://github.com/unjs/template.git",
+        name: "github.com-unjs-template",
+        version: "abcd1234",
+        subdir: "/my/subdir",
+      });
+    });
+  });
 });

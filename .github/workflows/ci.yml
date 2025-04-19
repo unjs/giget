@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: 22
           cache: "pnpm"
-      # https://serverfault.com/questions/856194/securely-add-a-host-e-g-github-to-the-ssh-known-hosts-file
-      - name: Add github.com in known_hosts
-        run: curl --silent https://api.github.com/meta | jq --raw-output '"github.com "+.ssh_keys[]' >> ~/.ssh/known_hosts
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm build
