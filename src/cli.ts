@@ -69,7 +69,7 @@ const mainCommand = defineCommand({
       process.env.DEBUG = process.env.DEBUG || "true";
     }
 
-    let r: Awaited<ReturnType<typeof downloadTemplate>>
+    let r: Awaited<ReturnType<typeof downloadTemplate>>;
     try {
       r = await downloadTemplate(args.template, {
         dir: args.dir,
@@ -79,17 +79,20 @@ const mainCommand = defineCommand({
         preferOffline: args.preferOffline,
         auth: args.auth,
         install: args.install,
-      })
+      });
     } catch (error) {
       if (args.verbose) {
-        consola.error(error)
+        consola.error(error);
       } else {
-        const message = error instanceof Error ? error.message : `Failed to download ${args.template}: unknown error`
-        consola.error(message)
+        const message =
+          error instanceof Error
+            ? error.message
+            : `Failed to download ${args.template}: unknown error`;
+        consola.error(message);
       }
 
-      process.exitCode = 1
-      return
+      process.exitCode = 1;
+      return;
     }
 
     const _from = r.name || r.url;
