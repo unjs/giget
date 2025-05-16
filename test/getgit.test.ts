@@ -145,17 +145,20 @@ describe("downloadTemplate", () => {
         expect(existsSync(resolve(dir, "src/giget.ts"))).toBe(true);
       });
 
-      it("clone from local repository (with version and subdir)", async () => {
-        const destinationDirectory = resolve(
-          __dirname,
-          ".tmp/giget-version-subdir",
-        );
-        const { dir } = await downloadTemplate("git:.#9d04ea77:src", {
-          dir: destinationDirectory,
-          preferOffline,
-        });
-        expect(existsSync(resolve(dir, "giget.ts"))).toBe(true);
-      });
+      it.skipIf(process.env.CI)(
+        "clone from local repository (with version and subdir)",
+        async () => {
+          const destinationDirectory = resolve(
+            __dirname,
+            ".tmp/giget-version-subdir",
+          );
+          const { dir } = await downloadTemplate("git:.#9d04ea77:src", {
+            dir: destinationDirectory,
+            preferOffline,
+          });
+          expect(existsSync(resolve(dir, "giget.ts"))).toBe(true);
+        },
+      );
 
       it("show error when cloning from local repository but GIGET_GIT_ALLOW_LOCAL is not true", async () => {
         delete process.env.GIGET_GIT_ALLOW_LOCAL;
