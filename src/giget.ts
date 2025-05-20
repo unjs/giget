@@ -105,7 +105,7 @@ export async function downloadTemplate(
     const destDir = resolve(cwd, options.dir || template.defaultDir);
     try {
       for (const filePath of files) {
-        const rawUrl = 'test' + template.raw(filePath.replace(/^\//, "")) + 'test';
+        const rawUrl = template.raw(filePath.replace(/^\//, ""));
         const outPath = resolve(destDir, filePath);
         await mkdir(dirname(outPath), { recursive: true });
         if (options.strategy !== "skip" || !existsSync(outPath)) {
