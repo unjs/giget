@@ -13,6 +13,7 @@ export interface TemplateInfo {
   url?: string;
   defaultDir?: string;
   headers?: Record<string, string | undefined>;
+  raw?: (path: string) => string;
 
   // Added by giget
   source?: never;

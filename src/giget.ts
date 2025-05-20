@@ -1,4 +1,4 @@
-import { mkdir, rm } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
 // @ts-ignore
 import tarExtract from "tar/lib/extract.js";
@@ -6,7 +6,13 @@ import type { ExtractOptions } from "tar";
 import { resolve, dirname } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
-import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
+import {
+  cacheDirectory,
+  download,
+  debug,
+  normalizeHeaders,
+  sendFetch,
+} from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
 import type { TemplateInfo, TemplateProvider } from "./types";
@@ -24,6 +30,8 @@ export interface DownloadTemplateOptions {
   auth?: string;
   install?: boolean;
   silent?: boolean;
+  strategy?: "skip" | "overwrite";
+  files?: string[];
 }
 
 const sourceProtoRe = /^([\w-.]+):/;
@@ -87,6 +95,48 @@ export async function downloadTemplate(
     "-",
   );
 
+  if (
+    template.raw &&
+    Array.isArray(options.files) &&
+    options.files.length > 0
+  ) {
+    const files = options.files;
+    const cwd = resolve(options.cwd || ".");
+    const destDir = resolve(cwd, options.dir || template.defaultDir);
+    try {
+      for (const filePath of files) {
+        const rawUrl = 'test' + template.raw(filePath.replace(/^\//, "")) + 'test';
+        const outPath = resolve(destDir, filePath);
+        await mkdir(dirname(outPath), { recursive: true });
+        if (options.strategy !== "skip" || !existsSync(outPath)) {
+          const res = await sendFetch(rawUrl, {
+            validateStatus: true,
+            headers: normalizeHeaders({
+              Authorization: options.auth
+                ? `Bearer ${options.auth}`
+                : undefined,
+              ...template.headers,
+            }),
+          });
+          if (res.status >= 400) {
+            throw new Error(`Failed to fetch ${rawUrl}: ${res.status}`);
+          }
+          const buffer = Buffer.from(await res.arrayBuffer());
+          await writeFile(outPath, buffer);
+        }
+      }
+
+      // All files downloaded successfully
+      return {
+        ...template,
+        dir: destDir,
+        source: files.join(","),
+      };
+    } catch (error) {
+      debug("Raw files download failed, falling back to tarball flow:", error);
+    }
+  }
+
   // Download template source
   const temporaryDirectory = resolve(
     cacheDirectory(),
@@ -126,16 +176,43 @@ export async function downloadTemplate(
     );
   }
 
+  // Partial tarball extraction for file/folder paths when --files is used
+  if (options.files && options.files.length > 0) {
+    const cwdPart = resolve(options.cwd || ".");
+    const extractPart = resolve(cwdPart, options.dir || template.defaultDir);
+    // ensure destination exists
+    await mkdir(extractPart, { recursive: true });
+    // Remove any leading/trailing slashes for accurate matching
+    const filterPaths = options.files.map((p) => p.replace(/^\/+|\/+$/g, ""));
+    await tarExtract(<ExtractOptions>{
+      file: tarPath,
+      cwd: extractPart,
+      strip: 1,
+      filter: (entryPath: string) => {
+        const rel = entryPath.split("/").slice(1).join("/");
+        return filterPaths.some((fp) => rel === fp || rel.startsWith(fp + "/"));
+      },
+    });
+    return {
+      ...template,
+      dir: extractPart,
+      source: options.files.join(","),
+    };
+  }
+
   // Extract template
   const cwd = resolve(options.cwd || ".");
   const extractPath = resolve(cwd, options.dir || template.defaultDir);
   if (options.forceClean) {
     await rm(extractPath, { recursive: true, force: true });
   }
+  // For top-level repo clones (no subdir), prevent overwriting existing non-empty dir
+  const extractSubdir = template.subdir?.replace(/^\//, "") || "";
   if (
     !options.force &&
     existsSync(extractPath) &&
-    readdirSync(extractPath).length > 0
+    readdirSync(extractPath).length > 0 &&
+    extractSubdir === ""
   ) {
     throw new Error(`Destination ${extractPath} already exists.`);
   }
