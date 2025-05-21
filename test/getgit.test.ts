@@ -26,4 +26,27 @@ describe("downloadTemplate", () => {
       downloadTemplate("gh:unjs/template", { dir: destinationDirectory }),
     ).rejects.toThrow("already exists");
   });
+
+  it("when direct no exits provider, throw Error", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned");
+    expect(
+      downloadTemplate("unjs/template", {
+        dir: destinationDirectory,
+        preferOffline: true,
+        registry: false,
+        provider: "no-exist-provider",
+      }),
+    ).rejects.toThrow("Unsupported provider: no-exist-provider");
+  });
+
+  it("when direct no exits template, throw Error", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned");
+    expect(
+      downloadTemplate("unjs/template", {
+        dir: destinationDirectory,
+        preferOffline: true,
+        provider: "http",
+      }),
+    ).rejects.toThrow("Failed to download template from http: Invalid URL");
+  });
 });
