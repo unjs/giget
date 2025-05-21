@@ -229,9 +229,10 @@ If your project depends on a private GitHub repository, you need to add the acce
 
 Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance and supports custom template providers, auth, and many more features out of the box.
 
-- https://github.com/samsonjs/gitter
-- https://github.com/tiged/tiged
-- https://github.com/Rich-Harris/degit
+- [tiged/tiged](https://github.com/tiged/tiged) (maintained fork of degit)
+- [nrjdalal/gitpick](https://github.com/nrjdalal/gitpick) (alternative approach)
+- [Rich-Harris/degit](https://github.com/Rich-Harris/degit) (last updated - 2021)
+- [samsonjs/gitter](https://github.com/samsonjs/gitter) (archived/updated - 2012)
 
 ## 💻 Development
 
