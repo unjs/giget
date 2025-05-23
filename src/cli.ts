@@ -29,6 +29,10 @@ const mainCommand = defineCommand({
       description:
         "Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable)",
     },
+    authType: {
+      type: "string",
+      description: "Authorization type (can be `Basic` or `Bearer` by default)"
+    },
     cwd: {
       type: "string",
       description:
@@ -76,6 +80,7 @@ const mainCommand = defineCommand({
       offline: args.offline,
       preferOffline: args.preferOffline,
       auth: args.auth,
+      authType: args.authType,
       install: args.install,
     });
 
