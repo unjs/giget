@@ -22,6 +22,7 @@ export interface DownloadTemplateOptions {
   registry?: false | string;
   cwd?: string;
   auth?: string;
+  authType?: string;
   install?: boolean;
   silent?: boolean;
 }
@@ -69,7 +70,7 @@ export async function downloadTemplate(
     throw new Error(`Unsupported provider: ${providerName}`);
   }
   const template = await Promise.resolve()
-    .then(() => provider(source, { auth: options.auth }))
+    .then(() => provider(source, { auth: options.auth, authType: options.authType }))
     .catch((error) => {
       throw new Error(
         `Failed to download template from ${providerName}: ${error.message}`,
