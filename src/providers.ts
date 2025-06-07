@@ -26,7 +26,7 @@ export const http: TemplateProvider = async (input, options) => {
       .get("content-disposition")
       ?.match(/filename="?(.+)"?/)?.[1];
     if (filename) {
-      name = filename.split(".")[0];
+      name = filename.split(".")[0] ?? "";
     }
   } catch (error) {
     debug(`Failed to fetch HEAD for ${url.href}:`, error);
