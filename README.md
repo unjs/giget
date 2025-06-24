@@ -83,6 +83,12 @@ npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
 
 # Clone from https URL (JSON)
 npx giget@latest https://raw.githubusercontent.com/unjs/giget/main/templates/unjs.json
+
+# Clone from a local directory using file protocol
+npx giget@latest file:///absolute/path/to/template
+
+# Clone from a local directory using file protocol and expand ~ to home directory
+npx giget@latest file:~/Documents/my-template
 ```
 
 ## Template Registry

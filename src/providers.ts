@@ -60,6 +60,22 @@ const _httpJSON: TemplateProvider = async (input, options) => {
   return info;
 };
 
+const file: TemplateProvider = async (input, options) => {
+  const url = new URL(input);
+  const name: string = basename(url.pathname);
+
+  return {
+    name: `${name}-${url.href.slice(0, 8)}`,
+    version: "",
+    subdir: "",
+    tar: url.href,
+    defaultDir: name,
+    headers: {
+      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
+  };
+};
+
 export const github: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
 
@@ -131,6 +147,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
+  file,
   github,
   gh: github,
   gitlab,

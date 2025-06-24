@@ -3,7 +3,7 @@ import { relative } from "node:path";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
 import pkg from "../package.json" assert { type: "json" };
-import { downloadTemplate } from "./giget";
+import { copyTemplate, downloadTemplate } from "./giget";
 import { startShell } from "./_utils";
 
 const mainCommand = defineCommand({
@@ -69,15 +69,25 @@ const mainCommand = defineCommand({
       process.env.DEBUG = process.env.DEBUG || "true";
     }
 
-    const r = await downloadTemplate(args.template, {
-      dir: args.dir,
-      force: args.force,
-      forceClean: args.forceClean,
-      offline: args.offline,
-      preferOffline: args.preferOffline,
-      auth: args.auth,
-      install: args.install,
-    });
+    const r = args.template.startsWith("file:")
+      ? await copyTemplate(args.template, {
+          dir: args.dir,
+          force: args.force,
+          forceClean: args.forceClean,
+          offline: args.offline,
+          preferOffline: args.preferOffline,
+          auth: args.auth,
+          install: args.install,
+        })
+      : await downloadTemplate(args.template, {
+          dir: args.dir,
+          force: args.force,
+          forceClean: args.forceClean,
+          offline: args.offline,
+          preferOffline: args.preferOffline,
+          auth: args.auth,
+          install: args.install,
+        });
 
     const _from = r.name || r.url;
     const _to = relative(process.cwd(), r.dir) || "./";
