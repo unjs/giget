@@ -50,6 +50,8 @@ npx giget@latest <template> [<dir>] [...options]
 - `--cwd`: Set the current working directory to resolve dirs relative to it.
 - `--auth`: Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
 - `--install`: Install dependencies after cloning using [unjs/nypm](https://github.com/unjs/nypm).
+- `--files <paths...>`: Download multiple files via raw URL. Specify a space-separated list of paths.
+- `--strategy <skip|overwrite>`: Strategy for existing file when using `--files`. Defaults to `skip`.
 
 ### Examples
 
@@ -83,6 +85,12 @@ npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
 
 # Clone from https URL (JSON)
 npx giget@latest https://raw.githubusercontent.com/unjs/giget/main/templates/unjs.json
+
+# Download one file from github.com/unjs/giget:
+giget gh:unjs/giget --files README.md
+
+# Download multiple files or folders from the github.com/unjs/giget
+giget gh:unjs/giget --files LICENSE --files .github
 ```
 
 ## Template Registry
