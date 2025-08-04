@@ -1,6 +1,6 @@
 {
   "name": "nitro",
   "defaultDir": "nitro-app",
-  "url": "https://nitro.unjs.io",
-  "tar": "https://codeload.github.com/unjs/nitro/tar.gz/refs/heads/starter"
+  "url": "https://nitro.build",
+  "tar": "https://codeload.github.com/nitrojs/starter/tar.gz/refs/heads/main"
 }
