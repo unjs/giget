@@ -102,12 +102,14 @@ export const gitlab: TemplateProvider = (input, options) => {
 
 export const bitbucket: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
+  const bearerAuth = options.auth ? `Bearer ${options.auth}` : undefined
+	const basicAuth = options.auth ? `Basic ${Buffer.from(options.auth, 'utf8').toString('base64')}` : undefined
   return {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      authorization: options.authType === 'Basic' ? basicAuth : bearerAuth,
     },
     url: `https://bitbucket.com/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
     tar: `https://bitbucket.org/${parsed.repo}/get/${parsed.ref}.tar.gz`,
