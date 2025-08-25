@@ -17,7 +17,7 @@ const mainCommand = defineCommand({
     template: {
       type: "positional",
       description:
-        "Template name or a a URI describing provider, repository, subdir, and branch/ref",
+        "Template name or a URI describing provider, repository, subdir, and branch/ref",
     },
     dir: {
       type: "positional",
@@ -27,7 +27,7 @@ const mainCommand = defineCommand({
     auth: {
       type: "string",
       description:
-        "Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable)",
+        "Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable)",
     },
     cwd: {
       type: "string",
@@ -41,11 +41,11 @@ const mainCommand = defineCommand({
     forceClean: {
       type: "boolean",
       description:
-        "Remove any existing directory or file recusively before cloning",
+        "Remove any existing directory or file recursively before cloning",
     },
     offline: {
       type: "boolean",
-      description: "o not attempt to download and use cached version",
+      description: "Do not attempt to download and use cached version",
     },
     preferOffline: {
       type: "boolean",
@@ -53,7 +53,8 @@ const mainCommand = defineCommand({
     },
     shell: {
       type: "boolean",
-      description: "Open a new shell with current working ",
+      description:
+        "Open a new shell with the current working directory set to the cloned directory (experimental)",
     },
     install: {
       type: "boolean",
