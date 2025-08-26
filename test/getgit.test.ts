@@ -15,11 +15,11 @@ describe("downloadTemplate", () => {
       dir: destinationDirectory,
       preferOffline: true,
     });
-    expect(await existsSync(resolve(dir, "package.json")));
+    expect(existsSync(resolve(dir, "package.json")));
   });
 
-  it("do not clone to exisiting dir", async () => {
-    const destinationDirectory = resolve(__dirname, ".tmp/exisiting");
+  it("do not clone to existing dir", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/existing");
     await mkdir(destinationDirectory).catch(() => {});
     await writeFile(resolve(destinationDirectory, "test.txt"), "test");
     await expect(
