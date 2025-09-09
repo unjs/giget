@@ -1,5 +1,5 @@
 import { mkdir, rm } from "node:fs/promises";
-import { existsSync, readdirSync } from "node:fs";
+import { createWriteStream, existsSync, readdirSync } from "node:fs";
 // @ts-ignore
 import tarExtract from "tar/lib/extract.js";
 import type { ExtractOptions } from "tar";
@@ -10,6 +10,7 @@ import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
 import { providers } from "./providers";
 import { registryProvider } from "./registry";
 import type { TemplateInfo, TemplateProvider } from "./types";
+import { pipeline } from "node:stream/promises";
 
 export interface DownloadTemplateOptions {
   provider?: string;
@@ -104,19 +105,30 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, {
-      headers: {
-        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...normalizeHeaders(template.headers),
-      },
-    }).catch((error) => {
+
+    try {
+      if (typeof template.tar === "string") {
+        await download(template.tar, tarPath, {
+          headers: {
+            Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+            ...normalizeHeaders(template.headers),
+          },
+        });
+      } else {
+        const tarStream = await template.tar({ auth: options.auth });
+
+        const stream = createWriteStream(tarPath);
+        await pipeline(tarStream, stream);
+      }
+    } catch (error) {
       if (!existsSync(tarPath)) {
         throw error;
       }
       // Accept network errors if we have a cached version
       debug("Download error. Using cached version:", error);
       options.offline = true;
-    });
+    }
+
     debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
   }
 
