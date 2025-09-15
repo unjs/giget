@@ -1,6 +1,6 @@
-import { existsSync, readdirSync } from "node:fs";
-import { rm, mkdir, writeFile } from "node:fs/promises";
-import { expect, it, describe, beforeAll } from "vitest";
+import { existsSync } from "node:fs";
+import { rm, mkdir, writeFile, rmdir } from "node:fs/promises";
+import { expect, it, describe, beforeAll, afterAll } from "vitest";
 import { resolve } from "pathe";
 import { downloadTemplate, copyTemplate } from "../src";
 
@@ -36,6 +36,10 @@ describe("copyTemplate (file protocol)", () => {
     await rm(tmpDir, { recursive: true, force: true });
     await mkdir(srcDir, { recursive: true });
     await writeFile(resolve(srcDir, "foo.txt"), "bar");
+  });
+  afterAll(async () => {
+    await rm(tmpDir, { recursive: true, force: true });
+    await rmdir(srcDir, { recursive: true });
   });
 
   it("copy a local directory", async () => {

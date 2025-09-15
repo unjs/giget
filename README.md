@@ -86,9 +86,6 @@ npx giget@latest https://raw.githubusercontent.com/unjs/giget/main/templates/unj
 
 # Clone from a local directory using file protocol
 npx giget@latest file:///absolute/path/to/template
-
-# Clone from a local directory using file protocol and expand ~ to home directory
-npx giget@latest file:~/Documents/my-template
 ```
 
 ## Template Registry

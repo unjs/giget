@@ -1,6 +1,5 @@
 import { mkdir, rm, cp } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import os from "node:os";
 // @ts-ignore
 import tarExtract from "tar/lib/extract.js";
 import type { ExtractOptions } from "tar";
@@ -179,16 +178,12 @@ export async function downloadTemplate(
 }
 
 export async function copyTemplate(
-  input: string,
+  source: string,
   options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
   options = defu({ auth: process.env.GIGET_AUTH }, options);
 
   const providerName = "file";
-  let source = input;
-  if (source.startsWith("file:~")) {
-    source = source.replace("file:~", "file://" + os.homedir());
-  }
 
   const provider = options.providers?.[providerName] || providers[providerName];
   if (!provider) {
