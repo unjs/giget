@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { rm, mkdir, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { expect, it, describe, beforeAll } from "vitest";
-import { resolve } from "pathe";
 import { downloadTemplate } from "../src";
 
 describe("downloadTemplate", () => {

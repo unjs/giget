@@ -33,10 +33,8 @@
   "dependencies": {
     "citty": "^0.1.6",
     "consola": "^3.4.2",
-    "defu": "^6.1.4",
     "node-fetch-native": "^1.6.7",
-    "nypm": "^0.6.1",
-    "pathe": "^2.0.3"
+    "nypm": "^0.6.1"
   },
   "devDependencies": {
     "@types/node": "^24.4.0",

@@ -19,18 +19,12 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       node-fetch-native:
         specifier: ^1.6.7
         version: 1.6.7
       nypm:
         specifier: ^0.6.1
         version: 0.6.1
-      pathe:
-        specifier: ^2.0.3
-        version: 2.0.3
     devDependencies:
       '@types/node':
         specifier: ^24.4.0

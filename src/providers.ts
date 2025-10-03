@@ -1,4 +1,4 @@
-import { basename } from "pathe";
+import { basename } from "node:path";
 import type { TemplateInfo, TemplateProvider } from "./types";
 import { debug, parseGitURI, sendFetch } from "./_utils";
 
