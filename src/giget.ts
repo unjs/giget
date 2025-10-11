@@ -1,9 +1,7 @@
-import { mkdir, rm } from "node:fs/promises";
+import { mkdir, rm, readFile, writeFile } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-// @ts-ignore
-import tarExtract from "tar/lib/extract.js";
-import type { ExtractOptions } from "tar";
-import { resolve, dirname } from "pathe";
+import { parseTarGzip } from "nanotar";
+import { resolve, dirname, join } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
@@ -143,23 +141,35 @@ export async function downloadTemplate(
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
-  await tarExtract(<ExtractOptions>{
-    file: tarPath,
-    cwd: extractPath,
-    onentry(entry) {
-      entry.path = entry.path.split("/").splice(1).join("/");
-      if (subdir) {
-        // eslint-disable-next-line unicorn/prefer-ternary
-        if (entry.path.startsWith(subdir + "/")) {
-          // Rewrite path
-          entry.path = entry.path.slice(subdir.length);
-        } else {
-          // Skip
-          entry.path = "";
-        }
+
+  const tarData = await readFile(tarPath);
+  const files = await parseTarGzip(tarData);
+
+  for (const file of files) {
+    let filePath = file.name.split("/").splice(1).join("/");
+
+    if (subdir) {
+      if (filePath.startsWith(subdir + "/")) {
+        filePath = filePath.slice(subdir.length);
+      } else {
+        continue;
       }
-    },
-  });
+    }
+
+    if (!filePath) {
+      continue;
+    }
+
+    const fullPath = join(extractPath, filePath);
+    await mkdir(dirname(fullPath), { recursive: true });
+
+    if (file.type === "file" && file.data) {
+      await writeFile(fullPath, file.data, {
+        mode: Number.parseInt(file.attrs?.mode || "644", 8),
+      });
+    }
+  }
+
   debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`);
 
   if (options.install) {
