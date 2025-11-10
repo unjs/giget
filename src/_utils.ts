@@ -56,6 +56,69 @@ export function parseGitURI(input: string): GitInfo {
   };
 }
 
+export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
+  const cwd = opts.cwd ?? process.cwd();
+
+  let uri = input.replace(/#.*$/, "");
+
+  if (/^[./]/.test(input)) {
+    // Local URI starts with . (relative) or / (absolute).
+    // We return the absolute path for the provided URI.
+
+    uri = resolve(cwd, uri);
+  } else if (/^https?:\/\//.test(uri)) {
+    // Git over HTTP(S) starts with http[s]://.
+    // Currently we do nothing to the URI.
+  } else {
+    // Otherwise, we assume the URI is Git over SSH.
+    // We need to normalize the URI into git:[pass]@<host>:<path>.
+
+    const host = /^(.+?:)/.exec(uri)?.at(1);
+    if (host) {
+      switch (host) {
+        case "github:":
+        case "gh:": {
+          uri = uri.replace(host, "github.com:");
+          break;
+        }
+        case "gitlab:": {
+          uri = uri.replace(host, "gitlab.com:");
+          break;
+        }
+      }
+    } else {
+      uri = `${process.env.GIGET_GIT_HOST || "github.com"}:${uri}`;
+    }
+
+    if (!uri.includes("@")) {
+      const username = process.env.GIGET_GIT_USERNAME || "git";
+      const password = process.env.GIGET_GIT_PASSWORD;
+
+      uri = `${password ? `${username}:${password}` : username}@${uri}`;
+    }
+  }
+
+  const name = uri
+    .replace(/^https?:\/\//, "")
+    // Remove username-password segment
+    .replace(/^.+@/, "")
+    // Remove trailing git and hash
+    .replace(/(\.git)?(#.*)?$/, "")
+    // Remove non-words before name
+    .replace(/^\W+/, "")
+    // Replace special characters with -
+    .replaceAll(/[:/]/g, "-");
+
+  const [version, subdir] = /#(.+)$/.exec(input)?.at(1)?.split(":") ?? [];
+
+  return {
+    uri,
+    name,
+    ...(version && { version }),
+    ...(subdir && { subdir }),
+  };
+}
+
 export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
     console.debug("[giget]", ...args);
