@@ -64,11 +64,29 @@ const mainCommand = defineCommand({
       type: "boolean",
       description: "Show verbose debugging info",
     },
+    strategy: {
+      type: "string",
+      description: "Strategy for existing file: skip or overwrite",
+      default: "skip",
+    },
+    files: {
+      type: "string",
+      description: "List of files (paths) to download via raw URL",
+      multiple: true,
+    },
   },
   run: async ({ args }) => {
     if (args.verbose) {
       process.env.DEBUG = process.env.DEBUG || "true";
     }
+
+    // Normalize files argument into string[] if provided
+    const filesList: string[] | undefined =
+      args.files === undefined
+        ? undefined
+        : (Array.isArray(args.files)
+          ? args.files
+          : [args.files]);
 
     const r = await downloadTemplate(args.template, {
       dir: args.dir,
@@ -78,6 +96,8 @@ const mainCommand = defineCommand({
       preferOffline: args.preferOffline,
       auth: args.auth,
       install: args.install,
+      files: filesList,
+      strategy: args.strategy as "skip" | "overwrite",
     });
 
     const _from = r.name || r.url;
