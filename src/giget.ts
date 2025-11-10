@@ -1,9 +1,9 @@
-import { mkdir, rm } from "node:fs/promises";
+import { mkdir, rm, cp } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
 // @ts-ignore
 import tarExtract from "tar/lib/extract.js";
 import type { ExtractOptions } from "tar";
-import { resolve, dirname } from "pathe";
+import { resolve, dirname, basename } from "pathe";
 import { defu } from "defu";
 import { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
@@ -161,6 +161,65 @@ export async function downloadTemplate(
     },
   });
   debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`);
+
+  if (options.install) {
+    debug("Installing dependencies...");
+    await installDependencies({
+      cwd: extractPath,
+      silent: options.silent,
+    });
+  }
+
+  return {
+    ...template,
+    source,
+    dir: extractPath,
+  };
+}
+
+export async function copyTemplate(
+  source: string,
+  options: DownloadTemplateOptions = {},
+): Promise<DownloadTemplateResult> {
+  options = defu({ auth: process.env.GIGET_AUTH }, options);
+
+  const providerName = "file";
+
+  const provider = options.providers?.[providerName] || providers[providerName];
+  if (!provider) {
+    throw new Error(`Unsupported provider: ${providerName}`);
+  }
+  const template = await Promise.resolve()
+    .then(() => provider(source, { auth: options.auth }))
+    .catch((error) => {
+      throw new Error(
+        `Failed to download template from ${providerName}: ${error.message}`,
+      );
+    });
+
+  if (!template) {
+    throw new Error(`Failed to resolve template from ${providerName}`);
+  }
+  template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
+
+  const cwd = resolve(options.cwd || ".");
+  const extractPath = resolve(cwd, options.dir || basename(source));
+  const srcPath = decodeURIComponent(new URL(source).pathname);
+  if (options.forceClean) {
+    await rm(extractPath, { recursive: true, force: true });
+  }
+  if (
+    !options.force &&
+    existsSync(extractPath) &&
+    readdirSync(extractPath).length > 0
+  ) {
+    throw new Error(`Destination ${extractPath} already exists.`);
+  }
+  await mkdir(extractPath, { recursive: true });
+
+  const s = Date.now();
+  await cp(srcPath, extractPath, { recursive: true });
+  debug(`Copied to ${extractPath} in ${Date.now() - s}ms`);
 
   if (options.install) {
     debug("Installing dependencies...");
