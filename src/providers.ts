@@ -131,7 +131,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 export const gitee: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
   const giteeAPIURL = process.env.GIGET_GITEE_URL || "https://gitee.com/api/v5";
-  const tarURL = `${giteeAPIURL}/repos/${parsed.repo}/tarball?ref=${parsed.ref}`
+  const tarURL = `${giteeAPIURL}/repos/${parsed.repo}/tarball?ref=${parsed.ref}&expected_path=${parsed.subdir}`
   return {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
