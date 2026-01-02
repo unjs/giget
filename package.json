@@ -39,21 +39,21 @@
     "pathe": "^2.0.3"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.4",
     "@types/tar": "^6.1.13",
     "@vitest/coverage-v8": "^3.2.4",
     "changelogen": "^0.6.2",
-    "esbuild": "^0.25.12",
-    "eslint": "^9.39.1",
-    "eslint-config-unjs": "^0.5.0",
+    "esbuild": "^0.27.2",
+    "eslint": "^9.39.2",
+    "eslint-config-unjs": "^0.6.2",
     "jiti": "^2.6.1",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.4",
     "tar": "^6.2.1",
     "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
     "vitest": "^3.2.4"
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.27.0",
   "pnpm": {
     "patchedDependencies": {
       "tar": "patches/tar.patch"
