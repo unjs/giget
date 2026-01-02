@@ -149,7 +149,6 @@ export async function downloadTemplate(
     onentry(entry) {
       entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
-        // eslint-disable-next-line unicorn/prefer-ternary
         if (entry.path.startsWith(subdir + "/")) {
           // Rewrite path
           entry.path = entry.path.slice(subdir.length);
