@@ -56,6 +56,122 @@ export function parseGitURI(input: string): GitInfo {
   };
 }
 
+export interface GitSourceParts {
+  path: string;
+  ref: string;
+}
+
+export function parseGitSource(
+  input: string,
+  defaultRef = "main",
+): GitSourceParts {
+  const hashIndex = input.indexOf("#");
+  const path = (hashIndex === -1 ? input : input.slice(0, hashIndex)).replace(
+    /^\/+|\/+$/g,
+    "",
+  );
+  const ref =
+    hashIndex === -1 ? defaultRef : input.slice(hashIndex + 1) || defaultRef;
+  return { path, ref };
+}
+
+export function gitlabArchiveURL(
+  gitlabBaseURL: string,
+  repo: string,
+  ref: string,
+) {
+  const project = repo.split("/").pop() || repo;
+  return `${gitlabBaseURL}/${repo}/-/archive/${ref}/${project}-${ref}.tar.gz`;
+}
+
+export function gitlabTreeURL(
+  gitlabBaseURL: string,
+  repo: string,
+  ref: string,
+  subdir: string,
+) {
+  return `${gitlabBaseURL}/${repo}/-/tree/${ref}${subdir}`;
+}
+
+export function gitlabHeaders(
+  auth?: string,
+): Record<string, string | undefined> {
+  return {
+    authorization: auth ? `Bearer ${auth}` : undefined,
+    // https://gitlab.com/gitlab-org/gitlab/-/commit/50c11f278d18fe1f3fb12eb595067216bb58ade2
+    "sec-fetch-mode": "same-origin",
+  };
+}
+
+export interface ResolvedGitlabTarget {
+  repo: string;
+  ref: string;
+  subdir: string;
+}
+
+export async function resolveGitlabTarget(
+  input: string,
+  options: {
+    gitlabBaseURL: string;
+    auth?: string;
+    fetch?: typeof sendFetch;
+  },
+): Promise<ResolvedGitlabTarget> {
+  const { path, ref } = parseGitSource(input, "main");
+  const parts = path.split("/").filter(Boolean);
+  const fetcher = options.fetch || sendFetch;
+
+  // Keep legacy behavior for simple `group/repo` inputs.
+  if (parts.length <= 2) {
+    return {
+      repo: parts.join("/"),
+      ref,
+      subdir: "/",
+    };
+  }
+
+  const headers = gitlabHeaders(options.auth);
+
+  // Try longest repo first (subgroups), then gradually treat tail segments as subdir.
+  for (let repoLen = parts.length; repoLen >= 2; repoLen--) {
+    const candidateRepo = parts.slice(0, repoLen).join("/");
+    const candidateSubdir = "/" + parts.slice(repoLen).join("/");
+    const candidateTar = gitlabArchiveURL(
+      options.gitlabBaseURL,
+      candidateRepo,
+      ref,
+    );
+
+    try {
+      const head = await fetcher(candidateTar, {
+        method: "HEAD",
+        headers,
+      });
+
+      // GitLab may return 401/403 for private repos even if they exist.
+      const existsOrPrivate =
+        head.status < 400 || head.status === 401 || head.status === 403;
+
+      if (existsOrPrivate) {
+        return {
+          repo: candidateRepo,
+          ref,
+          subdir: candidateSubdir === "/" ? "/" : candidateSubdir,
+        };
+      }
+    } catch (error) {
+      debug(`Failed to probe GitLab archive URL for ${candidateTar}:`, error);
+    }
+  }
+
+  // If we couldn't disambiguate (often private repos returning 404), assume full path is repo.
+  return {
+    repo: parts.join("/"),
+    ref,
+    subdir: "/",
+  };
+}
+
 export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
     console.debug("[giget]", ...args);
