@@ -1,6 +1,14 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, parseGitURI, sendFetch } from "./_utils";
+import {
+  debug,
+  gitlabArchiveURL,
+  gitlabHeaders,
+  gitlabTreeURL,
+  parseGitURI,
+  resolveGitlabTarget,
+  sendFetch,
+} from "./_utils";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -26,7 +34,10 @@ export const http: TemplateProvider = async (input, options) => {
       .get("content-disposition")
       ?.match(/filename="?(.+)"?/)?.[1];
     if (filename) {
-      name = filename.split(".")[0];
+      const base = filename.split(".")[0];
+      if (base) {
+        name = base;
+      }
     }
   } catch (error) {
     debug(`Failed to fetch HEAD for ${url.href}:`, error);
@@ -83,20 +94,21 @@ export const github: TemplateProvider = (input, options) => {
   };
 };
 
-export const gitlab: TemplateProvider = (input, options) => {
-  const parsed = parseGitURI(input);
-  const gitlab = process.env.GIGET_GITLAB_URL || "https://gitlab.com";
+export const gitlab: TemplateProvider = async (input, options) => {
+  const gitlabBaseURL = process.env.GIGET_GITLAB_URL || "https://gitlab.com";
+  const { repo, ref, subdir } = await resolveGitlabTarget(input, {
+    gitlabBaseURL,
+    auth: options.auth,
+    fetch: sendFetch,
+  });
+
   return {
-    name: parsed.repo.replace("/", "-"),
-    version: parsed.ref,
-    subdir: parsed.subdir,
-    headers: {
-      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-      // https://gitlab.com/gitlab-org/gitlab/-/commit/50c11f278d18fe1f3fb12eb595067216bb58ade2
-      "sec-fetch-mode": "same-origin",
-    },
-    url: `${gitlab}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${gitlab}/${parsed.repo}/-/archive/${parsed.ref}.tar.gz`,
+    name: repo.replaceAll("/", "-"),
+    version: ref,
+    subdir,
+    headers: gitlabHeaders(options.auth),
+    url: gitlabTreeURL(gitlabBaseURL, repo, ref, subdir),
+    tar: gitlabArchiveURL(gitlabBaseURL, repo, ref),
   };
 };
 
