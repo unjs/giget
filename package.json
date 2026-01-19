@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.0.17",
     "changelogen": "^0.6.2",
     "esbuild": "^0.25.12",
     "eslint": "^9.39.1",
@@ -51,7 +51,7 @@
     "tar": "^6.2.1",
     "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.17"
   },
   "packageManager": "pnpm@10.20.0",
   "pnpm": {
