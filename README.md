@@ -8,6 +8,8 @@
 
 ## Features
 
+✨ Zero dependency
+
 ✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
 
 ✨ Built-in and custom [template registry](#template-registry).
