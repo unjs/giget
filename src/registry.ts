@@ -1,5 +1,5 @@
-import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, sendFetch } from "./_utils";
+import type { TemplateInfo, TemplateProvider } from "./types.ts";
+import { debug, sendFetch } from "./_utils.ts";
 
 // const DEFAULT_REGISTRY = 'https://cdn.jsdelivr.net/gh/unjs/giget/templates'
 const DEFAULT_REGISTRY =
@@ -8,8 +8,8 @@ const DEFAULT_REGISTRY =
 export const registryProvider = (
   registryEndpoint: string = DEFAULT_REGISTRY,
   options: { auth?: string } = {},
-) => {
-  return <TemplateProvider>(async (input) => {
+): TemplateProvider => {
+  return (async (input) => {
     const start = Date.now();
     const registryURL = `${registryEndpoint}/${input}.json`;
 
@@ -35,5 +35,5 @@ export const registryProvider = (
       }ms`,
     );
     return info;
-  });
+  }) satisfies TemplateProvider;
 };

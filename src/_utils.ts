@@ -7,7 +7,7 @@ import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import { fetch } from "node-fetch-native/proxy";
-import type { GitInfo } from "./types";
+import type { GitInfo } from "./types.ts";
 
 export async function download(
   url: string,
@@ -47,13 +47,13 @@ export async function download(
 const inputRegex =
   /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
 
-export function parseGitURI(input: string): GitInfo {
+export function parseGitURI(input: string): Partial<GitInfo> {
   const m = input.match(inputRegex)?.groups || {};
-  return <GitInfo>{
+  return {
     repo: m.repo,
     subdir: m.subdir || "/",
     ref: m.ref ? m.ref.slice(1) : "main",
-  };
+  } satisfies Partial<GitInfo>;
 }
 
 export function debug(...args: unknown[]) {
