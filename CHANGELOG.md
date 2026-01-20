@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.0.0
+
+[compare changes](https://github.com/unjs/giget/compare/v2.0.0...v3.0.0)
+
+### 💅 Refactors
+
+- **cli:** Fix usage grammar issues ([#233](https://github.com/unjs/giget/pull/233))
+- Stricter types ([93161e3](https://github.com/unjs/giget/commit/93161e3))
+- ⚠️  Zero dependency ([#248](https://github.com/unjs/giget/pull/248))
+- **cli:** Template positional arg is required ([0a52e78](https://github.com/unjs/giget/commit/0a52e78))
+
+### 📖 Documentation
+
+- Add `gitpick` to related projects ([#221](https://github.com/unjs/giget/pull/221))
+
+### 📦 Build
+
+- Migrate to obuild / rolldown ([fe78c04](https://github.com/unjs/giget/commit/fe78c04))
+- Migrate to tar v7 ([#250](https://github.com/unjs/giget/pull/250))
+- Min libs ([407f55a](https://github.com/unjs/giget/commit/407f55a))
+
+### 🏡 Chore
+
+- Add h3 starter ([066750b](https://github.com/unjs/giget/commit/066750b))
+- Update lockfile ([74f6674](https://github.com/unjs/giget/commit/74f6674))
+- Update deps ([0aacff9](https://github.com/unjs/giget/commit/0aacff9))
+- Update lockfile ([5916942](https://github.com/unjs/giget/commit/5916942))
+- Fix type issue ([5c9b19f](https://github.com/unjs/giget/commit/5c9b19f))
+
+### 🤖 CI
+
+- Run on windows ([#249](https://github.com/unjs/giget/pull/249))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Zero dependency ([#248](https://github.com/unjs/giget/pull/248))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Eugene ([@outslept](https://github.com/outslept))
+- Neeraj Dalal <nd941z@gmail.com>
+
 ## v2.0.0
 
 [compare changes](https://github.com/unjs/giget/compare/v1.2.5...v2.0.0)
