@@ -12,9 +12,9 @@ const mainCommand = defineCommand({
     description: pkg.description,
   },
   args: {
-    // TODO: Make it `-t` in the next major version
     template: {
       type: "positional",
+      required: true,
       description:
         "Template name or a URI describing provider, repository, subdir, and branch/ref",
     },
@@ -69,7 +69,7 @@ const mainCommand = defineCommand({
       process.env.DEBUG = process.env.DEBUG || "true";
     }
 
-    const r = await downloadTemplate(args.template!, {
+    const r = await downloadTemplate(args.template, {
       dir: args.dir,
       force: args.force,
       forceClean: args.forceClean,
