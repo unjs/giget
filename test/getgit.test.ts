@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { rm, mkdir, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { resolve } from "pathe";
 import { expect, it, describe, beforeAll } from "vitest";
 import { downloadTemplate } from "../src/index.ts";
 

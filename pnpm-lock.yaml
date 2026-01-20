@@ -45,6 +45,9 @@ importers:
       obuild:
         specifier: ^0.4.18
         version: 0.4.18(@typescript/native-preview@7.0.0-dev.20260120.1)(magicast@0.5.1)(typescript@5.9.3)
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
       prettier:
         specifier: ^3.8.0
         version: 3.8.0

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { relative } from "node:path";
+import { relative } from "pathe";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
 import pkg from "../package.json" with { type: "json" };
