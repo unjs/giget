@@ -7,10 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
+    ".": "./dist/index.mjs"
   },
   "types": "./dist/index.d.mts",
   "bin": {
@@ -20,14 +17,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild",
     "dev": "vitest dev",
     "giget": "node ./src/cli.ts",
     "lint": "eslint . && prettier -c src test",
     "lint:fix": "eslint . --fix && prettier -w src test",
-    "prepack": "unbuild",
     "play": "pnpm giget --force-clean --verbose unjs .tmp/clone",
-    "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
+    "release": "pnpm test && pnpm build && changelogen --release && npm publish && git push --follow-tags",
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "tsgo --noEmit"
   },
@@ -45,9 +41,9 @@
     "@typescript/native-preview": "7.0.0-dev.20260120.1",
     "@vitest/coverage-v8": "^4.0.17",
     "changelogen": "^0.6.2",
-    "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "eslint-config-unjs": "^0.6.2",
+    "obuild": "^0.4.18",
     "prettier": "^3.8.0",
     "tar": "^6.2.1",
     "typescript": "^5.9.3",
