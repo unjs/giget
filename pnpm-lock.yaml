@@ -44,6 +44,9 @@ importers:
       prettier:
         specifier: ^3.8.0
         version: 3.8.0
+      rolldown:
+        specifier: 1.0.0-beta.60
+        version: 1.0.0-beta.60
       tar:
         specifier: ^7.5.4
         version: 7.5.4
