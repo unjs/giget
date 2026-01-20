@@ -8,7 +8,7 @@
 
 ## Features
 
-✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut, Codeberg) out of the box.
 
 ✨ Built-in and custom [template registry](#template-registry).
 
@@ -78,6 +78,9 @@ npx giget@latest bitbucket:unjs/template
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
 
+# Clone from codeberg
+npx giget@latest codeberg:unjs/template
+
 # Clone from https URL (tarball)
 npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
 
@@ -142,7 +145,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
-  - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
+  - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut` or `codeberg`. The default is `github`.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
