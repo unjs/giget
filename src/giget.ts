@@ -2,7 +2,6 @@ import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
 import { extract } from "tar";
 import { resolve, dirname } from "pathe";
-import { defu } from "defu";
 import { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
 import { providers } from "./providers.ts";
@@ -35,13 +34,8 @@ export async function downloadTemplate(
   input: string,
   options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
-  options = defu(
-    {
-      registry: process.env.GIGET_REGISTRY,
-      auth: process.env.GIGET_AUTH,
-    },
-    options,
-  );
+  options.registry = process.env.GIGET_REGISTRY ?? options.registry;
+  options.auth = process.env.GIGET_AUTH ?? options.auth;
 
   const registry =
     options.registry === false
