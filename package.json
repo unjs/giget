@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "citty": "^0.1.6",
-    "consola": "^3.4.2",
     "node-fetch-native": "^1.6.7",
     "nypm": "^0.6.2"
   },

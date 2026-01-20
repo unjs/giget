@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { relative } from "pathe";
 import { defineCommand, runMain } from "citty";
-import { consola } from "consola";
 import pkg from "../package.json" with { type: "json" };
 import { downloadTemplate } from "./giget.ts";
 import { startShell } from "./_utils.ts";
@@ -82,7 +81,7 @@ const mainCommand = defineCommand({
 
     const _from = r.name || r.url;
     const _to = relative(process.cwd(), r.dir) || "./";
-    consola.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
+    console.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
 
     if (args.shell) {
       startShell(r.dir);
