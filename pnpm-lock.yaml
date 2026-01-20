@@ -11,9 +11,6 @@ importers:
       citty:
         specifier: ^0.1.6
         version: 0.1.6
-      node-fetch-native:
-        specifier: ^1.6.7
-        version: 1.6.7
       nypm:
         specifier: ^0.6.2
         version: 0.6.2

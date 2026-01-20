@@ -6,7 +6,6 @@ import { homedir, tmpdir } from "node:os";
 import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
-import { fetch } from "node-fetch-native/proxy";
 import type { GitInfo } from "./types.ts";
 
 export async function download(
