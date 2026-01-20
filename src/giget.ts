@@ -157,6 +157,7 @@ export async function downloadTemplate(
     debug("Installing dependencies...");
     await installDependencies({
       cwd: extractPath,
+      ignoreWorkspace: true,
       silent: options.silent,
     });
   }
