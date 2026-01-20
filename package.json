@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "citty": "^0.2.0",
-    "nypm": "^0.6.2"
+    "nypm": "^0.6.3"
   },
   "devDependencies": {
     "@types/node": "^25.0.9",
