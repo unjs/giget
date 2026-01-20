@@ -5,10 +5,10 @@ import { resolve, dirname } from "node:path";
 import tarExtract from "tar/lib/extract.js";
 import type { ExtractOptions } from "tar";
 import { installDependencies } from "nypm";
-import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils";
-import { providers } from "./providers";
-import { registryProvider } from "./registry";
-import type { TemplateInfo, TemplateProvider } from "./types";
+import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
+import { providers } from "./providers.ts";
+import { registryProvider } from "./registry.ts";
+import type { TemplateInfo, TemplateProvider } from "./types.ts";
 
 export interface DownloadTemplateOptions {
   provider?: string;
@@ -137,13 +137,13 @@ export async function downloadTemplate(
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
-  await tarExtract(<ExtractOptions>{
+  await tarExtract({
+    // @ts-expect-error (file option exists?)
     file: tarPath,
     cwd: extractPath,
     onentry(entry) {
       entry.path = entry.path.split("/").splice(1).join("/");
       if (subdir) {
-        // eslint-disable-next-line unicorn/prefer-ternary
         if (entry.path.startsWith(subdir + "/")) {
           // Rewrite path
           entry.path = entry.path.slice(subdir.length);
@@ -153,7 +153,7 @@ export async function downloadTemplate(
         }
       }
     },
-  });
+  } satisfies ExtractOptions);
   debug(`Extracted to ${extractPath} in ${Date.now() - s}ms`);
 
   if (options.install) {

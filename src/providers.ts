@@ -1,6 +1,6 @@
 import { basename } from "node:path";
-import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, parseGitURI, sendFetch } from "./_utils";
+import type { TemplateInfo, TemplateProvider } from "./types.ts";
+import { debug, parseGitURI, sendFetch } from "./_utils.ts";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -26,7 +26,7 @@ export const http: TemplateProvider = async (input, options) => {
       .get("content-disposition")
       ?.match(/filename="?(.+)"?/)?.[1];
     if (filename) {
-      name = filename.split(".")[0];
+      name = filename.split(".")[0]!;
     }
   } catch (error) {
     debug(`Failed to fetch HEAD for ${url.href}:`, error);

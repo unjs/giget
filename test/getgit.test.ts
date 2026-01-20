@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { rm, mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { expect, it, describe, beforeAll } from "vitest";
-import { downloadTemplate } from "../src";
+import { downloadTemplate } from "../src/index.ts";
 
 describe("downloadTemplate", () => {
   beforeAll(async () => {

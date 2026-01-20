@@ -2,9 +2,9 @@
 import { relative } from "node:path";
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
-import pkg from "../package.json" assert { type: "json" };
-import { downloadTemplate } from "./giget";
-import { startShell } from "./_utils";
+import pkg from "../package.json" with { type: "json" };
+import { downloadTemplate } from "./giget.ts";
+import { startShell } from "./_utils.ts";
 
 const mainCommand = defineCommand({
   meta: {

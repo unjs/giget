@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest";
-import { parseGitURI } from "../src/_utils";
+import { parseGitURI } from "../src/_utils.ts";
 
 describe("parseGitURI", () => {
   const defaults = { repo: "org/repo", subdir: "/", ref: "main" };

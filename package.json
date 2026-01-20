@@ -7,10 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    }
+    ".": "./dist/index.mjs"
   },
   "types": "./dist/index.d.mts",
   "bin": {
@@ -20,38 +17,38 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild",
     "dev": "vitest dev",
-    "giget": "jiti ./src/cli.ts",
+    "giget": "node ./src/cli.ts",
     "lint": "eslint . && prettier -c src test",
     "lint:fix": "eslint . --fix && prettier -w src test",
-    "prepack": "unbuild",
     "play": "pnpm giget --force-clean --verbose unjs .tmp/clone",
-    "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
-    "test": "pnpm lint && vitest run --coverage"
+    "release": "pnpm test && pnpm build && changelogen --release && npm publish && git push --follow-tags",
+    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
+    "test:types": "tsgo --noEmit"
   },
   "dependencies": {
     "citty": "^0.1.6",
     "consola": "^3.4.2",
     "node-fetch-native": "^1.6.7",
-    "nypm": "^0.6.1"
+    "nypm": "^0.6.2"
   },
   "devDependencies": {
-    "@types/node": "^24.4.0",
+    "@types/node": "^25.0.9",
     "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@typescript/native-preview": "7.0.0-dev.20260120.1",
+    "@vitest/coverage-v8": "^4.0.17",
     "changelogen": "^0.6.2",
-    "esbuild": "^0.25.9",
-    "eslint": "^9.35.0",
-    "eslint-config-unjs": "^0.5.0",
-    "jiti": "^2.5.1",
-    "prettier": "^3.6.2",
+    "eslint": "^9.39.2",
+    "eslint-config-unjs": "^0.6.2",
+    "obuild": "^0.4.18",
+    "prettier": "^3.8.0",
     "tar": "^6.2.1",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.17"
   },
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.28.1",
   "pnpm": {
     "patchedDependencies": {
       "tar": "patches/tar.patch"
