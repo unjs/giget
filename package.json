@@ -45,15 +45,10 @@
     "eslint-config-unjs": "^0.6.2",
     "obuild": "^0.4.18",
     "prettier": "^3.8.0",
-    "tar": "^6.2.1",
+    "tar": "^7.5.4",
     "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
     "vitest": "^4.0.17"
   },
-  "packageManager": "pnpm@10.28.1",
-  "pnpm": {
-    "patchedDependencies": {
-      "tar": "patches/tar.patch"
-    }
-  }
+  "packageManager": "pnpm@10.28.1"
 }
