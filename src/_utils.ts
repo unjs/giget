@@ -46,13 +46,13 @@ export async function download(
 const inputRegex =
   /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
 
-export function parseGitURI(input: string): Partial<GitInfo> {
+export function parseGitURI(input: string): Omit<GitInfo, "provider"> {
   const m = input.match(inputRegex)?.groups || {};
   return {
-    repo: m.repo,
+    repo: m.repo || "",
     subdir: m.subdir || "/",
     ref: m.ref ? m.ref.slice(1) : "main",
-  } satisfies Partial<GitInfo>;
+  } satisfies Omit<GitInfo, "provider">;
 }
 
 export function debug(...args: unknown[]) {
