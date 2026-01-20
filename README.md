@@ -8,7 +8,7 @@
 
 ## Features
 
-✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut, Gitee) out of the box.
 
 ✨ Built-in and custom [template registry](#template-registry).
 
@@ -78,6 +78,9 @@ npx giget@latest bitbucket:unjs/template
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
 
+# Clone from gitee (Gitee requires authentication tokens for all repositories, including public ones. You need to provide an access token using the `--auth` option or `GIGET_AUTH` environment variable when using the Gitee provider.)
+npx giget@latest gitee:owner/repo --auth your-gitee-token
+
 # Clone from https URL (tarball)
 npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
 
@@ -142,7 +145,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
-  - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
+  - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut` or `gitee`. The default is `github`.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
@@ -202,6 +205,15 @@ const { source, dir } = await downloadTemplate("themes:test", {
 ## Providing token for private repositories
 
 For private repositories and sources, you might need a token. In order to provide it, using CLI, you can use `--auth`, using programmatic API using `auth` option and in both modes also it is possible to use `GIGET_AUTH` environment variable to set it. The value will be set in `Authorization: Bearer ...` header by default.
+
+### Environment Variables
+
+- `GIGET_REGISTRY` - Custom registry URL
+- `GIGET_AUTH` - Authentication token for private repositories
+- `GIGET_GITHUB_URL` - Custom GitHub API URL (for GitHub Enterprise)
+- `GIGET_GITLAB_URL` - Custom GitLab URL
+- `GIGET_GITEE_URL` - Custom Gitee API URL (for Gitee Enterprise)
+- `DEBUG` - Enable verbose debugging output
 
 **Note:** For github private repository access with Fine-grained access tokens, you need to give **Contents** and **Metadata** repository permissions.
 
