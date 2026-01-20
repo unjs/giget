@@ -28,7 +28,7 @@
     "test:types": "tsgo --noEmit"
   },
   "dependencies": {
-    "citty": "^0.1.6",
+    "citty": "^0.2.0",
     "nypm": "^0.6.2"
   },
   "devDependencies": {
