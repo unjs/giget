@@ -19,7 +19,7 @@ export interface DownloadTemplateOptions {
   registry?: false | string;
   cwd?: string;
   auth?: string;
-  install?: boolean;
+  install?: boolean | Parameters<typeof installDependencies>[0];
   silent?: boolean;
 }
 
@@ -158,6 +158,7 @@ export async function downloadTemplate(
     await installDependencies({
       cwd: extractPath,
       silent: options.silent,
+      ...(typeof options.install === "object" ? options.install : {}),
     });
   }
 
