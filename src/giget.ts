@@ -1,6 +1,5 @@
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { extract } from "tar";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
@@ -137,6 +136,7 @@ export async function downloadTemplate(
 
   const s = Date.now();
   const subdir = template.subdir?.replace(/^\//, "") || "";
+  const { extract } = await import("tar");
   await extract({
     file: tarPath,
     cwd: extractPath,
