@@ -2,11 +2,13 @@ import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
 import { extract } from "tar";
 import { resolve, dirname } from "pathe";
-import { installDependencies } from "nypm";
+import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
 import { providers } from "./providers.ts";
 import { registryProvider } from "./registry.ts";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
+
+type InstallOptions = Parameters<typeof installDependencies>[0];
 
 export interface DownloadTemplateOptions {
   provider?: string;
@@ -19,7 +21,7 @@ export interface DownloadTemplateOptions {
   registry?: false | string;
   cwd?: string;
   auth?: string;
-  install?: boolean | Parameters<typeof installDependencies>[0];
+  install?: boolean | InstallOptions;
   silent?: boolean;
 }
 
@@ -155,6 +157,7 @@ export async function downloadTemplate(
 
   if (options.install) {
     debug("Installing dependencies...");
+    const { installDependencies } = await import("nypm");
     await installDependencies({
       cwd: extractPath,
       silent: options.silent,
