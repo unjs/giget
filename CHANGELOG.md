@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.1.0
+
+[compare changes](https://github.com/unjs/giget/compare/v3.0.0...v3.1.0)
+
+### 🚀 Enhancements
+
+- Allow passing install options to nypm ([c420507](https://github.com/unjs/giget/commit/c420507))
+
+### 🔥 Performance
+
+- Lazy load nypm ([1a717a8](https://github.com/unjs/giget/commit/1a717a8))
+- Lazy import `tar` ([baa58db](https://github.com/unjs/giget/commit/baa58db))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+
 ## v3.0.0
 
 [compare changes](https://github.com/unjs/giget/compare/v2.0.0...v3.0.0)
