@@ -14,9 +14,7 @@ export async function download(
   options: { headers?: Record<string, string | undefined> } = {},
 ) {
   const infoPath = filePath + ".json";
-  const info: { etag?: string } = JSON.parse(
-    await readFile(infoPath, "utf8").catch(() => "{}"),
-  );
+  const info: { etag?: string } = JSON.parse(await readFile(infoPath, "utf8").catch(() => "{}"));
   const headResponse = await sendFetch(url, {
     method: "HEAD",
     headers: options.headers,
@@ -32,9 +30,7 @@ export async function download(
 
   const response = await sendFetch(url, { headers: options.headers });
   if (response.status >= 400) {
-    throw new Error(
-      `Failed to download ${url}: ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Failed to download ${url}: ${response.status} ${response.statusText}`);
   }
 
   const stream = createWriteStream(filePath);
@@ -43,8 +39,7 @@ export async function download(
   await writeFile(infoPath, JSON.stringify(info), "utf8");
 }
 
-const inputRegex =
-  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
+const inputRegex = /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
 
 export function parseGitURI(input: string): Omit<GitInfo, "provider"> {
   const m = input.match(inputRegex)?.groups || {};
@@ -67,10 +62,7 @@ interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
   validateStatus?: boolean;
 }
 
-export async function sendFetch(
-  url: string,
-  options: InternalFetchOptions = {},
-) {
+export async function sendFetch(url: string, options: InternalFetchOptions = {}) {
   // https://github.com/nodejs/undici/issues/1305
   if (options.headers?.["sec-fetch-mode"]) {
     options.mode = options.headers["sec-fetch-mode"] as any;
@@ -113,9 +105,7 @@ export function cacheDirectory() {
   return cacheDir;
 }
 
-export function normalizeHeaders(
-  headers: Record<string, string | undefined> = {},
-) {
+export function normalizeHeaders(headers: Record<string, string | undefined> = {}) {
   const normalized: Record<string, string> = {};
   for (const [key, value] of Object.entries(headers)) {
     if (!value) {
@@ -141,9 +131,7 @@ export function currentShell() {
 export function startShell(cwd: string) {
   cwd = resolve(cwd);
   const shell = currentShell();
-  console.info(
-    `(experimental) Opening shell in ${relative(process.cwd(), cwd)}...`,
-  );
+  console.info(`(experimental) Opening shell in ${relative(process.cwd(), cwd)}...`);
   spawnSync(shell, [], {
     cwd,
     shell: true,

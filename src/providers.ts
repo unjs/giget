@@ -22,9 +22,7 @@ export const http: TemplateProvider = async (input, options) => {
     if (_contentType.includes("application/json")) {
       return (await _httpJSON(input, options)) as TemplateInfo;
     }
-    const filename = head.headers
-      .get("content-disposition")
-      ?.match(/filename="?(.+)"?/)?.[1];
+    const filename = head.headers.get("content-disposition")?.match(/filename="?(.+)"?/)?.[1];
     if (filename) {
       name = filename.split(".")[0]!;
     }
@@ -53,9 +51,7 @@ const _httpJSON: TemplateProvider = async (input, options) => {
   });
   const info = (await result.json()) as TemplateInfo;
   if (!info.tar || !info.name) {
-    throw new Error(
-      `Invalid template info from ${input}. name or tar fields are missing!`,
-    );
+    throw new Error(`Invalid template info from ${input}. name or tar fields are missing!`);
   }
   return info;
 };

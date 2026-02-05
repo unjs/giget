@@ -15,8 +15,7 @@ const mainCommand = defineCommand({
     template: {
       type: "positional",
       required: true,
-      description:
-        "Template name or a URI describing provider, repository, subdir, and branch/ref",
+      description: "Template name or a URI describing provider, repository, subdir, and branch/ref",
     },
     dir: {
       type: "positional",
@@ -30,8 +29,7 @@ const mainCommand = defineCommand({
     },
     cwd: {
       type: "string",
-      description:
-        "Set current working directory to resolve dirs relative to it",
+      description: "Set current working directory to resolve dirs relative to it",
     },
     force: {
       type: "boolean",
@@ -39,8 +37,7 @@ const mainCommand = defineCommand({
     },
     forceClean: {
       type: "boolean",
-      description:
-        "Remove any existing directory or file recursively before cloning",
+      description: "Remove any existing directory or file recursively before cloning",
     },
     offline: {
       type: "boolean",

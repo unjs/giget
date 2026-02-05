@@ -43,8 +43,7 @@ export async function downloadTemplate(
       ? undefined
       : registryProvider(options.registry, { auth: options.auth });
 
-  let providerName: string =
-    options.provider || (registry ? "registry" : "github");
+  let providerName: string = options.provider || (registry ? "registry" : "github");
 
   let source: string = input;
   const sourceProviderMatch = input.match(sourceProtoRe);
@@ -56,17 +55,14 @@ export async function downloadTemplate(
     }
   }
 
-  const provider =
-    options.providers?.[providerName] || providers[providerName] || registry;
+  const provider = options.providers?.[providerName] || providers[providerName] || registry;
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`);
   }
   const template = await Promise.resolve()
     .then(() => provider(source, { auth: options.auth }))
     .catch((error) => {
-      throw new Error(
-        `Failed to download template from ${providerName}: ${error.message}`,
-      );
+      throw new Error(`Failed to download template from ${providerName}: ${error.message}`);
     });
 
   if (!template) {
@@ -75,21 +71,11 @@ export async function downloadTemplate(
 
   // Sanitize name and defaultDir
   template.name = (template.name || "template").replace(/[^\da-z-]/gi, "-");
-  template.defaultDir = (template.defaultDir || template.name).replace(
-    /[^\da-z-]/gi,
-    "-",
-  );
+  template.defaultDir = (template.defaultDir || template.name).replace(/[^\da-z-]/gi, "-");
 
   // Download template source
-  const temporaryDirectory = resolve(
-    cacheDirectory(),
-    providerName,
-    template.name,
-  );
-  const tarPath = resolve(
-    temporaryDirectory,
-    (template.version || template.name) + ".tar.gz",
-  );
+  const temporaryDirectory = resolve(cacheDirectory(), providerName, template.name);
+  const tarPath = resolve(temporaryDirectory, (template.version || template.name) + ".tar.gz");
 
   if (options.preferOffline && existsSync(tarPath)) {
     options.offline = true;
@@ -114,9 +100,7 @@ export async function downloadTemplate(
   }
 
   if (!existsSync(tarPath)) {
-    throw new Error(
-      `Tarball not found: ${tarPath} (offline: ${options.offline})`,
-    );
+    throw new Error(`Tarball not found: ${tarPath} (offline: ${options.offline})`);
   }
 
   // Extract template
@@ -125,11 +109,7 @@ export async function downloadTemplate(
   if (options.forceClean) {
     await rm(extractPath, { recursive: true, force: true });
   }
-  if (
-    !options.force &&
-    existsSync(extractPath) &&
-    readdirSync(extractPath).length > 0
-  ) {
+  if (!options.force && existsSync(extractPath) && readdirSync(extractPath).length > 0) {
     throw new Error(`Destination ${extractPath} already exists.`);
   }
   await mkdir(extractPath, { recursive: true });
