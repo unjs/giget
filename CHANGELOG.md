@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.1.2
+
+[compare changes](https://github.com/unjs/giget/compare/v3.1.1...v3.1.2)
+
+### 🏡 Chore
+
+- Update deps ([03f7452](https://github.com/unjs/giget/commit/03f7452))
+- Migrate to oxfmt and oxlint ([0fa2962](https://github.com/unjs/giget/commit/0fa2962))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+
 ## v3.1.1
 
 [compare changes](https://github.com/unjs/giget/compare/v3.1.0...v3.1.1)
