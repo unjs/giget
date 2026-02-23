@@ -66,15 +66,31 @@ const mainCommand = defineCommand({
       process.env.DEBUG = process.env.DEBUG || "true";
     }
 
-    const r = await downloadTemplate(args.template, {
-      dir: args.dir,
-      force: args.force,
-      forceClean: args.forceClean,
-      offline: args.offline,
-      preferOffline: args.preferOffline,
-      auth: args.auth,
-      install: args.install,
-    });
+    let r: Awaited<ReturnType<typeof downloadTemplate>>;
+    try {
+      r = await downloadTemplate(args.template, {
+        dir: args.dir,
+        force: args.force,
+        forceClean: args.forceClean,
+        offline: args.offline,
+        preferOffline: args.preferOffline,
+        auth: args.auth,
+        install: args.install,
+      });
+    } catch (error) {
+      if (args.verbose) {
+        consola.error(error);
+      } else {
+        const message =
+          error instanceof Error
+            ? error.message
+            : `Failed to download ${args.template}: unknown error`;
+        consola.error(message);
+      }
+
+      process.exitCode = 1;
+      return;
+    }
 
     const _from = r.name || r.url;
     const _to = relative(process.cwd(), r.dir) || "./";
