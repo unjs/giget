@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.1",
-    "@types/tar": "^6.1.13",
+    "@types/tar": "^7.0.87",
     "@typescript/native-preview": "^7.0.0-dev.20260205.1",
     "@vitest/coverage-v8": "^4.0.18",
     "changelogen": "^0.6.2",
