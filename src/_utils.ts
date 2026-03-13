@@ -39,7 +39,7 @@ export async function download(
   await writeFile(infoPath, JSON.stringify(info), "utf8");
 }
 
-const inputRegex = /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/;
+const inputRegex = /^(?<repo>[-\w.]+\/[-\w.]+)(?<subdir>[^#]+)?(?<ref>#[-\w./@]+)?/;
 
 export function parseGitURI(input: string): Omit<GitInfo, "provider"> {
   const m = input.match(inputRegex)?.groups || {};
