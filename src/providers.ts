@@ -98,6 +98,24 @@ export const gitlab: TemplateProvider = (input, options) => {
 
 export const bitbucket: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
+  const bitbucketURL =
+    process.env.GIGET_BITBUCKET_URL || "https://bitbucket.org";
+
+  let paths: Pick<TemplateInfo, "url" | "tar"> = {
+    url: `${bitbucketURL}/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
+    tar: `${bitbucketURL}/${parsed.repo}/get/${parsed.ref}.tar.gz`,
+  };
+
+  // Self-hosted Bitbucket paths
+  if (bitbucketURL !== "https://bitbucket.org") {
+    const [project, repo] = parsed.repo.split("/");
+
+    paths = {
+      url: `${bitbucketURL}/projects/${project}/repos/${repo}/browse${parsed.subdir}?at=${parsed.ref}`,
+      tar: `${bitbucketURL}/rest/api/latest/projects/${project}/repos/${repo}/archive?at=${parsed.ref}&format=tar.gz`,
+    };
+  }
+
   return {
     name: parsed.repo.replace("/", "-"),
     version: parsed.ref,
@@ -105,8 +123,7 @@ export const bitbucket: TemplateProvider = (input, options) => {
     headers: {
       authorization: options.auth ? `Bearer ${options.auth}` : undefined,
     },
-    url: `https://bitbucket.com/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
-    tar: `https://bitbucket.org/${parsed.repo}/get/${parsed.ref}.tar.gz`,
+    ...paths,
   };
 };
 
