@@ -42,7 +42,7 @@
     "pathe": "^2.0.3",
     "rolldown": "^1.0.0-rc.3",
     "tar": "^7.5.7",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "unbuild": "^3.6.1",
     "vitest": "^4.0.18"
   },
