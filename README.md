@@ -74,6 +74,12 @@ npx giget@latest gh:unjs/template/test
 # Clone from gitlab
 npx giget@latest gitlab:unjs/template
 
+# Clone from gitlab with subgroups
+npx giget@latest gitlab:group/subgroup/project
+
+# Clone from gitlab with subgroups and subdirectory (using :: delimiter)
+npx giget@latest gitlab:group/subgroup/project::src/template
+
 # Clone from bitbucket
 npx giget@latest bitbucket:unjs/template
 
@@ -144,7 +150,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 
 **Options:**
 
-- `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
+- `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`. Use `::` to separate repo from subdir when the repo path has more than two segments (e.g., GitLab subgroups): `[provider]:group/subgroup/repo[::subdir][#ref]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
   - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut`, or `git`. The default is `github`.

@@ -40,12 +40,19 @@ export async function download(
 }
 
 const inputRegex = /^(?<repo>[-\w.]+\/[-\w.]+)(?<subdir>[^#]+)?(?<ref>#[-\w./@]+)?/;
+const expandedInputRegex =
+  /^(?<repo>[-\w.]+(?:\/[-\w.]+)+?)(?:::(?<subdir>[^#]*))?(?<ref>#[-\w./@]+)?$/;
 
-export function parseGitURI(input: string): Omit<GitInfo, "provider"> {
-  const m = input.match(inputRegex)?.groups || {};
+export function parseGitURI(
+  input: string,
+  options?: { expandRepo?: boolean },
+): Omit<GitInfo, "provider"> {
+  const useExpanded = options?.expandRepo || input.includes("::");
+  const m = input.match(useExpanded ? expandedInputRegex : inputRegex)?.groups || {};
+  const subdir = useExpanded ? (m.subdir ? "/" + m.subdir : "/") : m.subdir || "/";
   return {
     repo: m.repo || "",
-    subdir: m.subdir || "/",
+    subdir,
     ref: m.ref ? m.ref.slice(1) : "main",
   } satisfies Omit<GitInfo, "provider">;
 }

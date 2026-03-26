@@ -81,7 +81,7 @@ export const github: TemplateProvider = (input, options) => {
 };
 
 export const gitlab: TemplateProvider = (input, options) => {
-  const parsed = parseGitURI(input);
+  const parsed = parseGitURI(input, { expandRepo: true });
   const gitlab = process.env.GIGET_GITLAB_URL || "https://gitlab.com";
   return {
     name: parsed.repo.replace("/", "-"),
