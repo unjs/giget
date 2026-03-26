@@ -10,16 +10,20 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - run: npm i -fg corepack && corepack enable
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 22
           cache: "pnpm"
       - run: pnpm install
       - run: pnpm lint
+        if: runner.os != 'Windows'
       - run: pnpm build
       - run: pnpm vitest --coverage
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6

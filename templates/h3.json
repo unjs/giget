@@ -1,0 +1,6 @@
+{
+  "name": "h3",
+  "defaultDir": "h3-app",
+  "url": "https://h3.dev",
+  "tar": "https://codeload.github.com/h3js/starter/tar.gz/refs/heads/main"
+}

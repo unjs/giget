@@ -1,6 +1,7 @@
 import { basename } from "pathe";
-import type { TemplateInfo, TemplateProvider } from "./types";
-import { debug, parseGitURI, sendFetch } from "./_utils";
+import type { TemplateInfo, TemplateProvider } from "./types.ts";
+import { debug, parseGitURI, sendFetch } from "./_utils.ts";
+import { git } from "./git.ts";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -22,11 +23,9 @@ export const http: TemplateProvider = async (input, options) => {
     if (_contentType.includes("application/json")) {
       return (await _httpJSON(input, options)) as TemplateInfo;
     }
-    const filename = head.headers
-      .get("content-disposition")
-      ?.match(/filename="?(.+)"?/)?.[1];
+    const filename = head.headers.get("content-disposition")?.match(/filename="?(.+)"?/)?.[1];
     if (filename) {
-      name = filename.split(".")[0];
+      name = filename.split(".")[0]!;
     }
   } catch (error) {
     debug(`Failed to fetch HEAD for ${url.href}:`, error);
@@ -53,9 +52,7 @@ const _httpJSON: TemplateProvider = async (input, options) => {
   });
   const info = (await result.json()) as TemplateInfo;
   if (!info.tar || !info.name) {
-    throw new Error(
-      `Invalid template info from ${input}. name or tar fields are missing!`,
-    );
+    throw new Error(`Invalid template info from ${input}. name or tar fields are missing!`);
   }
   return info;
 };
@@ -131,6 +128,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
+  git,
   github,
   gh: github,
   gitlab,

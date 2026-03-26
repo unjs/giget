@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-import { relative } from "node:path";
+import { relative } from "pathe";
 import { defineCommand, runMain } from "citty";
-import { consola } from "consola";
-import pkg from "../package.json" assert { type: "json" };
-import { downloadTemplate } from "./giget";
-import { startShell } from "./_utils";
+import pkg from "../package.json" with { type: "json" };
+import { downloadTemplate } from "./giget.ts";
+import { startShell } from "./_utils.ts";
 
 const mainCommand = defineCommand({
   meta: {
@@ -13,11 +12,10 @@ const mainCommand = defineCommand({
     description: pkg.description,
   },
   args: {
-    // TODO: Make it `-t` in the next major version
     template: {
       type: "positional",
-      description:
-        "Template name or a a URI describing provider, repository, subdir, and branch/ref",
+      required: true,
+      description: "Template name or a URI describing provider, repository, subdir, and branch/ref",
     },
     dir: {
       type: "positional",
@@ -27,12 +25,11 @@ const mainCommand = defineCommand({
     auth: {
       type: "string",
       description:
-        "Custom Authorization token to use for downloading template. (Can be overriden with `GIGET_AUTH` environment variable)",
+        "Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable)",
     },
     cwd: {
       type: "string",
-      description:
-        "Set current working directory to resolve dirs relative to it",
+      description: "Set current working directory to resolve dirs relative to it",
     },
     force: {
       type: "boolean",
@@ -40,12 +37,11 @@ const mainCommand = defineCommand({
     },
     forceClean: {
       type: "boolean",
-      description:
-        "Remove any existing directory or file recusively before cloning",
+      description: "Remove any existing directory or file recursively before cloning",
     },
     offline: {
       type: "boolean",
-      description: "o not attempt to download and use cached version",
+      description: "Do not attempt to download and use cached version",
     },
     preferOffline: {
       type: "boolean",
@@ -53,7 +49,8 @@ const mainCommand = defineCommand({
     },
     shell: {
       type: "boolean",
-      description: "Open a new shell with current working ",
+      description:
+        "Open a new shell with the current working directory set to the cloned directory (experimental)",
     },
     install: {
       type: "boolean",
@@ -69,19 +66,35 @@ const mainCommand = defineCommand({
       process.env.DEBUG = process.env.DEBUG || "true";
     }
 
-    const r = await downloadTemplate(args.template, {
-      dir: args.dir,
-      force: args.force,
-      forceClean: args.forceClean,
-      offline: args.offline,
-      preferOffline: args.preferOffline,
-      auth: args.auth,
-      install: args.install,
-    });
+    let r: Awaited<ReturnType<typeof downloadTemplate>>;
+    try {
+      r = await downloadTemplate(args.template, {
+        dir: args.dir,
+        force: args.force,
+        forceClean: args.forceClean,
+        offline: args.offline,
+        preferOffline: args.preferOffline,
+        auth: args.auth,
+        install: args.install,
+      });
+    } catch (error) {
+      if (args.verbose) {
+        console.error(error);
+      } else {
+        const message =
+          error instanceof Error
+            ? error.message
+            : `Failed to download ${args.template}: unknown error`;
+        console.error(message);
+      }
+
+      process.exitCode = 1;
+      return;
+    }
 
     const _from = r.name || r.url;
     const _to = relative(process.cwd(), r.dir) || "./";
-    consola.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
+    console.log(`✨ Successfully cloned \`${_from}\` to \`${_to}\`\n`);
 
     if (args.shell) {
       startShell(r.dir);

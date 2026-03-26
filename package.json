@@ -1,65 +1,49 @@
 {
   "name": "giget",
-  "version": "1.2.3",
+  "version": "3.1.2",
   "description": "Download templates and git repositories with pleasure!",
-  "repository": "unjs/giget",
   "license": "MIT",
-  "sideEffects": false,
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "repository": "unjs/giget",
   "bin": {
     "giget": "./dist/cli.mjs"
   },
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "unbuild",
-    "dev": "vitest dev",
-    "giget": "jiti ./src/cli.ts",
-    "lint": "eslint . && prettier -c src test",
-    "lint:fix": "eslint . --fix && prettier -w src test",
-    "prepack": "unbuild",
-    "play": "pnpm giget --force-clean --verbose unjs .tmp/clone",
-    "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
-    "test": "pnpm lint && vitest run --coverage"
+  "type": "module",
+  "sideEffects": false,
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": "./dist/index.mjs"
   },
-  "dependencies": {
-    "citty": "^0.1.6",
-    "consola": "^3.3.3",
-    "defu": "^6.1.4",
-    "node-fetch-native": "^1.6.4",
-    "nypm": "^0.4.1",
-    "ohash": "^1.1.4",
-    "pathe": "^1.1.2",
-    "tar": "^7.4.3"
+  "scripts": {
+    "build": "obuild",
+    "dev": "vitest dev",
+    "giget": "node ./src/cli.ts",
+    "lint": "oxlint . && oxfmt --check src test",
+    "lint:fix": "oxlint . --fix && oxfmt src test",
+    "play": "pnpm giget --force-clean --verbose unjs .tmp/clone",
+    "release": "pnpm test && pnpm build && changelogen --release && npm publish && git push --follow-tags",
+    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
+    "test:types": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@types/tar": "^6.1.13",
-    "@vitest/coverage-v8": "^2.1.8",
-    "changelogen": "^0.5.7",
-    "eslint": "^9.17.0",
-    "eslint-config-unjs": "^0.4.2",
-    "jiti": "^2.4.2",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.2",
-    "unbuild": "^3.1.0",
-    "vitest": "^2.1.8"
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260326.1",
+    "@vitest/coverage-v8": "^4.1.2",
+    "changelogen": "^0.6.2",
+    "citty": "^0.2.1",
+    "eslint-config-unjs": "^0.6.2",
+    "nypm": "^0.6.5",
+    "obuild": "^0.4.32",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "pathe": "^2.0.3",
+    "rolldown": "^1.0.0-rc.12",
+    "tar": "^7.5.13",
+    "typescript": "^6.0.2",
+    "unbuild": "^3.6.1",
+    "vitest": "^4.1.2"
   },
-  "packageManager": "pnpm@9.15.1"
+  "packageManager": "pnpm@10.33.0"
 }
