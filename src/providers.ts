@@ -130,7 +130,9 @@ export const git: TemplateProvider = (input, options) => {
   return {
     name: parsed.name,
     // Include subdir in version so the cache key is unique per subdir
-    version: parsed.subdir ? `${parsed.version || "default"}-${parsed.subdir.replaceAll("/", "-")}` : parsed.version,
+    version: parsed.subdir
+      ? `${parsed.version || "default"}-${parsed.subdir.replaceAll("/", "-")}`
+      : parsed.version,
     // subdir is handled during clone (sparse checkout) and tar creation,
     // so we don't set it here to avoid double-filtering during extraction
     tar: async ({ auth } = {}) => {
