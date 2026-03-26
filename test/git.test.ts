@@ -3,32 +3,40 @@ import { parseGitCloneURI } from "../src/git.ts";
 
 describe("parseGitCloneURI", () => {
   const tests = [
-    // SSH shorthand
-    { input: "gh:org/repo", uri: "git@github.com:org/repo", name: "github.com-org-repo" },
-    { input: "gh:org/repo#v1.0", uri: "git@github.com:org/repo", version: "v1.0" },
+    // Host shorthands (HTTPS by default)
+    { input: "gh:org/repo", uri: "https://github.com/org/repo", name: "github.com-org-repo" },
+    { input: "gh:org/repo#v1.0", uri: "https://github.com/org/repo", version: "v1.0" },
     {
       input: "gh:org/repo#v1.0:sub/dir",
-      uri: "git@github.com:org/repo",
+      uri: "https://github.com/org/repo",
       version: "v1.0",
       subdir: "sub/dir",
     },
-    { input: "gh:org/repo/sub/dir", uri: "git@github.com:org/repo", subdir: "sub/dir" },
+    { input: "gh:org/repo/sub/dir", uri: "https://github.com/org/repo", subdir: "sub/dir" },
     {
       input: "gh:org/repo/sub/dir#v1.0",
-      uri: "git@github.com:org/repo",
+      uri: "https://github.com/org/repo",
       version: "v1.0",
       subdir: "sub/dir",
     },
-    { input: "github:org/repo/sub/dir", uri: "git@github.com:org/repo", subdir: "sub/dir" },
-    { input: "gitlab:org/repo/sub/dir", uri: "git@gitlab.com:org/repo", subdir: "sub/dir" },
-    { input: "bitbucket:org/repo", uri: "git@bitbucket.org:org/repo" },
-    { input: "bitbucket:org/repo/sub/dir", uri: "git@bitbucket.org:org/repo", subdir: "sub/dir" },
-    { input: "sourcehut:org/repo", uri: "git@git.sr.ht:org/repo" },
-    { input: "sourcehut:org/repo/sub/dir", uri: "git@git.sr.ht:org/repo", subdir: "sub/dir" },
+    { input: "github:org/repo/sub/dir", uri: "https://github.com/org/repo", subdir: "sub/dir" },
+    { input: "gitlab:org/repo/sub/dir", uri: "https://gitlab.com/org/repo", subdir: "sub/dir" },
+    { input: "bitbucket:org/repo", uri: "https://bitbucket.org/org/repo" },
+    {
+      input: "bitbucket:org/repo/sub/dir",
+      uri: "https://bitbucket.org/org/repo",
+      subdir: "sub/dir",
+    },
+    { input: "sourcehut:org/repo", uri: "https://git.sr.ht/~org/repo" },
+    { input: "sourcehut:org/repo/sub/dir", uri: "https://git.sr.ht/~org/repo", subdir: "sub/dir" },
 
-    // Bare org/repo (defaults to github.com)
-    { input: "org/repo", uri: "git@github.com:org/repo" },
-    { input: "org/repo/sub/dir", uri: "git@github.com:org/repo", subdir: "sub/dir" },
+    // Bare org/repo (defaults to github.com HTTPS)
+    { input: "org/repo", uri: "https://github.com/org/repo" },
+    { input: "org/repo/sub/dir", uri: "https://github.com/org/repo", subdir: "sub/dir" },
+
+    // Explicit SSH (with @)
+    { input: "git@github.com:org/repo", uri: "git@github.com:org/repo" },
+    { input: "git@github.com:org/repo/sub/dir", uri: "git@github.com:org/repo", subdir: "sub/dir" },
 
     // HTTP(S)
     { input: "https://github.com/org/repo", uri: "https://github.com/org/repo" },
@@ -46,7 +54,7 @@ describe("parseGitCloneURI", () => {
     // Hash subdir takes priority over path subdir
     {
       input: "gh:org/repo/path-sub#v1.0:hash-sub",
-      uri: "git@github.com:org/repo",
+      uri: "https://github.com/org/repo",
       version: "v1.0",
       subdir: "hash-sub",
     },

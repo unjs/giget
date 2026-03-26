@@ -80,7 +80,7 @@ npx giget@latest bitbucket:unjs/template
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
 
-# Clone using local git (see "Git Clone Provider" section)
+# Clone using local git over HTTPS (see "Git Clone Provider" section)
 npx giget@latest git:unjs/template
 
 # Clone from https URL (tarball)
@@ -223,11 +223,11 @@ const { source, dir } = await downloadTemplate("themes:test", {
 The `git:` provider clones repositories using the local `git` command instead of downloading tarballs via HTTP APIs. Useful for private or self-hosted servers that don't expose tarball endpoints.
 
 ```sh
-git:unjs/template                    # SSH clone (github.com by default)
+git:unjs/template                    # HTTPS clone (github.com by default)
 git:unjs/template#v2                 # Specific branch or tag
 git:unjs/template#e24616c            # Specific commit (full clone fallback)
 git:unjs/template#main:src           # Subdirectory (sparse checkout)
-git:https://github.com/unjs/repo.git # HTTPS clone
+git:git@github.com:unjs/template     # Explicit SSH
 git:./path/to/local/repo             # Local repository
 gh+git:unjs/template                 # Host shorthand (github.com)
 gitlab+git:org/repo                  # Host shorthand (gitlab.com)
@@ -239,9 +239,7 @@ Subdirectories use sparse checkout with `--filter=blob:none` to avoid downloadin
 
 | Variable | Description |
 | --- | --- |
-| `GIGET_GIT_HOST` | Default SSH host (default: `github.com`) |
-| `GIGET_GIT_USERNAME` | SSH username (default: `git`) |
-| `GIGET_GIT_PASSWORD` | SSH password (optional) |
+| `GIGET_GIT_HOST` | Default HTTPS host (default: `https://github.com/`) |
 
 ## Providing token for private repositories
 

@@ -44,37 +44,8 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
         pathSubdir = rest;
       }
     }
-  } else {
-    // Otherwise, we assume the URI is Git over SSH.
-    // We need to normalize the URI into git:[pass]@<host>:<path>.
-
-    const host = /^(.+?:)/.exec(uri)?.at(1);
-    if (host) {
-      switch (host) {
-        case "github:":
-        case "gh:": {
-          uri = uri.replace(host, "github.com:");
-          break;
-        }
-        case "gitlab:": {
-          uri = uri.replace(host, "gitlab.com:");
-          break;
-        }
-        case "bitbucket:": {
-          uri = uri.replace(host, "bitbucket.org:");
-          break;
-        }
-        case "sourcehut:": {
-          uri = uri.replace(host, "git.sr.ht:");
-          break;
-        }
-      }
-    } else {
-      uri = `${process.env.GIGET_GIT_HOST || "github.com"}:${uri}`;
-    }
-
-    // For SSH URIs, extract org/repo and treat extra path segments as subdir
-    // e.g. github.com:org/repo/sub/dir → github.com:org/repo + subdir=sub/dir
+  } else if (uri.includes("@")) {
+    // Explicit SSH URI (e.g. git@github.com:org/repo)
     const sshMatch = /^(.*?:[\w.-]+\/[\w.-]+?)(?:\.git)?(?:\/(.+))?$/.exec(uri);
     if (sshMatch) {
       const [, repoUri, rest] = sshMatch;
@@ -83,12 +54,32 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
         pathSubdir = rest;
       }
     }
+  } else {
+    // Default: resolve to HTTPS URL
+    const hostMap: Record<string, string> = {
+      "github:": "https://github.com/",
+      "gh:": "https://github.com/",
+      "gitlab:": "https://gitlab.com/",
+      "bitbucket:": "https://bitbucket.org/",
+      "sourcehut:": "https://git.sr.ht/~",
+    };
 
-    if (!uri.includes("@")) {
-      const username = process.env.GIGET_GIT_USERNAME || "git";
-      const password = process.env.GIGET_GIT_PASSWORD;
+    const host = /^(.+?:)/.exec(uri)?.at(1);
+    if (host && hostMap[host]) {
+      uri = uri.replace(host, hostMap[host]);
+    } else if (!host) {
+      const defaultHost = process.env.GIGET_GIT_HOST || "https://github.com/";
+      uri = `${defaultHost.replace(/\/$/, "")}/${uri}`;
+    }
 
-      uri = `${password ? `${username}:${password}` : username}@${uri}`;
+    // Extract org/repo and treat extra path segments as subdir
+    const httpMatch = /^(https?:\/\/[^/]+\/~?[\w.-]+\/[\w.-]+?)(?:\.git)?(?:\/(.+))?$/.exec(uri);
+    if (httpMatch) {
+      const [, repoUri, rest] = httpMatch;
+      uri = repoUri!;
+      if (rest) {
+        pathSubdir = rest;
+      }
     }
   }
 
