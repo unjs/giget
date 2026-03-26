@@ -80,20 +80,8 @@ npx giget@latest bitbucket:unjs/template
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
 
-# Clone using git (shallow clone via SSH)
+# Clone using local git (see "Git Clone Provider" section)
 npx giget@latest git:unjs/template
-
-# Clone using git with a specific branch
-npx giget@latest git:unjs/template#dev
-
-# Clone a subdir using git (sparse checkout, avoids downloading full repo)
-npx giget@latest git:unjs/template#main:src
-
-# Clone using git via GitHub shorthand
-npx giget@latest gh+git:unjs/template
-
-# Clone using git via GitLab shorthand
-npx giget@latest gitlab+git:myorg/myrepo
 
 # Clone from https URL (tarball)
 npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
@@ -200,8 +188,7 @@ const { source, dir } = await downloadTemplate("rainbow:one", {
 });
 ```
 
-`tar` can be a function that resolves to a `Readable` or `ReadableStream` for a tar file.
-This allows you to implement custom downloading function, for example:
+`tar` can also be a function returning a `Readable` or `ReadableStream`:
 
 ```ts
 const myorg: TemplateProvider = async (input, { auth }) => {
@@ -212,7 +199,6 @@ const myorg: TemplateProvider = async (input, { auth }) => {
   };
 };
 
-// Download from http://my-org.internal/archive/my-project.tar.gz
 const { source, dir } = await downloadTemplate("myorg:my-project", {
   providers: { myorg },
 });
@@ -234,44 +220,22 @@ const { source, dir } = await downloadTemplate("themes:test", {
 
 ## Git Clone Provider
 
-The `git:` provider clones repositories using the local `git` command instead of downloading tarballs via HTTP APIs. This is useful for repositories hosted on private or self-hosted servers that don't expose tarball endpoints.
+The `git:` provider clones repositories using the local `git` command instead of downloading tarballs via HTTP APIs. Useful for private or self-hosted servers that don't expose tarball endpoints.
 
 ```sh
-# Clone via SSH (default, resolves to github.com)
-npx giget@latest git:unjs/template
-
-# Clone a specific branch or tag
-npx giget@latest git:unjs/template#v2
-
-# Clone a specific commit (falls back to full clone)
-npx giget@latest git:unjs/template#e24616c
-
-# Clone only a subdirectory (uses sparse checkout)
-npx giget@latest git:GoogleCloudPlatform/devrel-demos#main:agents/my-project
-
-# Clone via HTTPS
-npx giget@latest git:https://github.com/unjs/template.git
-
-# Clone from a local repo
-npx giget@latest git:./path/to/local/repo
+git:unjs/template                    # SSH clone (github.com by default)
+git:unjs/template#v2                 # Specific branch or tag
+git:unjs/template#e24616c            # Specific commit (full clone fallback)
+git:unjs/template#main:src           # Subdirectory (sparse checkout)
+git:https://github.com/unjs/repo.git # HTTPS clone
+git:./path/to/local/repo             # Local repository
+gh+git:unjs/template                 # Host shorthand (github.com)
+gitlab+git:org/repo                  # Host shorthand (gitlab.com)
 ```
 
-### Host shorthands
+Subdirectories use sparse checkout with `--filter=blob:none` to avoid downloading the full repository.
 
-Use `<host>+git:` to route through the git provider with host resolution:
-
-| Prefix | Resolves to |
-| --- | --- |
-| `git:org/repo` | `git@github.com:org/repo` (default) |
-| `gh+git:org/repo` | `git@github.com:org/repo` |
-| `github+git:org/repo` | `git@github.com:org/repo` |
-| `gitlab+git:org/repo` | `git@gitlab.com:org/repo` |
-
-### Subdirectory support
-
-When a subdirectory is specified (e.g. `#branch:path/to/subdir`), giget uses git sparse checkout with `--filter=blob:none` to only download the files in that subdirectory. This avoids cloning the entire repository.
-
-### Environment variables
+**Environment variables:**
 
 | Variable | Description |
 | --- | --- |
