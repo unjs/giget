@@ -130,7 +130,8 @@ export const git: TemplateProvider = (input, options) => {
   return {
     name: parsed.name,
     version: parsed.version,
-    subdir: parsed.subdir,
+    // subdir is handled during clone (sparse checkout) and tar creation,
+    // so we don't set it here to avoid double-filtering during extraction
     tar: async ({ auth } = {}) => {
       const { execFile: execFileCb } = await import("node:child_process");
       const { promisify } = await import("node:util");
@@ -148,30 +149,42 @@ export const git: TemplateProvider = (input, options) => {
         : { timeout: 60_000 };
       const authArgs = token ? ["-c", `http.extraHeader=Authorization: Bearer ${token}`] : [];
 
+      const gitExec = (...args: string[]) => execFile("git", [...authArgs, ...args], execOpts);
+      const gitExecIn = (...args: string[]) => execFile("git", args, { ...execOpts, cwd: tmpDir });
+
       try {
-        const cloneArgs = [...authArgs, "clone", "--depth", "1"];
+        // Build shallow clone args
+        const cloneArgs = ["clone", "--depth", "1"];
+        if (parsed.subdir) {
+          cloneArgs.push("--filter=blob:none", "--sparse");
+        }
         if (parsed.version) {
           cloneArgs.push("--branch", parsed.version);
         }
         cloneArgs.push(parsed.uri, tmpDir);
 
         try {
-          await execFile("git", cloneArgs, execOpts);
+          await gitExec(...cloneArgs);
         } catch {
-          // If shallow clone with --branch fails (e.g. specific commit), do full clone + checkout
+          // If shallow clone fails (e.g. specific commit), fall back to full clone + checkout
           debug("Shallow clone failed, falling back to full clone...");
           await rmAsync(tmpDir, { recursive: true, force: true });
           await mkdir(tmpDir, { recursive: true });
-          await execFile("git", [...authArgs, "clone", parsed.uri, tmpDir], execOpts);
+          await gitExec("clone", parsed.uri, tmpDir);
           if (parsed.version) {
-            await execFile("git", ["checkout", parsed.version], { ...execOpts, cwd: tmpDir });
+            await gitExecIn("checkout", parsed.version);
           }
         }
 
+        if (parsed.subdir) {
+          await gitExecIn("sparse-checkout", "set", parsed.subdir);
+        }
+
         // Create tar archive from the cloned repo (excluding .git)
+        const tarDir = parsed.subdir ? join(tmpDir, parsed.subdir) : tmpDir;
         const { stdout } = await execFile(
           "tar",
-          ["-czf", "-", "--exclude", ".git", "-C", tmpDir, "."],
+          ["-czf", "-", "--exclude", ".git", "-C", tarDir, "."],
           { maxBuffer: 256 * 1024 * 1024, encoding: "buffer" },
         );
         return Readable.from(stdout);
