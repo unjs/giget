@@ -79,13 +79,13 @@ const mainCommand = defineCommand({
       });
     } catch (error) {
       if (args.verbose) {
-        consola.error(error);
+        console.error(error);
       } else {
         const message =
           error instanceof Error
             ? error.message
             : `Failed to download ${args.template}: unknown error`;
-        consola.error(message);
+        console.error(message);
       }
 
       process.exitCode = 1;
