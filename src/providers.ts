@@ -124,50 +124,59 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
-export const git: TemplateProvider = (input) => {
+export const git: TemplateProvider = (input, options) => {
   const parsed = parseGitCloneURI(input);
 
   return {
     name: parsed.name,
     version: parsed.version,
     subdir: parsed.subdir,
-    tar: async () => {
-      const { execFileSync } = await import("node:child_process");
-      const { mkdtempSync, rmSync } = await import("node:fs");
+    tar: async ({ auth } = {}) => {
+      const { execFile: execFileCb } = await import("node:child_process");
+      const { promisify } = await import("node:util");
+      const { mkdtemp, rm: rmAsync, mkdir } = await import("node:fs/promises");
       const { tmpdir } = await import("node:os");
       const { join } = await import("node:path");
       const { Readable } = await import("node:stream");
 
-      const tmpDir = mkdtempSync(join(tmpdir(), "giget-git-"));
+      const execFile = promisify(execFileCb);
+      const tmpDir = await mkdtemp(join(tmpdir(), "giget-git-"));
+
+      const token = auth || options.auth;
+      const execOpts = token
+        ? { env: { ...process.env, GIT_TERMINAL_PROMPT: "0" }, timeout: 60_000 }
+        : { timeout: 60_000 };
+      const authArgs = token ? ["-c", `http.extraHeader=Authorization: Bearer ${token}`] : [];
+
       try {
-        const cloneArgs = ["clone", "--depth", "1"];
+        const cloneArgs = [...authArgs, "clone", "--depth", "1"];
         if (parsed.version) {
-          // Try branch/tag first with --depth 1
           cloneArgs.push("--branch", parsed.version);
         }
         cloneArgs.push(parsed.uri, tmpDir);
 
         try {
-          execFileSync("git", cloneArgs, { stdio: "pipe" });
+          await execFile("git", cloneArgs, execOpts);
         } catch {
           // If shallow clone with --branch fails (e.g. specific commit), do full clone + checkout
           debug("Shallow clone failed, falling back to full clone...");
-          execFileSync("git", ["clone", parsed.uri, tmpDir], { stdio: "pipe" });
+          await rmAsync(tmpDir, { recursive: true, force: true });
+          await mkdir(tmpDir, { recursive: true });
+          await execFile("git", [...authArgs, "clone", parsed.uri, tmpDir], execOpts);
           if (parsed.version) {
-            execFileSync("git", ["checkout", parsed.version], { cwd: tmpDir, stdio: "pipe" });
+            await execFile("git", ["checkout", parsed.version], { ...execOpts, cwd: tmpDir });
           }
         }
 
         // Create tar archive from the cloned repo (excluding .git)
-        // Entries will be prefixed with "./" which gets stripped by the extract logic
-        const tarBuffer = execFileSync(
+        const { stdout } = await execFile(
           "tar",
           ["-czf", "-", "--exclude", ".git", "-C", tmpDir, "."],
-          { maxBuffer: 256 * 1024 * 1024 },
+          { maxBuffer: 256 * 1024 * 1024, encoding: "buffer" },
         );
-        return Readable.from(tarBuffer);
+        return Readable.from(stdout);
       } finally {
-        rmSync(tmpDir, { recursive: true, force: true });
+        await rmAsync(tmpDir, { recursive: true, force: true });
       }
     },
   };
