@@ -5,7 +5,7 @@ import { expect, it, describe, beforeAll } from "vitest";
 import { downloadTemplate } from "../src/index.ts";
 
 // Disable cache by PREFER_OFFLINE=false vitest
-const preferOffline = process.env.PREFER_OFFLINE !== 'false'
+const preferOffline = process.env.PREFER_OFFLINE !== "false";
 
 // Use a larger timeout for tests that perform slow git clone that needs to
 // clone the entire git history.
@@ -35,9 +35,7 @@ describe("downloadTemplate", () => {
           return {
             name: input.replaceAll("/", "-"),
             tar: async () => {
-              const response = await fetch(
-                `https://api.github.com/repos/${input}/tarball`,
-              );
+              const response = await fetch(`https://api.github.com/repos/${input}/tarball`);
               return response.body!;
             },
           };
@@ -61,10 +59,7 @@ describe("downloadTemplate", () => {
     "clone unjs/template#e24616c using git provider (specific commit)",
     { timeout: GIT_SLOW_TEST_TIMEOUT },
     async () => {
-      const destinationDirectory = resolve(
-        __dirname,
-        ".tmp/cloned-with-git-e24616c",
-      );
+      const destinationDirectory = resolve(__dirname, ".tmp/cloned-with-git-e24616c");
       const { dir } = await downloadTemplate("git:unjs/template#e24616c", {
         dir: destinationDirectory,
         preferOffline,
@@ -93,10 +88,7 @@ describe("downloadTemplate", () => {
     "clone nuxt/starter#v3:public subdir (specific subdir)",
     { timeout: GIT_SLOW_TEST_TIMEOUT },
     async () => {
-      const destinationDirectory = resolve(
-        __dirname,
-        ".tmp/nuxt3-starter-v3-public",
-      );
+      const destinationDirectory = resolve(__dirname, ".tmp/nuxt3-starter-v3-public");
       const { dir } = await downloadTemplate("git:nuxt/starter#v3:public", {
         dir: destinationDirectory,
         preferOffline,

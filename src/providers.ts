@@ -125,46 +125,46 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  let _git = input.replace(/#.*$/, '')
+  let _git = input.replace(/#.*$/, "");
 
-  const host = /^(.+?:)/.exec(_git)?.at(1)
+  const host = /^(.+?:)/.exec(_git)?.at(1);
   if (host) {
     switch (host) {
-      case 'github:':
-      case 'gh:': {
-        _git = _git.replace(host, 'github.com:')
-        break
+      case "github:":
+      case "gh:": {
+        _git = _git.replace(host, "github.com:");
+        break;
       }
-      case 'gitlab:': {
-        _git = _git.replace(host, 'gitlab.com:')
-        break
+      case "gitlab:": {
+        _git = _git.replace(host, "gitlab.com:");
+        break;
       }
     }
   } else {
-    _git = `${process.env.GIGET_GIT_HOST || 'github.com'}:${_git}`
+    _git = `${process.env.GIGET_GIT_HOST || "github.com"}:${_git}`;
   }
 
-  if (!_git.includes('@')) {
-    const username = process.env.GIGET_GIT_USERNAME || 'git'
-    const password = process.env.GIGET_GIT_PASSWORD
+  if (!_git.includes("@")) {
+    const username = process.env.GIGET_GIT_USERNAME || "git";
+    const password = process.env.GIGET_GIT_PASSWORD;
 
-    _git = `${password ? `${username}:${password}` : username}@${_git}`
+    _git = `${password ? `${username}:${password}` : username}@${_git}`;
   }
 
   const name = _git
-    .replace(/^.+@/, '')
-    .replace(/(\.git)?(#.*)?$/, '')
-    .replaceAll(/[:/]/g, '-')
+    .replace(/^.+@/, "")
+    .replace(/(\.git)?(#.*)?$/, "")
+    .replaceAll(/[:/]/g, "-");
 
-  const version = /#(.+)$/.exec(input)?.at(1)
+  const version = /#(.+)$/.exec(input)?.at(1);
 
   return {
     name,
     git: _git,
     version,
-    tar: ''
+    tar: "",
   };
-}
+};
 
 export const providers: Record<string, TemplateProvider> = {
   http,
