@@ -21,6 +21,10 @@ describe("parseGitCloneURI", () => {
     },
     { input: "github:org/repo/sub/dir", uri: "git@github.com:org/repo", subdir: "sub/dir" },
     { input: "gitlab:org/repo/sub/dir", uri: "git@gitlab.com:org/repo", subdir: "sub/dir" },
+    { input: "bitbucket:org/repo", uri: "git@bitbucket.org:org/repo" },
+    { input: "bitbucket:org/repo/sub/dir", uri: "git@bitbucket.org:org/repo", subdir: "sub/dir" },
+    { input: "sourcehut:org/repo", uri: "git@git.sr.ht:org/repo" },
+    { input: "sourcehut:org/repo/sub/dir", uri: "git@git.sr.ht:org/repo", subdir: "sub/dir" },
 
     // Bare org/repo (defaults to github.com)
     { input: "org/repo", uri: "git@github.com:org/repo" },

@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { mkdtemp, rm as rmAsync, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { PassThrough } from "node:stream";
 import { resolve } from "pathe";
 import type { TemplateProvider, TarOutput } from "./types.ts";
 import { debug } from "./_utils.ts";
@@ -17,7 +18,7 @@ export const git: TemplateProvider = (input, options) => {
       : parsed.version,
     // subdir is handled during clone (sparse checkout) and tar creation,
     // so we don't set it here to avoid double-filtering during extraction
-    tar: ({ auth } = {}) => _cloneAndTar(parsed, auth || options.auth),
+    tar: ({ auth } = {}) => _cloneAndTar(parsed, auth ?? options.auth),
   };
 };
 
@@ -59,6 +60,14 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
           uri = uri.replace(host, "gitlab.com:");
           break;
         }
+        case "bitbucket:": {
+          uri = uri.replace(host, "bitbucket.org:");
+          break;
+        }
+        case "sourcehut:": {
+          uri = uri.replace(host, "git.sr.ht:");
+          break;
+        }
       }
     } else {
       uri = `${process.env.GIGET_GIT_HOST || "github.com"}:${uri}`;
@@ -95,12 +104,14 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
     .replaceAll(/[:/]/g, "-");
 
   const [version, hashSubdir] = /#(.+)$/.exec(input)?.at(1)?.split(":") ?? [];
+  // For `#:subdir` syntax, version is "" (empty) — normalize to undefined
+  const resolvedVersion = version || undefined;
   const subdir = hashSubdir || pathSubdir;
 
   return {
     uri,
     name,
-    ...(version && { version }),
+    ...(resolvedVersion && { version: resolvedVersion }),
     ...(subdir && { subdir }),
   };
 }
@@ -137,7 +148,7 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
   try {
     const cloneArgs = ["clone", "--progress", "--depth", "1"];
     if (parsed.subdir) {
-      cloneArgs.push("--filter=blob:none", "--sparse");
+      cloneArgs.push("--filter=blob:none", "--sparse", "--no-checkout");
     }
     if (parsed.version) {
       cloneArgs.push("--branch", parsed.version);
@@ -160,23 +171,22 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       await mkdir(tmpDir, { recursive: true });
       await gitExecIn(["init"]);
       await gitExecIn(["remote", "add", "origin", parsed.uri]);
-      if (parsed.version) {
-        await gitExecIn([
-          "fetch",
-          "--depth",
-          "1",
-          ...(parsed.subdir ? ["--filter=blob:none"] : []),
-          "origin",
-          parsed.version,
-        ]);
-        await gitExecIn(["checkout", "FETCH_HEAD"]);
-      }
+      await gitExecIn([
+        "fetch",
+        "--depth",
+        "1",
+        ...(parsed.subdir ? ["--filter=blob:none"] : []),
+        "origin",
+        ...(parsed.version ? [parsed.version] : []),
+      ]);
+      await gitExecIn(["checkout", parsed.version ? "FETCH_HEAD" : "origin/HEAD"]);
       status.update("Fetched.");
     }
 
     if (parsed.subdir) {
-      status.update(`Fetching ${parsed.subdir}...`);
+      status.update(`Sparse checkout ${parsed.subdir}...`);
       await gitExecIn(["sparse-checkout", "set", parsed.subdir]);
+      await gitExecIn(["checkout"]);
     }
 
     status.update("Packing...");
@@ -185,7 +195,7 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
     const tarDir = parsed.subdir ? join(tmpDir, parsed.subdir) : tmpDir;
     const { create } = await import("tar");
     status.done();
-    const stream = create(
+    const pack = create(
       {
         gzip: true,
         cwd: tarDir,
@@ -193,6 +203,8 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       },
       ["."],
     );
+    // Pipe through PassThrough to get a proper Readable stream
+    const stream = pack.pipe(new PassThrough());
     // Clean up tmpDir once the stream is fully consumed, errors, or is destroyed
     let cleaned = false;
     const cleanup = () => {
@@ -203,7 +215,7 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
     stream.on("end", cleanup);
     stream.on("error", cleanup);
     stream.on("close", cleanup);
-    return stream as unknown as TarOutput;
+    return stream as TarOutput;
   } catch (error) {
     status.done();
     await rmAsync(tmpDir, { recursive: true, force: true });

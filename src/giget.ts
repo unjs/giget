@@ -1,8 +1,8 @@
 import { createWriteStream } from "node:fs";
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
-import { pipeline } from "node:stream";
-import { promisify } from "node:util";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
@@ -98,8 +98,12 @@ export async function downloadTemplate(
       const tarFn = template.tar;
       await (async () => {
         const stream = await tarFn({ auth: options.auth });
+        const nodeStream =
+          stream instanceof Readable
+            ? stream
+            : Readable.fromWeb(stream as import("node:stream/web").ReadableStream);
         const fileStream = createWriteStream(tarPath);
-        await promisify(pipeline)(stream as NodeJS.ReadableStream, fileStream);
+        await pipeline(nodeStream, fileStream);
       })().catch((error) => {
         if (!existsSync(tarPath)) {
           throw error;
