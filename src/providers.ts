@@ -1,6 +1,7 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
 import { debug, parseGitURI, sendFetch } from "./_utils.ts";
+import { git } from "./git.ts";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -127,6 +128,7 @@ export const sourcehut: TemplateProvider = (input, options) => {
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
+  git,
   github,
   gh: github,
   gitlab,

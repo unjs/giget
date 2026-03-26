@@ -1,5 +1,8 @@
+import { createWriteStream } from "node:fs";
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
@@ -24,7 +27,7 @@ export interface DownloadTemplateOptions {
   silent?: boolean;
 }
 
-const sourceProtoRe = /^([\w-.]+):/;
+const sourceProtoRe = /^([\w+-.]+):/;
 
 export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
   dir: string;
@@ -55,6 +58,14 @@ export async function downloadTemplate(
     }
   }
 
+  // Handle <host>+git: prefix (e.g. gh+git:, github+git:, gitlab+git:)
+  // Route to git provider with host prefix preserved for parseGitCloneURI
+  if (providerName.endsWith("+git")) {
+    const hostPrefix = providerName.slice(0, -4); // e.g. "gh", "github", "gitlab"
+    source = `${hostPrefix}:${source}`;
+    providerName = "git";
+  }
+
   const provider = options.providers?.[providerName] || providers[providerName] || registry;
   if (!provider) {
     throw new Error(`Unsupported provider: ${providerName}`);
@@ -83,20 +94,39 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, {
-      headers: {
-        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...normalizeHeaders(template.headers),
-      },
-    }).catch((error) => {
-      if (!existsSync(tarPath)) {
-        throw error;
-      }
-      // Accept network errors if we have a cached version
-      debug("Download error. Using cached version:", error);
-      options.offline = true;
-    });
-    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
+    if (typeof template.tar === "function") {
+      const tarFn = template.tar;
+      await (async () => {
+        const stream = await tarFn({ auth: options.auth });
+        const nodeStream =
+          stream instanceof Readable
+            ? stream
+            : Readable.fromWeb(stream as import("node:stream/web").ReadableStream);
+        const fileStream = createWriteStream(tarPath);
+        await pipeline(nodeStream, fileStream);
+      })().catch((error) => {
+        if (!existsSync(tarPath)) {
+          throw error;
+        }
+        debug("Download error. Using cached version:", error);
+        options.offline = true;
+      });
+    } else {
+      await download(template.tar, tarPath, {
+        headers: {
+          Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+          ...normalizeHeaders(template.headers),
+        },
+      }).catch((error) => {
+        if (!existsSync(tarPath)) {
+          throw error;
+        }
+        // Accept network errors if we have a cached version
+        debug("Download error. Using cached version:", error);
+        options.offline = true;
+      });
+    }
+    debug(`Downloaded to ${tarPath} in ${Date.now() - s}ms`);
   }
 
   if (!existsSync(tarPath)) {
