@@ -2,10 +2,9 @@ import { execFile as execFileCb } from "node:child_process";
 import { mkdtemp, rm as rmAsync, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { Readable } from "node:stream";
 import { promisify } from "node:util";
 import { resolve } from "pathe";
-import type { TemplateProvider } from "./types.ts";
+import type { TemplateProvider, TarOutput } from "./types.ts";
 import { debug } from "./_utils.ts";
 
 const execFile = promisify(execFileCb);
@@ -25,12 +24,16 @@ export const git: TemplateProvider = (input, options) => {
       const tmpDir = await mkdtemp(join(tmpdir(), "giget-git-"));
 
       const token = auth || options.auth;
+      if (token && /[\r\n]/.test(token)) {
+        throw new Error("Auth token must not contain newline characters");
+      }
       const execOpts = token
         ? { env: { ...process.env, GIT_TERMINAL_PROMPT: "0" }, timeout: 60_000 }
         : { timeout: 60_000 };
       const authArgs = token ? ["-c", `http.extraHeader=Authorization: Bearer ${token}`] : [];
 
       const gitExec = (...args: string[]) => execFile("git", [...authArgs, ...args], execOpts);
+      // Local-only operations (checkout, sparse-checkout) don't need auth headers
       const gitExecIn = (...args: string[]) => execFile("git", args, { ...execOpts, cwd: tmpDir });
 
       try {
@@ -46,9 +49,9 @@ export const git: TemplateProvider = (input, options) => {
 
         try {
           await gitExec(...cloneArgs);
-        } catch {
+        } catch (cloneError) {
           // If shallow clone fails (e.g. specific commit), fall back to full clone + checkout
-          debug("Shallow clone failed, falling back to full clone...");
+          debug("Shallow clone failed, falling back to full clone:", cloneError);
           await rmAsync(tmpDir, { recursive: true, force: true });
           await mkdir(tmpDir, { recursive: true });
           await gitExec("clone", parsed.uri, tmpDir);
@@ -72,14 +75,14 @@ export const git: TemplateProvider = (input, options) => {
           },
           ["."],
         );
-        // Buffer the tar stream before cleanup removes the tmpDir
-        const chunks: Buffer[] = [];
-        for await (const chunk of stream) {
-          chunks.push(Buffer.from(chunk as Uint8Array));
-        }
-        return Readable.from(Buffer.concat(chunks));
-      } finally {
+        // Clean up tmpDir once the stream is fully consumed or errors out
+        const cleanup = () => rmAsync(tmpDir, { recursive: true, force: true });
+        stream.on("end", cleanup);
+        stream.on("error", cleanup);
+        return stream as unknown as TarOutput;
+      } catch (error) {
         await rmAsync(tmpDir, { recursive: true, force: true });
+        throw error;
       }
     },
   };

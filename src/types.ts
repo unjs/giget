@@ -7,7 +7,7 @@ export interface GitInfo {
   ref: string;
 }
 
-type TarOutput = Readable | ReadableStream<Uint8Array>;
+export type TarOutput = Readable | ReadableStream<Uint8Array>;
 
 export interface TemplateInfo {
   name: string;
