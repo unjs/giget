@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.2.0
+
+[compare changes](https://github.com/unjs/giget/compare/v3.1.2...v3.2.0)
+
+### 🚀 Enhancements
+
+- `git:` provider with sparse cloning support ([#211](https://github.com/unjs/giget/pull/211))
+
+### 🩹 Fixes
+
+- **_utils:** Move hyphens to start of character classes in parseGitURI regex ([#256](https://github.com/unjs/giget/pull/256))
+- **cli:** Prevent duplicate error messages ([#220](https://github.com/unjs/giget/pull/220))
+- **gitlab:** Support subgroups and `::` subdir delimiter ([#141](https://github.com/unjs/giget/pull/141))
+
+### 🏡 Chore
+
+- Init agents.md ([774822c](https://github.com/unjs/giget/commit/774822c))
+- Update deps ([ac02cb2](https://github.com/unjs/giget/commit/ac02cb2))
+- Fix type issues ([bf48c80](https://github.com/unjs/giget/commit/bf48c80))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Michael Slowik ([@sl0wik](https://github.com/sl0wik))
+- Ted Kesgar ([@tkesgar](https://github.com/tkesgar))
+- Terminal Chai ([@terminalchai](https://github.com/terminalchai))
+
 ## v3.1.2
 
 [compare changes](https://github.com/unjs/giget/compare/v3.1.1...v3.1.2)
