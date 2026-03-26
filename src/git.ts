@@ -165,6 +165,9 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       // This works on GitHub/GitLab (allowReachableSHA1InWant).
       // If the server doesn't support it, the fetch will fail and
       // the error propagates — no unbounded full clone.
+      if (!parsed.version) {
+        throw cloneError;
+      }
       debug("Shallow clone failed, fetching specific commit:", cloneError);
       status.update("Shallow clone failed, fetching commit...");
       await rmAsync(tmpDir, { recursive: true, force: true });
@@ -177,9 +180,9 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
         "1",
         ...(parsed.subdir ? ["--filter=blob:none"] : []),
         "origin",
-        ...(parsed.version ? [parsed.version] : []),
+        parsed.version,
       ]);
-      await gitExecIn(["checkout", parsed.version ? "FETCH_HEAD" : "origin/HEAD"]);
+      await gitExecIn(["checkout", "FETCH_HEAD"]);
       status.update("Fetched.");
     }
 

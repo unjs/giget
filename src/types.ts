@@ -11,7 +11,7 @@ export type TarOutput = Readable | ReadableStream<Uint8Array>;
 
 export interface TemplateInfo {
   name: string;
-  tar: string | ((options: { auth?: string }) => TarOutput | Promise<TarOutput>);
+  tar: string | ((options?: { auth?: string }) => TarOutput | Promise<TarOutput>);
   version?: string;
   subdir?: string;
   url?: string;
