@@ -1,5 +1,8 @@
+import { createWriteStream } from "node:fs";
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
+import { pipeline } from "node:stream";
+import { promisify } from "node:util";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
@@ -83,20 +86,26 @@ export async function downloadTemplate(
   if (!options.offline) {
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
-    await download(template.tar, tarPath, {
-      headers: {
-        Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
-        ...normalizeHeaders(template.headers),
-      },
-    }).catch((error) => {
-      if (!existsSync(tarPath)) {
-        throw error;
-      }
-      // Accept network errors if we have a cached version
-      debug("Download error. Using cached version:", error);
-      options.offline = true;
-    });
-    debug(`Downloaded ${template.tar} to ${tarPath} in ${Date.now() - s}ms`);
+    if (typeof template.tar === "function") {
+      const stream = await template.tar({ auth: options.auth });
+      const fileStream = createWriteStream(tarPath);
+      await promisify(pipeline)(stream as any, fileStream);
+    } else {
+      await download(template.tar, tarPath, {
+        headers: {
+          Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+          ...normalizeHeaders(template.headers),
+        },
+      }).catch((error) => {
+        if (!existsSync(tarPath)) {
+          throw error;
+        }
+        // Accept network errors if we have a cached version
+        debug("Download error. Using cached version:", error);
+        options.offline = true;
+      });
+    }
+    debug(`Downloaded to ${tarPath} in ${Date.now() - s}ms`);
   }
 
   if (!existsSync(tarPath)) {

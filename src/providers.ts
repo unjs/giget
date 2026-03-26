@@ -1,6 +1,6 @@
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
-import { debug, parseGitURI, sendFetch } from "./_utils.ts";
+import { debug, parseGitURI, parseGitCloneURI, sendFetch } from "./_utils.ts";
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -125,44 +125,50 @@ export const sourcehut: TemplateProvider = (input, options) => {
 };
 
 export const git: TemplateProvider = (input) => {
-  let _git = input.replace(/#.*$/, "");
-
-  const host = /^(.+?:)/.exec(_git)?.at(1);
-  if (host) {
-    switch (host) {
-      case "github:":
-      case "gh:": {
-        _git = _git.replace(host, "github.com:");
-        break;
-      }
-      case "gitlab:": {
-        _git = _git.replace(host, "gitlab.com:");
-        break;
-      }
-    }
-  } else {
-    _git = `${process.env.GIGET_GIT_HOST || "github.com"}:${_git}`;
-  }
-
-  if (!_git.includes("@")) {
-    const username = process.env.GIGET_GIT_USERNAME || "git";
-    const password = process.env.GIGET_GIT_PASSWORD;
-
-    _git = `${password ? `${username}:${password}` : username}@${_git}`;
-  }
-
-  const name = _git
-    .replace(/^.+@/, "")
-    .replace(/(\.git)?(#.*)?$/, "")
-    .replaceAll(/[:/]/g, "-");
-
-  const version = /#(.+)$/.exec(input)?.at(1);
+  const parsed = parseGitCloneURI(input);
 
   return {
-    name,
-    git: _git,
-    version,
-    tar: "",
+    name: parsed.name,
+    version: parsed.version,
+    subdir: parsed.subdir,
+    tar: async () => {
+      const { execFileSync } = await import("node:child_process");
+      const { mkdtempSync, rmSync } = await import("node:fs");
+      const { tmpdir } = await import("node:os");
+      const { join } = await import("node:path");
+      const { Readable } = await import("node:stream");
+
+      const tmpDir = mkdtempSync(join(tmpdir(), "giget-git-"));
+      try {
+        const cloneArgs = ["clone", "--depth", "1"];
+        if (parsed.version) {
+          // Try branch/tag first with --depth 1
+          cloneArgs.push("--branch", parsed.version);
+        }
+        cloneArgs.push(parsed.uri, tmpDir);
+
+        try {
+          execFileSync("git", cloneArgs, { stdio: "pipe" });
+        } catch {
+          // If shallow clone with --branch fails (e.g. specific commit), do full clone + checkout
+          execFileSync("git", ["clone", parsed.uri, tmpDir], { stdio: "pipe" });
+          if (parsed.version) {
+            execFileSync("git", ["checkout", parsed.version], { cwd: tmpDir, stdio: "pipe" });
+          }
+        }
+
+        // Create tar archive from the cloned repo (excluding .git)
+        // Entries will be prefixed with "./" which gets stripped by the extract logic
+        const tarBuffer = execFileSync(
+          "tar",
+          ["-czf", "-", "--exclude", ".git", "-C", tmpDir, "."],
+          { maxBuffer: 256 * 1024 * 1024 },
+        );
+        return Readable.from(tarBuffer);
+      } finally {
+        rmSync(tmpDir, { recursive: true, force: true });
+      }
+    },
   };
 };
 

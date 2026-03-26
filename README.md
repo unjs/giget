@@ -197,7 +197,7 @@ const myorg: TemplateProvider = async (input, { auth }) => {
 
 // Download from http://my-org.internal/archive/my-project.tar.gz
 const { source, dir } = await downloadTemplate("myorg:my-project", {
-  providers: { local },
+  providers: { myorg },
 });
 ```
 

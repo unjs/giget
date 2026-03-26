@@ -4,6 +4,6 @@ import unjs from "eslint-config-unjs";
 export default unjs({
   ignores: ["test/.tmp"],
   rules: {
-  "unicorn/prefer-module": 0
-},
+    "unicorn/prefer-module": 0,
+  },
 });
