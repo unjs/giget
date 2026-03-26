@@ -161,28 +161,19 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       status.update("Cloned.");
     } catch (cloneError) {
       // --branch only accepts branch/tag names, not commit hashes.
-      // Fall back to: init + fetch the specific commit at depth 1.
-      // This works on GitHub/GitLab (allowReachableSHA1InWant).
-      // If the server doesn't support it, the fetch will fail and
-      // the error propagates — no unbounded full clone.
+      // Fall back to: full clone + checkout for specific commits.
+      // Most git servers don't support fetching arbitrary SHAs at depth 1.
       if (!parsed.version) {
         throw cloneError;
       }
-      debug("Shallow clone failed, fetching specific commit:", cloneError);
-      status.update("Shallow clone failed, fetching commit...");
+      debug("Shallow clone failed, falling back to full clone:", cloneError);
+      status.update("Shallow clone failed, cloning...");
       await rmAsync(tmpDir, { recursive: true, force: true });
       await mkdir(tmpDir, { recursive: true });
       await gitExecIn(["init"]);
       await gitExecIn(["remote", "add", "origin", parsed.uri]);
-      await gitExecIn([
-        "fetch",
-        "--depth",
-        "1",
-        ...(parsed.subdir ? ["--filter=blob:none"] : []),
-        "origin",
-        parsed.version,
-      ]);
-      await gitExecIn(["checkout", "FETCH_HEAD"]);
+      await gitExecIn(["fetch", "origin"]);
+      await gitExecIn(["checkout", parsed.version]);
       status.update("Fetched.");
     }
 
@@ -202,7 +193,11 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       {
         gzip: true,
         cwd: tarDir,
-        filter: (path) => !path.startsWith(".git/") && path !== ".git",
+        filter: (path) =>
+          !path.startsWith(".git/") &&
+          path !== ".git" &&
+          !path.startsWith("./.git/") &&
+          path !== "./.git",
       },
       ["."],
     );
