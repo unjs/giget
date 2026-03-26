@@ -87,9 +87,18 @@ export async function downloadTemplate(
     await mkdir(dirname(tarPath), { recursive: true });
     const s = Date.now();
     if (typeof template.tar === "function") {
-      const stream = await template.tar({ auth: options.auth });
-      const fileStream = createWriteStream(tarPath);
-      await promisify(pipeline)(stream as any, fileStream);
+      const tarFn = template.tar;
+      await (async () => {
+        const stream = await tarFn({ auth: options.auth });
+        const fileStream = createWriteStream(tarPath);
+        await promisify(pipeline)(stream as NodeJS.ReadableStream, fileStream);
+      })().catch((error) => {
+        if (!existsSync(tarPath)) {
+          throw error;
+        }
+        debug("Download error. Using cached version:", error);
+        options.offline = true;
+      });
     } else {
       await download(template.tar, tarPath, {
         headers: {

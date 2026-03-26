@@ -151,6 +151,7 @@ export const git: TemplateProvider = (input) => {
           execFileSync("git", cloneArgs, { stdio: "pipe" });
         } catch {
           // If shallow clone with --branch fails (e.g. specific commit), do full clone + checkout
+          debug("Shallow clone failed, falling back to full clone...");
           execFileSync("git", ["clone", parsed.uri, tmpDir], { stdio: "pipe" });
           if (parsed.version) {
             execFileSync("git", ["checkout", parsed.version], { cwd: tmpDir, stdio: "pipe" });

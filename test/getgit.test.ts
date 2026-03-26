@@ -22,7 +22,7 @@ describe("downloadTemplate", () => {
       dir: destinationDirectory,
       preferOffline,
     });
-    expect(await existsSync(resolve(dir, "package.json")));
+    expect(existsSync(resolve(dir, "package.json"))).toBe(true);
   });
 
   it("clone unjs/template using custom provider that returns stream", async () => {
@@ -42,7 +42,7 @@ describe("downloadTemplate", () => {
         },
       },
     });
-    expect(await existsSync(resolve(dir, "package.json")));
+    expect(existsSync(resolve(dir, "package.json"))).toBe(true);
   });
 
   it("clone unjs/template using git provider", async () => {
