@@ -2,7 +2,6 @@ import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
 import { debug, parseGitURI, sendFetch } from "./_utils.ts";
 import { git } from "./git.ts";
-export { git };
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {

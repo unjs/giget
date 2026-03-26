@@ -63,12 +63,21 @@ export const git: TemplateProvider = (input, options) => {
 
         // Create tar archive from the cloned repo (excluding .git)
         const tarDir = parsed.subdir ? join(tmpDir, parsed.subdir) : tmpDir;
-        const { stdout } = await execFile(
-          "tar",
-          ["-czf", "-", "--exclude", ".git", "-C", tarDir, "."],
-          { maxBuffer: 256 * 1024 * 1024, encoding: "buffer" },
+        const { create } = await import("tar");
+        const stream = create(
+          {
+            gzip: true,
+            cwd: tarDir,
+            filter: (path) => !path.startsWith(".git/") && path !== ".git",
+          },
+          ["."],
         );
-        return Readable.from(stdout);
+        // Buffer the tar stream before cleanup removes the tmpDir
+        const chunks: Buffer[] = [];
+        for await (const chunk of stream) {
+          chunks.push(Buffer.from(chunk as Uint8Array));
+        }
+        return Readable.from(Buffer.concat(chunks));
       } finally {
         await rmAsync(tmpDir, { recursive: true, force: true });
       }
@@ -80,6 +89,7 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
   const cwd = opts.cwd ?? process.cwd();
 
   let uri = input.replace(/#.*$/, "");
+  let pathSubdir: string | undefined;
 
   if (/^[./]/.test(input)) {
     // Local URI starts with . (relative) or / (absolute).
@@ -88,7 +98,15 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
     uri = resolve(cwd, uri);
   } else if (/^https?:\/\//.test(uri)) {
     // Git over HTTP(S) starts with http[s]://.
-    // Currently we do nothing to the URI.
+    // For known hosts, extract org/repo and treat the rest as subdir.
+    const httpMatch = /^(https?:\/\/[^/]+)\/([\w.-]+\/[\w.-]+?)(?:\.git)?(?:\/(.+))?$/.exec(uri);
+    if (httpMatch) {
+      const [, origin, repo, rest] = httpMatch;
+      uri = `${origin}/${repo}`;
+      if (rest) {
+        pathSubdir = rest;
+      }
+    }
   } else {
     // Otherwise, we assume the URI is Git over SSH.
     // We need to normalize the URI into git:[pass]@<host>:<path>.
@@ -110,6 +128,17 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
       uri = `${process.env.GIGET_GIT_HOST || "github.com"}:${uri}`;
     }
 
+    // For SSH URIs, extract org/repo and treat extra path segments as subdir
+    // e.g. github.com:org/repo/sub/dir → github.com:org/repo + subdir=sub/dir
+    const sshMatch = /^(.*?:[\w.-]+\/[\w.-]+?)(?:\.git)?(?:\/(.+))?$/.exec(uri);
+    if (sshMatch) {
+      const [, repoUri, rest] = sshMatch;
+      uri = repoUri!;
+      if (rest) {
+        pathSubdir = rest;
+      }
+    }
+
     if (!uri.includes("@")) {
       const username = process.env.GIGET_GIT_USERNAME || "git";
       const password = process.env.GIGET_GIT_PASSWORD;
@@ -129,7 +158,8 @@ export function parseGitCloneURI(input: string, opts: { cwd?: string } = {}) {
     // Replace special characters with -
     .replaceAll(/[:/]/g, "-");
 
-  const [version, subdir] = /#(.+)$/.exec(input)?.at(1)?.split(":") ?? [];
+  const [version, hashSubdir] = /#(.+)$/.exec(input)?.at(1)?.split(":") ?? [];
+  const subdir = hashSubdir || pathSubdir;
 
   return {
     uri,
