@@ -8,7 +8,11 @@
 
 ## Features
 
+✨ Zero dependency
+
 ✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+
+✨ Native [git clone provider](#git-clone-provider) with sparse checkout for subdirectories.
 
 ✨ Built-in and custom [template registry](#template-registry).
 
@@ -23,8 +27,6 @@
 ✨ Authorization support to download private templates
 
 ✨ Optionally install dependencies after clone using [unjs/nypm](https://github.com/unjs/nypm)
-
-✨ HTTP proxy support and native fetch via [unjs/node-fetch-native](https://github.com/unjs/node-fetch-native)
 
 ## Usage (CLI)
 
@@ -77,6 +79,9 @@ npx giget@latest bitbucket:unjs/template
 
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
+
+# Clone using local git over HTTPS (see "Git Clone Provider" section)
+npx giget@latest git:unjs/template
 
 # Clone from https URL (tarball)
 npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
@@ -142,7 +147,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
-  - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
+  - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut`, or `git`. The default is `github`.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
@@ -183,6 +188,22 @@ const { source, dir } = await downloadTemplate("rainbow:one", {
 });
 ```
 
+`tar` can also be a function returning a `Readable` or `ReadableStream`:
+
+```ts
+const myorg: TemplateProvider = async (input, { auth }) => {
+  return {
+    name: input,
+    tar: async () =>
+      (await fetch(`http://my-org.internal/archive/${input}.tar.gz`)).body!,
+  };
+};
+
+const { source, dir } = await downloadTemplate("myorg:my-project", {
+  providers: { myorg },
+});
+```
+
 ### Custom Registry Providers
 
 You can define additional [custom registry](#custom-registry) providers using `registryProvider` utility and register to `providers`.
@@ -190,14 +211,35 @@ You can define additional [custom registry](#custom-registry) providers using `r
 ```ts
 import { registryProvider } from "giget";
 
-const themes = registryProvider(
-  "https://raw.githubusercontent.com/unjs/giget/main/templates",
-);
+const themes = registryProvider("https://raw.githubusercontent.com/unjs/giget/main/templates");
 
 const { source, dir } = await downloadTemplate("themes:test", {
   providers: { themes },
 });
 ```
+
+## Git Clone Provider
+
+The `git:` provider clones repositories using the local `git` command instead of downloading tarballs via HTTP APIs. Useful for private or self-hosted servers that don't expose tarball endpoints.
+
+```sh
+git:unjs/template                    # HTTPS clone (github.com by default)
+git:unjs/template#v2                 # Specific branch or tag
+git:unjs/template#e24616c            # Specific commit (full clone fallback)
+git:unjs/template#main:src           # Subdirectory (sparse checkout)
+git:git@github.com:unjs/template     # Explicit SSH
+git:./path/to/local/repo             # Local repository
+gh+git:unjs/template                 # Host shorthand (github.com)
+gitlab+git:org/repo                  # Host shorthand (gitlab.com)
+```
+
+Subdirectories use sparse checkout with `--filter=blob:none` to avoid downloading the full repository.
+
+**Environment variables:**
+
+| Variable | Description |
+| --- | --- |
+| `GIGET_GIT_HOST` | Default HTTPS host (default: `https://github.com/`) |
 
 ## Providing token for private repositories
 
@@ -216,14 +258,14 @@ If your project depends on a private GitHub repository, you need to add the acce
     GIGET_AUTH: ${{ secrets.GIGET_AUTH }}
 ```
 
-
 ## Related projects
 
 Giget wouldn't be possible without inspiration from former projects. In comparison, giget does not depend on any local command which increases stability and performance and supports custom template providers, auth, and many more features out of the box.
 
-- https://github.com/samsonjs/gitter
-- https://github.com/tiged/tiged
-- https://github.com/Rich-Harris/degit
+- [tiged/tiged](https://github.com/tiged/tiged) (maintained fork of degit)
+- [nrjdalal/gitpick](https://github.com/nrjdalal/gitpick) (alternative approach)
+- [Rich-Harris/degit](https://github.com/Rich-Harris/degit) (last updated - 2021)
+- [samsonjs/gitter](https://github.com/samsonjs/gitter) (archived/updated - 2012)
 
 ## 💻 Development
 

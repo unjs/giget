@@ -1,38 +1,20 @@
-import { defineBuildConfig } from "unbuild";
-import { rm } from "node:fs/promises";
-import { transform } from "esbuild";
-
-const tarDeps = [
-  "tar",
-  "fs-minipass",
-  "minipass",
-  "minizlib",
-  "yallist",
-  "mkdirp",
-  "chownr",
-];
+import { defineBuildConfig } from "obuild/config";
+import { minifySync } from "rolldown/experimental";
+import type { Plugin } from "rolldown";
 
 export default defineBuildConfig({
-  rollup: {
-    inlineDependencies: [...tarDeps],
-  },
-
+  entries: [{ type: "bundle", input: ["src/index.ts", "src/cli.ts"] }],
   hooks: {
-    "rollup:options"(ctx, opts) {
-      opts.plugins.push({
-        name: "selective-minify",
-        async transform(code, id) {
-          if (tarDeps.some((dep) => id.includes(`node_modules/${dep}/`))) {
-            const res = await transform(code, { minify: true });
-            return res.code;
+    rolldownConfig: (config) => {
+      config.plugins ??= [];
+      (config.plugins as Plugin[]).push({
+        name: "min-libs",
+        renderChunk(code, chunk) {
+          if (chunk.fileName.startsWith("_chunks/libs/")) {
+            return minifySync(chunk.fileName, code, {});
           }
         },
       });
-    },
-    async "build:done"() {
-      await rm("dist/index.d.ts");
-      await rm("dist/cli.d.ts");
-      await rm("dist/cli.d.mts");
     },
   },
 });
