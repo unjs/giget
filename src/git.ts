@@ -116,7 +116,8 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
     throw new Error("Auth token must not contain newline characters");
   }
 
-  // Pass auth via env vars instead of CLI args to avoid leaking tokens in process list
+  // Pass auth via env vars instead of CLI args to avoid leaking tokens in process list.
+  // Note: http.extraHeader only applies to HTTPS clones; SSH clones ignore it.
   const execEnv: Record<string, string | undefined> = {
     ...process.env,
     GIT_TERMINAL_PROMPT: "0",
@@ -128,10 +129,10 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
   }
   const execOpts = { env: execEnv, timeout: 60_000 };
 
+  const status = _createStatus();
+
   const gitExec = (args: string[]) => _gitSpawn(args, execOpts, status);
   const gitExecIn = (args: string[]) => _gitSpawn(args, { ...execOpts, cwd: tmpDir }, status);
-
-  const status = _createStatus();
 
   try {
     const cloneArgs = ["clone", "--progress", "--depth", "1"];
@@ -160,7 +161,14 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
       await gitExecIn(["init"]);
       await gitExecIn(["remote", "add", "origin", parsed.uri]);
       if (parsed.version) {
-        await gitExecIn(["fetch", "--depth", "1", "origin", parsed.version]);
+        await gitExecIn([
+          "fetch",
+          "--depth",
+          "1",
+          ...(parsed.subdir ? ["--filter=blob:none"] : []),
+          "origin",
+          parsed.version,
+        ]);
         await gitExecIn(["checkout", "FETCH_HEAD"]);
       }
       status.update("Fetched.");
@@ -197,6 +205,7 @@ async function _cloneAndTar(parsed: ParsedGitURI, token?: string): Promise<TarOu
     stream.on("close", cleanup);
     return stream as unknown as TarOutput;
   } catch (error) {
+    status.done();
     await rmAsync(tmpDir, { recursive: true, force: true });
     throw error;
   }
@@ -228,9 +237,15 @@ function _gitSpawn(
     });
     proc.on("close", (code: number) => {
       if (code === 0) resolve(lastLine);
-      else reject(new Error(`git ${args[0]} exited with ${code}`));
+      else reject(new Error(`git ${args[0]} exited with code ${code}. Is git installed?`));
     });
-    proc.on("error", reject);
+    proc.on("error", (err: NodeJS.ErrnoException) => {
+      if (err.code === "ENOENT") {
+        reject(new Error("git is not installed or not found in PATH"));
+      } else {
+        reject(err);
+      }
+    });
   });
 }
 
