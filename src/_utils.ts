@@ -40,43 +40,18 @@ export async function download(
 }
 
 const inputRegex = /^(?<repo>[-\w.]+\/[-\w.]+)(?<subdir>[^#]+)?(?<ref>#[-\w./@]+)?/;
+const expandedInputRegex =
+  /^(?<repo>[-\w.]+(?:\/[-\w.]+)+?)(?:::(?<subdir>[^#]*))?(?<ref>#[-\w./@]+)?$/;
 
 export function parseGitURI(
   input: string,
   options?: { expandRepo?: boolean },
 ): Omit<GitInfo, "provider"> {
-  // Support `::` as explicit subdir delimiter
-  // e.g., group/subgroup/project::src/dir#ref
-  let explicitSubdir: string | undefined;
-  const delimIdx = input.indexOf("::");
-  if (delimIdx !== -1) {
-    const afterDelim = input.slice(delimIdx + 2);
-    const hashIdx = afterDelim.indexOf("#");
-    const subdirPart = hashIdx !== -1 ? afterDelim.slice(0, hashIdx) : afterDelim;
-    const refPart = hashIdx !== -1 ? afterDelim.slice(hashIdx) : "";
-    explicitSubdir = subdirPart ? "/" + subdirPart : "/";
-    input = input.slice(0, delimIdx) + refPart;
-  }
-
-  const m = input.match(inputRegex)?.groups || {};
-  let repo = m.repo || "";
-  let subdir = m.subdir || "/";
-
-  if (explicitSubdir) {
-    // `::` was used: everything in path is part of repo, explicit value is subdir
-    if (subdir !== "/") {
-      repo = repo + subdir;
-    }
-    subdir = explicitSubdir;
-  } else if (options?.expandRepo && subdir !== "/") {
-    // For providers with nested namespaces (e.g., GitLab subgroups),
-    // merge extra path segments into the repo path
-    repo = repo + subdir;
-    subdir = "/";
-  }
-
+  const useExpanded = options?.expandRepo || input.includes("::");
+  const m = input.match(useExpanded ? expandedInputRegex : inputRegex)?.groups || {};
+  const subdir = useExpanded ? (m.subdir ? "/" + m.subdir : "/") : m.subdir || "/";
   return {
-    repo,
+    repo: m.repo || "",
     subdir,
     ref: m.ref ? m.ref.slice(1) : "main",
   } satisfies Omit<GitInfo, "provider">;
