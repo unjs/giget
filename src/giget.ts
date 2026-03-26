@@ -27,7 +27,7 @@ export interface DownloadTemplateOptions {
   silent?: boolean;
 }
 
-const sourceProtoRe = /^([\w-.]+):/;
+const sourceProtoRe = /^([\w+-.]+):/;
 
 export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
   dir: string;
@@ -56,6 +56,14 @@ export async function downloadTemplate(
     if (providerName === "http" || providerName === "https") {
       source = input;
     }
+  }
+
+  // Handle <host>+git: prefix (e.g. gh+git:, github+git:, gitlab+git:)
+  // Route to git provider with host prefix preserved for parseGitCloneURI
+  if (providerName.endsWith("+git")) {
+    const hostPrefix = providerName.slice(0, -4); // e.g. "gh", "github", "gitlab"
+    source = `${hostPrefix}:${source}`;
+    providerName = "git";
   }
 
   const provider = options.providers?.[providerName] || providers[providerName] || registry;
