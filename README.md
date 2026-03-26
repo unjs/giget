@@ -12,6 +12,8 @@
 
 ✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
 
+✨ Native [git clone provider](#git-clone-provider) with sparse checkout for subdirectories.
+
 ✨ Built-in and custom [template registry](#template-registry).
 
 ✨ Fast cloning using tarball gzip without depending on local `git` and `tar`.
@@ -78,6 +80,21 @@ npx giget@latest bitbucket:unjs/template
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
 
+# Clone using git (shallow clone via SSH)
+npx giget@latest git:unjs/template
+
+# Clone using git with a specific branch
+npx giget@latest git:unjs/template#dev
+
+# Clone a subdir using git (sparse checkout, avoids downloading full repo)
+npx giget@latest git:unjs/template#main:src
+
+# Clone using git via GitHub shorthand
+npx giget@latest gh+git:unjs/template
+
+# Clone using git via GitLab shorthand
+npx giget@latest gitlab+git:myorg/myrepo
+
 # Clone from https URL (tarball)
 npx giget@latest https://api.github.com/repos/unjs/template/tarball/main
 
@@ -142,7 +159,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
 - `source`: (string) Input source in format of `[provider]:repo[/subpath][#ref]`.
 - `options`: (object) Options are usually inferred from the input string. You can customize them.
   - `dir`: (string) Destination directory to clone to. If not provided, `user-name` will be used relative to the current directory.
-  - `provider`: (string) Either `github`, `gitlab`, `bitbucket` or `sourcehut`. The default is `github`.
+  - `provider`: (string) Either `github`, `gitlab`, `bitbucket`, `sourcehut`, or `git`. The default is `github`.
   - `force`: (boolean) Extract to the existing dir even if already exists.
   - `forceClean`: (boolean) ⚠️ Clean up any existing directory or file before cloning.
   - `offline`: (boolean) Do not attempt to download and use the cached version.
@@ -214,6 +231,53 @@ const { source, dir } = await downloadTemplate("themes:test", {
   providers: { themes },
 });
 ```
+
+## Git Clone Provider
+
+The `git:` provider clones repositories using the local `git` command instead of downloading tarballs via HTTP APIs. This is useful for repositories hosted on private or self-hosted servers that don't expose tarball endpoints.
+
+```sh
+# Clone via SSH (default, resolves to github.com)
+npx giget@latest git:unjs/template
+
+# Clone a specific branch or tag
+npx giget@latest git:unjs/template#v2
+
+# Clone a specific commit (falls back to full clone)
+npx giget@latest git:unjs/template#e24616c
+
+# Clone only a subdirectory (uses sparse checkout)
+npx giget@latest git:GoogleCloudPlatform/devrel-demos#main:agents/my-project
+
+# Clone via HTTPS
+npx giget@latest git:https://github.com/unjs/template.git
+
+# Clone from a local repo
+npx giget@latest git:./path/to/local/repo
+```
+
+### Host shorthands
+
+Use `<host>+git:` to route through the git provider with host resolution:
+
+| Prefix | Resolves to |
+| --- | --- |
+| `git:org/repo` | `git@github.com:org/repo` (default) |
+| `gh+git:org/repo` | `git@github.com:org/repo` |
+| `github+git:org/repo` | `git@github.com:org/repo` |
+| `gitlab+git:org/repo` | `git@gitlab.com:org/repo` |
+
+### Subdirectory support
+
+When a subdirectory is specified (e.g. `#branch:path/to/subdir`), giget uses git sparse checkout with `--filter=blob:none` to only download the files in that subdirectory. This avoids cloning the entire repository.
+
+### Environment variables
+
+| Variable | Description |
+| --- | --- |
+| `GIGET_GIT_HOST` | Default SSH host (default: `github.com`) |
+| `GIGET_GIT_USERNAME` | SSH username (default: `git`) |
+| `GIGET_GIT_PASSWORD` | SSH password (optional) |
 
 ## Providing token for private repositories
 
