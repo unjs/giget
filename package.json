@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260326.1",
+    "@typescript/native-preview": "^7.0.0-dev.20260329.1",
     "@vitest/coverage-v8": "^4.1.2",
     "changelogen": "^0.6.2",
     "citty": "^0.2.1",
