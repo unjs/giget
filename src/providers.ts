@@ -146,6 +146,9 @@ export const tangled: TemplateProvider = (input, options) => {
   const rest = pathPart.slice(slashIndex + 1);
   const restParts = rest.split("/");
   const repo = restParts[0]!;
+  if (!repo) {
+    throw new Error(`Invalid Tangled URI: missing repository name in "${input}"`);
+  }
   const subdir = restParts.length > 1 ? "/" + restParts.slice(1).join("/") : "/";
 
   return {
