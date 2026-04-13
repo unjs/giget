@@ -125,6 +125,37 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+export const tangled: TemplateProvider = (input, options) => {
+  const tangledURL = process.env.GIGET_TANGLED_URL || "https://tangled.org";
+
+  // DIDs (e.g. did:plc:abc123) contain colons that parseGitURI can't handle,
+  // so we parse the input ourselves.
+  const [pathPart = "", refPart] = input.split("#");
+  const ref = refPart || "main";
+  const slashIndex = pathPart.indexOf("/");
+  if (slashIndex === -1) {
+    throw new Error(`Invalid Tangled URI: ${input}`);
+  }
+
+  const owner = pathPart.slice(0, slashIndex);
+  const rest = pathPart.slice(slashIndex + 1);
+  const restParts = rest.split("/");
+  const repo = restParts[0]!;
+  const subdir = restParts.length > 1 ? "/" + restParts.slice(1).join("/") : "/";
+
+  return {
+    name: `${owner}-${repo}`.replace(/[:./]/g, "-"),
+    version: ref,
+    subdir,
+    headers: {
+      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
+    url: `${tangledURL}/${owner}/${repo}`,
+    tar: `${tangledURL}/${owner}/${repo}/archive/${ref}`,
+    stripPrefix: false,
+  };
+};
+
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
@@ -134,4 +165,5 @@ export const providers: Record<string, TemplateProvider> = {
   gitlab,
   bitbucket,
   sourcehut,
+  tangled,
 };

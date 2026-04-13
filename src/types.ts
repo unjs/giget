@@ -1,7 +1,7 @@
 import type { Readable } from "node:stream";
 
 export interface GitInfo {
-  provider: "github" | "gitlab" | "bitbucket" | "sourcehut";
+  provider: "github" | "gitlab" | "bitbucket" | "sourcehut" | "tangled";
   repo: string;
   subdir: string;
   ref: string;
@@ -17,6 +17,7 @@ export interface TemplateInfo {
   url?: string;
   defaultDir?: string;
   headers?: Record<string, string | undefined>;
+  stripPrefix?: boolean;
 
   // Added by giget
   source?: never;
