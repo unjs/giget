@@ -138,6 +138,11 @@ export const tangled: TemplateProvider = (input, options) => {
   }
 
   const owner = pathPart.slice(0, slashIndex);
+  if (!owner.startsWith("did:") && !owner.includes(".")) {
+    throw new Error(
+      `Invalid Tangled owner "${owner}": must be a domain (e.g. alice.tangled.org) or a DID (e.g. did:plc:abc123, did:web:example.org)`,
+    );
+  }
   const rest = pathPart.slice(slashIndex + 1);
   const restParts = rest.split("/");
   const repo = restParts[0]!;
