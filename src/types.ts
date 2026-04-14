@@ -17,6 +17,8 @@ export interface TemplateInfo {
   url?: string;
   defaultDir?: string;
   headers?: Record<string, string | undefined>;
+  // Set to `false` when the tar archive's entries are not wrapped in a
+  // top-level directory (like with Tangled archives).
   stripPrefix?: boolean;
 
   // Added by giget

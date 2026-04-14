@@ -125,6 +125,14 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+// Tangled (https://tangled.org) is an AT Protocol-based git forge. Owners are
+// either domains (e.g. `alice.tangled.org`) or DIDs (e.g. `did:plc:abc123`, `did:web:example.org`).
+//
+// Accepted input format: `{owner}/{repo}[/{subdir}][#{ref}]`
+//   - `alice.example.org/my-repo`
+//   - `did:plc:abc123/my-repo#dev`
+//
+// Self-hosted instances are supported via the `GIGET_TANGLED_URL` env var.
 export const tangled: TemplateProvider = (input, options) => {
   const tangledURL = process.env.GIGET_TANGLED_URL || "https://tangled.org";
 
