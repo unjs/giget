@@ -28,22 +28,21 @@
     "test:types": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260401.1",
-    "@vitest/coverage-v8": "^4.1.2",
+    "@types/node": "^25.9.2",
+    "@typescript/native-preview": "7.0.0-dev.20260610.1",
+    "@vitest/coverage-v8": "^4.1.8",
     "changelogen": "^0.6.2",
     "citty": "^0.2.2",
     "eslint-config-unjs": "^0.6.2",
-    "nypm": "^0.6.5",
-    "obuild": "^0.4.32",
-    "oxfmt": "^0.43.0",
-    "oxlint": "^1.58.0",
+    "nypm": "^0.6.6",
+    "obuild": "^0.4.36",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
     "pathe": "^2.0.3",
-    "rolldown": "^1.0.0-rc.13",
-    "tar": "^7.5.13",
-    "typescript": "^6.0.2",
-    "unbuild": "^3.6.1",
-    "vitest": "^4.1.2"
+    "rolldown": "^1.1.0",
+    "tar": "^7.5.16",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@11.5.3"
 }
