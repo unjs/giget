@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.3.0
+
+[compare changes](https://github.com/unjs/giget/compare/v3.2.0...v3.3.0)
+
+### 🚀 Enhancements
+
+- Support ignore ([#269](https://github.com/unjs/giget/pull/269))
+
+### 🏡 Chore
+
+- Update deps ([f9a6621](https://github.com/unjs/giget/commit/f9a6621))
+
+### ❤️ Contributors
+
+- Pi0x <x@pi0.io>
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+
 ## v3.2.0
 
 [compare changes](https://github.com/unjs/giget/compare/v3.1.2...v3.2.0)
