@@ -106,6 +106,34 @@ describe("downloadTemplate", () => {
     expect(existsSync(resolve(dir, "index.ts"))).toBe(true);
   });
 
+  it("clone unjs/template with ignore callback", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-filtered");
+    const seen: string[] = [];
+    const { dir } = await downloadTemplate("gh:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline,
+      ignore: (path) => {
+        seen.push(path);
+        return path === "package.json";
+      },
+    });
+    expect(seen).toContain("package.json");
+    expect(existsSync(resolve(dir, "package.json"))).toBe(false);
+    expect(existsSync(resolve(dir, "README.md"))).toBe(true);
+  });
+
+  it("clone unjs/template with ignore patterns", async () => {
+    const destinationDirectory = resolve(__dirname, ".tmp/cloned-ignored");
+    const { dir } = await downloadTemplate("gh:unjs/template", {
+      dir: destinationDirectory,
+      preferOffline,
+      ignore: ["*.md", "renovate.json"],
+    });
+    expect(existsSync(resolve(dir, "README.md"))).toBe(false);
+    expect(existsSync(resolve(dir, "renovate.json"))).toBe(false);
+    expect(existsSync(resolve(dir, "package.json"))).toBe(true);
+  });
+
   it("do not clone to exisiting dir", async () => {
     const destinationDirectory = resolve(__dirname, ".tmp/exisiting");
     await mkdir(destinationDirectory).catch(() => {});

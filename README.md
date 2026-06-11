@@ -52,6 +52,7 @@ npx giget@latest <template> [<dir>] [...options]
 - `--cwd`: Set the current working directory to resolve dirs relative to it.
 - `--auth`: Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
 - `--install`: Install dependencies after cloning using [unjs/nypm](https://github.com/unjs/nypm).
+- `--ignore`: Comma separated glob patterns of files to ignore (skip extracting), e.g. `--ignore pnpm-lock.yaml,*.md`.
 
 ### Examples
 
@@ -162,6 +163,7 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
   - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
   - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
+  - `ignore`: (array or function) Ignore files when extracting. Either an array of glob patterns of files to skip, matched with [`path.matchesGlob`](https://nodejs.org/api/path.html#pathmatchesglobpath-pattern) (`ignore: ["pnpm-lock.yaml", "*.md"]`), or a callback receiving the relative path of each entry (after `subdir` is applied) that returns `true` to skip it, or `false` to keep it (`ignore: (path) => path === "pnpm-lock.yaml"`). Patterns require Node.js >= v22.5.0 or v20.17.0.
 
 **Return value:**
 

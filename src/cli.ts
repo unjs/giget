@@ -56,6 +56,11 @@ const mainCommand = defineCommand({
       type: "boolean",
       description: "Install dependencies after cloning",
     },
+    ignore: {
+      type: "string",
+      description:
+        "Comma separated glob patterns of files to ignore (skip extracting). e.g. `--ignore pnpm-lock.yaml,*.md`",
+    },
     verbose: {
       type: "boolean",
       description: "Show verbose debugging info",
@@ -65,6 +70,11 @@ const mainCommand = defineCommand({
     if (args.verbose) {
       process.env.DEBUG = process.env.DEBUG || "true";
     }
+
+    const ignore = (args.ignore || "")
+      .split(",")
+      .map((pattern) => pattern.trim())
+      .filter(Boolean);
 
     let r: Awaited<ReturnType<typeof downloadTemplate>>;
     try {
@@ -76,6 +86,7 @@ const mainCommand = defineCommand({
         preferOffline: args.preferOffline,
         auth: args.auth,
         install: args.install,
+        ignore: ignore.length > 0 ? ignore : undefined,
       });
     } catch (error) {
       if (args.verbose) {

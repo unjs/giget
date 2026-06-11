@@ -25,6 +25,24 @@ export interface DownloadTemplateOptions {
   auth?: string;
   install?: boolean | InstallOptions;
   silent?: boolean;
+  /**
+   * Ignore files when extracting the template.
+   *
+   * Can be either:
+   * - An array of glob patterns of files to ignore (skip extracting), matched
+   *   with [`path.matchesGlob`](https://nodejs.org/api/path.html#pathmatchesglobpath-pattern)
+   *   (Node.js >= v22.5.0 or v20.17.0).
+   * - A callback receiving the relative path of each entry (after `subdir` is
+   *   applied) that returns `true` to skip the entry, or `false` to keep it.
+   *
+   * @example
+   * // Ignore lockfiles via patterns
+   * ignore: ["pnpm-lock.yaml", "*.lock"]
+   * @example
+   * // Ignore lockfiles via callback
+   * ignore: (path) => /(?:^|\/)(?:pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$/.test(path)
+   */
+  ignore?: ((path: string) => boolean) | string[];
 }
 
 const sourceProtoRe = /^([\w+-.]+):/;
@@ -34,10 +52,32 @@ export type DownloadTemplateResult = Omit<TemplateInfo, "dir" | "source"> & {
   source: string;
 };
 
+function resolveIgnore(
+  ignore: DownloadTemplateOptions["ignore"],
+): ((path: string) => boolean) | undefined {
+  if (!ignore) {
+    return undefined;
+  }
+  if (typeof ignore === "function") {
+    return ignore;
+  }
+  // Use `process.getBuiltinModule` for feature detection since a static
+  // `import { matchesGlob }` fails to link on Node.js versions without it.
+  const matchesGlob = globalThis.process.getBuiltinModule?.("node:path")?.matchesGlob;
+  if (typeof matchesGlob !== "function") {
+    throw new TypeError(
+      "Ignore patterns require `path.matchesGlob` which is supported in Node.js v22.5.0, v20.17.0 or later.",
+    );
+  }
+  return (path) => ignore.some((pattern) => matchesGlob(path, pattern));
+}
+
 export async function downloadTemplate(
   input: string,
   options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
+  const ignore = resolveIgnore(options.ignore);
+
   options.registry = process.env.GIGET_REGISTRY ?? options.registry;
   options.auth = process.env.GIGET_AUTH ?? options.auth;
 
@@ -160,6 +200,10 @@ export async function downloadTemplate(
           // Skip
           entry.path = "";
         }
+      }
+      if (ignore && entry.path && ignore(entry.path.replace(/^\//, ""))) {
+        // Skip ignored entries
+        entry.path = "";
       }
     },
   });
