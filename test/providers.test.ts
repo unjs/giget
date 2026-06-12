@@ -1,6 +1,28 @@
 import { expect, it, describe } from "vitest";
-import { gitlab } from "../src/providers.ts";
+import { github, gitlab } from "../src/providers.ts";
 import type { TemplateInfo } from "../src/types.ts";
+
+describe("github provider", () => {
+  it("uses token auth for fine-grained personal access tokens", () => {
+    const result = github("org/repo", { auth: "github_pat_123" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("token github_pat_123");
+  });
+
+  it("uses token auth for classic personal access tokens", () => {
+    const result = github("org/repo", { auth: "ghp_123" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("token ghp_123");
+  });
+
+  it("keeps bearer auth for JWT tokens", () => {
+    const result = github("org/repo", { auth: "eyJ123" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("Bearer eyJ123");
+  });
+
+  it("does not set authorization without auth", () => {
+    const result = github("org/repo", { auth: "" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBeUndefined();
+  });
+});
 
 describe("gitlab provider", () => {
   const opts = { auth: "" };

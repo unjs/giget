@@ -69,7 +69,7 @@ export const github: TemplateProvider = (input, options) => {
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      Authorization: githubAuthorization(options.auth),
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
@@ -79,6 +79,14 @@ export const github: TemplateProvider = (input, options) => {
     tar: `${githubAPIURL}/repos/${parsed.repo}/tarball/${parsed.ref}`,
   };
 };
+
+export function githubAuthorization(auth?: string) {
+  if (!auth) {
+    return undefined;
+  }
+
+  return `${auth.startsWith("eyJ") ? "Bearer" : "token"} ${auth}`;
+}
 
 export const gitlab: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input, { expandRepo: true });
