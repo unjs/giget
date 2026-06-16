@@ -22,6 +22,22 @@ describe("github provider", () => {
     const result = github("org/repo", { auth: "" }) as TemplateInfo;
     expect(result.headers?.Authorization).toBeUndefined();
   });
+
+  it("respects GIGET_GITHUB_URL", () => {
+    const prev = process.env.GIGET_GITHUB_URL;
+    process.env.GIGET_GITHUB_URL = "https://git.example.com/api";
+    try {
+      const result = github("org/repo", { auth: "" }) as TemplateInfo;
+      expect(result.url).toBe("https://git.example.com/api/org/repo/tree/main/");
+      expect(result.tar).toBe("https://git.example.com/api/repos/org/repo/tarball/main");
+    } finally {
+      if (prev === undefined) {
+        delete process.env.GIGET_GITHUB_URL;
+      } else {
+        process.env.GIGET_GITHUB_URL = prev;
+      }
+    }
+  });
 });
 
 describe("gitlab provider", () => {
