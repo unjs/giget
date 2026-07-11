@@ -41,7 +41,7 @@
     "pathe": "^2.0.3",
     "rolldown": "^1.1.0",
     "tar": "^7.5.16",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.8"
   },
   "packageManager": "pnpm@11.5.3"
