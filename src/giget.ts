@@ -191,7 +191,9 @@ export async function downloadTemplate(
     file: tarPath,
     cwd: extractPath,
     onReadEntry(entry) {
-      entry.path = entry.path.split("/").splice(1).join("/");
+      if (template.stripPrefix !== false) {
+        entry.path = entry.path.split("/").splice(1).join("/");
+      }
       if (subdir) {
         if (entry.path.startsWith(subdir + "/")) {
           // Rewrite path

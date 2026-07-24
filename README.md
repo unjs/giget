@@ -10,7 +10,7 @@
 
 ✨ Zero dependency
 
-✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut) out of the box.
+✨ Support popular git providers (GitHub, GitLab, Bitbucket, Sourcehut, Tangled) out of the box.
 
 ✨ Native [git clone provider](#git-clone-provider) with sparse checkout for subdirectories.
 
@@ -86,6 +86,12 @@ npx giget@latest bitbucket:unjs/template
 
 # Clone from sourcehut
 npx giget@latest sourcehut:pi0/unjs-template
+
+# Clone from tangled
+npx giget@latest tangled:username/repo
+
+# Clone from tangled using a DID
+npx giget@latest tangled:did:plc:abc123/repo
 
 # Clone using local git over HTTPS (see "Git Clone Provider" section)
 npx giget@latest git:unjs/template

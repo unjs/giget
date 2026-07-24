@@ -1,6 +1,6 @@
 # Giget
 
-Giget is a zero-dependency CLI and programmatic API for downloading templates and git repositories. It supports GitHub, GitLab, Bitbucket, Sourcehut, and custom registries with offline caching via etags.
+Giget is a zero-dependency CLI and programmatic API for downloading templates and git repositories. It supports GitHub, GitLab, Bitbucket, Sourcehut, Tangled, and custom registries with offline caching via etags.
 
 ## Quick Reference
 
@@ -20,7 +20,7 @@ pnpm giget          # Run CLI from source (node ./src/cli.ts)
 src/
   index.ts        # Public exports (re-exports from giget.ts, types.ts, registry.ts)
   giget.ts        # Core: downloadTemplate() — resolves provider, downloads tarball, extracts
-  providers.ts    # Built-in providers: github, gitlab, bitbucket, sourcehut, http
+  providers.ts    # Built-in providers: github, gitlab, bitbucket, sourcehut, tangled, http
   registry.ts     # Template registry provider (fetches JSON from registry URL)
   types.ts        # Type definitions: GitInfo, TemplateInfo, TemplateProvider, options
   cli.ts          # CLI entry (uses citty). Bin: dist/cli.mjs
@@ -37,6 +37,7 @@ Providers are functions `(input, { auth }) => TemplateInfo | null`. Built-in pro
 - **GitLab** (`gitlab:`) — self-hosted via `GIGET_GITLAB_URL` env. Has `sec-fetch-mode` workaround header.
 - **Bitbucket** (`bitbucket:`) — standard tarball endpoint.
 - **Sourcehut** (`sourcehut:`) — uses `git.sr.ht` archive endpoint.
+- **Tangled** (`tangled:`) — AT Protocol-based forge. Supports DIDs as owners. Custom parsing (no `parseGitURI`). Archives have no top-level wrapper dir (`stripPrefix: false`). Self-hosted via `GIGET_TANGLED_URL` env.
 - **HTTP** (`http:`/`https:`) — direct tarball URL or JSON registry file.
 
 Git URI format: `org/repo[/subdir][#ref]` — parsed by `parseGitURI()` in `_utils.ts`.

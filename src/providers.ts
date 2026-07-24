@@ -125,6 +125,53 @@ export const sourcehut: TemplateProvider = (input, options) => {
   };
 };
 
+// Tangled (https://tangled.org) is an AT Protocol-based git forge. Owners are
+// either domains (e.g. `alice.tangled.org`) or DIDs (e.g. `did:plc:abc123`, `did:web:example.org`).
+//
+// Accepted input format: `{owner}/{repo}[/{subdir}][#{ref}]`
+//   - `alice.example.org/my-repo`
+//   - `did:plc:abc123/my-repo#dev`
+//
+// Self-hosted instances are supported via the `GIGET_TANGLED_URL` env var.
+export const tangled: TemplateProvider = (input, options) => {
+  const tangledURL = process.env.GIGET_TANGLED_URL || "https://tangled.org";
+
+  // DIDs (e.g. did:plc:abc123) contain colons that parseGitURI can't handle,
+  // so we parse the input ourselves.
+  const [pathPart = "", refPart] = input.split("#");
+  const ref = refPart || "main";
+  const slashIndex = pathPart.indexOf("/");
+  if (slashIndex === -1) {
+    throw new Error(`Invalid Tangled URI: ${input}`);
+  }
+
+  const owner = pathPart.slice(0, slashIndex);
+  if (!owner.startsWith("did:") && !owner.includes(".")) {
+    throw new Error(
+      `Invalid Tangled owner "${owner}": must be a domain (e.g. alice.tangled.org) or a DID (e.g. did:plc:abc123, did:web:example.org)`,
+    );
+  }
+  const rest = pathPart.slice(slashIndex + 1);
+  const restParts = rest.split("/");
+  const repo = restParts[0]!;
+  if (!repo) {
+    throw new Error(`Invalid Tangled URI: missing repository name in "${input}"`);
+  }
+  const subdir = restParts.length > 1 ? "/" + restParts.slice(1).join("/") : "/";
+
+  return {
+    name: `${owner}-${repo}`.replace(/[:./]/g, "-"),
+    version: ref,
+    subdir,
+    headers: {
+      authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+    },
+    url: `${tangledURL}/${owner}/${repo}`,
+    tar: `${tangledURL}/${owner}/${repo}/archive/${ref}`,
+    stripPrefix: false,
+  };
+};
+
 export const providers: Record<string, TemplateProvider> = {
   http,
   https: http,
@@ -134,4 +181,5 @@ export const providers: Record<string, TemplateProvider> = {
   gitlab,
   bitbucket,
   sourcehut,
+  tangled,
 };
