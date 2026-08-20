@@ -3,6 +3,9 @@ import { retryDelayFor, sendFetch } from "../src/_utils.ts";
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  // Restored here rather than at the end of the one test that stubs them: a failure
+  // before that line would leak GIGET_RETRY into every test after it.
+  vi.unstubAllEnvs();
 });
 
 function response(status: number, headers: Record<string, string> = {}) {
@@ -57,10 +60,18 @@ describe("retryDelayFor", () => {
       expected: 500,
     },
     {
-      name: "falls back to the backoff for a Retry-After already in the past",
+      // The server saying "now" is still the server speaking; substituting a longer
+      // wait would quietly override it.
+      name: "honours Retry-After: 0 as now",
+      attempt: 2,
+      headers: { "retry-after": "0" },
+      expected: 0,
+    },
+    {
+      name: "treats a Retry-After already in the past as now",
       attempt: 1,
       headers: { "retry-after": "Wed, 21 Oct 2015 07:28:00 GMT" },
-      expected: 1000,
+      expected: 0,
     },
   ];
 
@@ -150,6 +161,40 @@ describe("sendFetch retrying", () => {
     );
   });
 
+  it.each([
+    ["Infinity, which would never terminate", Number.POSITIVE_INFINITY],
+    ["a fraction", 1.5],
+    ["a negative", -1],
+    ["NaN", Number.NaN],
+  ])("falls back to the default rather than accepting %s", async (_name, retry) => {
+    const { calls } = stubFetch(response(429));
+
+    await sendFetch(url, { retry, retryDelay: 0 });
+
+    // The default of 2 retries, so three attempts -- not an unbounded loop.
+    expect(calls).toHaveLength(3);
+  });
+
+  it("retries a status the caller nominates", async () => {
+    // 406 is deterministic in general, so it is not in the default set -- but GitLab's
+    // repository-archive throttle can answer with it, and a consumer that knows its
+    // host should be able to say so.
+    const { calls } = stubFetch(response(406), response(200));
+
+    const res = await sendFetch(url, { ...noWait, retryStatusCodes: [406] });
+
+    expect(res.status).toBe(200);
+    expect(calls).toHaveLength(2);
+  });
+
+  it("stops retrying a status the caller leaves out", async () => {
+    const { calls } = stubFetch(response(429));
+
+    await sendFetch(url, { ...noWait, retryStatusCodes: [503] });
+
+    expect(calls).toHaveLength(1);
+  });
+
   it("makes one attempt when retrying is switched off", async () => {
     const { calls } = stubFetch(response(429));
 
@@ -183,6 +228,5 @@ describe("sendFetch retrying", () => {
     await sendFetch(url);
 
     expect(calls).toHaveLength(2);
-    vi.unstubAllEnvs();
   });
 });

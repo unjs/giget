@@ -160,6 +160,7 @@ export async function downloadTemplate(
         },
         retry: options.retry,
         retryDelay: options.retryDelay,
+        retryStatusCodes: options.retryStatusCodes,
       }).catch((error) => {
         if (!existsSync(tarPath)) {
           throw error;

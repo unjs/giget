@@ -20,6 +20,7 @@ export async function download(
     headers: options.headers,
     retry: options.retry,
     retryDelay: options.retryDelay,
+    retryStatusCodes: options.retryStatusCodes,
   }).catch(() => undefined);
   const etag = headResponse?.headers.get("etag");
   if (info.etag === etag && existsSync(filePath)) {
@@ -34,6 +35,7 @@ export async function download(
     headers: options.headers,
     retry: options.retry,
     retryDelay: options.retryDelay,
+    retryStatusCodes: options.retryStatusCodes,
   });
   if (response.status >= 400) {
     throw new Error(`Failed to download ${url}: ${response.status} ${response.statusText}`);
@@ -74,6 +76,9 @@ export interface FetchRetryOptions {
    * How many further attempts to make when a request fails with a transient error.
    * `0` disables retrying.
    *
+   * Must be a non-negative integer; anything else (a fraction, a negative, `Infinity`
+   * — which would retry forever) falls back to the default.
+   *
    * Defaults to the `GIGET_RETRY` environment variable, or 2.
    */
   retry?: number;
@@ -84,6 +89,15 @@ export interface FetchRetryOptions {
    * Defaults to the `GIGET_RETRY_DELAY` environment variable, or 500.
    */
   retryDelay?: number;
+  /**
+   * Response statuses worth trying again. Defaults to the set ofetch retries on:
+   * `408, 409, 425, 429, 500, 502, 503, 504`.
+   *
+   * Provide a list to extend or narrow it — some hosts express a throttle with a
+   * status that is normally deterministic, GitLab's repository-archive limit being
+   * one (it can answer `406`).
+   */
+  retryStatusCodes?: number[];
 }
 
 interface InternalFetchOptions extends Omit<RequestInit, "headers">, FetchRetryOptions {
@@ -93,22 +107,29 @@ interface InternalFetchOptions extends Omit<RequestInit, "headers">, FetchRetryO
 }
 
 // The set ofetch retries on, so giget and ofetch treat the same host alike.
-const retryStatusCodes = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+const defaultRetryStatusCodes = [408, 409, 425, 429, 500, 502, 503, 504];
 
 // One wait is capped so a large -- or hostile -- `Retry-After` cannot park a build
 // indefinitely. Rate-limited hosts commonly ask for a minute.
 const maxRetryDelay = 60_000;
 
-function envNumber(name: string, fallback: number) {
-  const value = Number(process.env[name]);
-  return Number.isFinite(value) && value >= 0 ? value : fallback;
+/** A retry count has to be a whole number of attempts, and has to terminate. */
+function retryCount(value: number | undefined, fallback: number) {
+  return value !== undefined && Number.isInteger(value) && value >= 0 ? value : fallback;
+}
+
+function nonNegative(value: number | undefined, fallback: number) {
+  return value !== undefined && Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
 /**
  * How long to wait before trying again.
  *
  * `Retry-After` is the server saying when it will answer, so it wins over the backoff.
- * Both forms are accepted: delta-seconds, and an HTTP date.
+ * Both forms are accepted: delta-seconds, and an HTTP date. A zero, or a date already
+ * past, means now -- clamped rather than discarded, since discarding it would silently
+ * substitute a longer wait than the server asked for. Only an unparseable value falls
+ * back to the backoff.
  */
 export function retryDelayFor(
   response: Response | undefined,
@@ -119,8 +140,8 @@ export function retryDelayFor(
   if (after) {
     const seconds = Number(after);
     const delay = Number.isFinite(seconds) ? seconds * 1000 : Date.parse(after) - Date.now();
-    if (Number.isFinite(delay) && delay > 0) {
-      return Math.min(delay, maxRetryDelay);
+    if (Number.isFinite(delay)) {
+      return Math.min(Math.max(delay, 0), maxRetryDelay);
     }
   }
 
@@ -133,8 +154,12 @@ export async function sendFetch(url: string, options: InternalFetchOptions = {})
     options.mode = options.headers["sec-fetch-mode"] as any;
   }
 
-  const retries = options.retry ?? envNumber("GIGET_RETRY", 2);
-  const retryDelay = options.retryDelay ?? envNumber("GIGET_RETRY_DELAY", 500);
+  const retries = retryCount(options.retry, retryCount(Number(process.env.GIGET_RETRY), 2));
+  const retryDelay = nonNegative(
+    options.retryDelay,
+    nonNegative(Number(process.env.GIGET_RETRY_DELAY), 500),
+  );
+  const retryStatuses = new Set(options.retryStatusCodes ?? defaultRetryStatusCodes);
 
   // Only replay what is safe to replay. giget itself issues nothing but GET and HEAD,
   // and this keeps that assumption from being silently outgrown.
@@ -154,8 +179,7 @@ export async function sendFetch(url: string, options: InternalFetchOptions = {})
       error = error_;
     }
 
-    const transient =
-      error !== undefined || (res !== undefined && retryStatusCodes.has(res.status));
+    const transient = error !== undefined || (res !== undefined && retryStatuses.has(res.status));
     if (!transient || !retryable || attempt >= retries) {
       if (error !== undefined) {
         throw new Error(`Failed to download ${url}: ${error}`, { cause: error });
