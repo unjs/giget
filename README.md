@@ -163,6 +163,8 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
   - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
   - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
+  - `retry`: (number) How many further attempts to make when a download fails with a transient error — a `429`, a `5xx`, or a failure to connect. Waits between attempts, doubling each time, and honours a `Retry-After` response header when the server sends one. Defaults to `2`; `0` disables retrying. (Can be overridden with the `GIGET_RETRY` environment variable.)
+  - `retryDelay`: (number) Base delay in milliseconds between attempts, doubled on each one. A `Retry-After` header takes precedence. Defaults to `500`. (Can be overridden with the `GIGET_RETRY_DELAY` environment variable.)
   - `ignore`: (array or function) Ignore files when extracting. Either an array of glob patterns of files to skip, matched with [`path.matchesGlob`](https://nodejs.org/api/path.html#pathmatchesglobpath-pattern) (`ignore: ["pnpm-lock.yaml", "*.md"]`), or a callback receiving the relative path of each entry (after `subdir` is applied) that returns `true` to skip it, or `false` to keep it (`ignore: (path) => path === "pnpm-lock.yaml"`). Patterns require Node.js >= v22.5.0 or v20.17.0.
 
 **Return value:**
