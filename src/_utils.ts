@@ -93,9 +93,15 @@ export interface FetchRetryOptions {
    * Response statuses worth trying again. Defaults to the set ofetch retries on:
    * `408, 409, 425, 429, 500, 502, 503, 504`.
    *
-   * Provide a list to extend or narrow it — some hosts express a throttle with a
-   * status that is normally deterministic, GitLab's repository-archive limit being
-   * one (it can answer `406`).
+   * **A list given here replaces that set rather than adding to it**, as it does in
+   * ofetch — so include the defaults you still want. Adding one status means listing
+   * all of them:
+   *
+   * ```ts
+   * // GitLab's repository-archive throttle can answer 406, which is deterministic
+   * // everywhere else and so is not a default.
+   * retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504, 406]
+   * ```
    */
   retryStatusCodes?: number[];
 }

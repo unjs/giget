@@ -187,12 +187,27 @@ describe("sendFetch retrying", () => {
     expect(calls).toHaveLength(2);
   });
 
-  it("stops retrying a status the caller leaves out", async () => {
+  it("replaces the default set rather than adding to it", async () => {
+    // The documented semantics, and the footgun they create: nominating 406 alone
+    // stops 429 being retried. Worth pinning, because the opposite would be a
+    // reasonable guess.
     const { calls } = stubFetch(response(429));
 
-    await sendFetch(url, { ...noWait, retryStatusCodes: [503] });
+    await sendFetch(url, { ...noWait, retryStatusCodes: [406] });
 
     expect(calls).toHaveLength(1);
+  });
+
+  it("retries both when the caller lists the defaults alongside its own", async () => {
+    const withDefaults = [408, 409, 425, 429, 500, 502, 503, 504, 406];
+
+    const first = stubFetch(response(406), response(200));
+    await sendFetch(url, { ...noWait, retryStatusCodes: withDefaults });
+    expect(first.calls).toHaveLength(2);
+
+    const second = stubFetch(response(429), response(200));
+    await sendFetch(url, { ...noWait, retryStatusCodes: withDefaults });
+    expect(second.calls).toHaveLength(2);
   });
 
   it("makes one attempt when retrying is switched off", async () => {
