@@ -163,6 +163,17 @@ const { source, dir } = await downloadTemplate("github:unjs/template");
   - `registry`: (string or false) Set to `false` to disable registry. Set to a URL string (without trailing slash) for custom registry. (Can be overridden with `GIGET_REGISTRY` environment variable).
   - `cwd`: (string) Current working directory to resolve dirs relative to it.
   - `auth`: (string) Custom Authorization token to use for downloading template. (Can be overridden with `GIGET_AUTH` environment variable).
+  - `retry`: (number) How many further attempts to make when the template download fails with a transient error — one of the statuses in `retryStatusCodes`, or a failure to connect. Waits between attempts, doubling each time, and honours a `Retry-After` response header when the server sends one. Must be a non-negative integer; anything else falls back to the default. Defaults to `2`; `0` disables retrying. (Can be overridden with the `GIGET_RETRY` environment variable.)
+  - `retryDelay`: (number) Base delay in milliseconds between attempts, doubled on each one. A `Retry-After` header takes precedence, including `Retry-After: 0`. Defaults to `500`. (Can be overridden with the `GIGET_RETRY_DELAY` environment variable.)
+  - `retryStatusCodes`: (array) Response statuses worth trying again. Defaults to `[408, 409, 425, 429, 500, 502, 503, 504]` — the set [ofetch](https://github.com/unjs/ofetch) retries. **A list given here replaces that set rather than adding to it**, as in ofetch, so include the defaults you still want. Adding one status means listing all of them:
+
+    ```ts
+    // GitLab's repository-archive throttle can answer 406, which is deterministic
+    // everywhere else and so is not a default.
+    retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504, 406]
+    ```
+
+    These three apply to the template download and the request that revalidates its cache. Registry and provider lookups take their retry settings from the environment variables above, since a custom provider receives only `auth`.
   - `ignore`: (array or function) Ignore files when extracting. Either an array of glob patterns of files to skip, matched with [`path.matchesGlob`](https://nodejs.org/api/path.html#pathmatchesglobpath-pattern) (`ignore: ["pnpm-lock.yaml", "*.md"]`), or a callback receiving the relative path of each entry (after `subdir` is applied) that returns `true` to skip it, or `false` to keep it (`ignore: (path) => path === "pnpm-lock.yaml"`). Patterns require Node.js >= v22.5.0 or v20.17.0.
 
 **Return value:**

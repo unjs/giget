@@ -6,13 +6,14 @@ import { pipeline } from "node:stream/promises";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
 import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
+import type { FetchRetryOptions } from "./_utils.ts";
 import { providers } from "./providers.ts";
 import { registryProvider } from "./registry.ts";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
 
 type InstallOptions = Parameters<typeof installDependencies>[0];
 
-export interface DownloadTemplateOptions {
+export interface DownloadTemplateOptions extends FetchRetryOptions {
   provider?: string;
   force?: boolean;
   forceClean?: boolean;
@@ -157,6 +158,9 @@ export async function downloadTemplate(
           Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
           ...normalizeHeaders(template.headers),
         },
+        retry: options.retry,
+        retryDelay: options.retryDelay,
+        retryStatusCodes: options.retryStatusCodes,
       }).catch((error) => {
         if (!existsSync(tarPath)) {
           throw error;
