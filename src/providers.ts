@@ -1,7 +1,16 @@
+import { createHash } from "node:crypto";
 import { basename } from "pathe";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
 import { debug, parseGitURI, sendFetch } from "./_utils.ts";
 import { git } from "./git.ts";
+
+// The name is used as the cache directory for the downloaded tarball, so it has
+// to distinguish two URLs that share a basename (e.g. `a.com/x/tpl.tar.gz` and
+// `b.com/y/tpl.tar.gz`). Hex digits survive the `[^\da-z-]` sanitization applied
+// to `name` in `downloadTemplate`.
+function _urlDigest(url: string): string {
+  return createHash("sha256").update(url).digest("hex").slice(0, 8);
+}
 
 export const http: TemplateProvider = async (input, options) => {
   if (input.endsWith(".json")) {
@@ -32,7 +41,7 @@ export const http: TemplateProvider = async (input, options) => {
   }
 
   return {
-    name: `${name}-${url.href.slice(0, 8)}`,
+    name: `${name}-${_urlDigest(url.href)}`,
     version: "",
     subdir: "",
     tar: url.href,

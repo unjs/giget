@@ -1,6 +1,32 @@
 import { expect, it, describe } from "vitest";
-import { gitlab } from "../src/providers.ts";
+import { gitlab, http } from "../src/providers.ts";
 import type { TemplateInfo } from "../src/types.ts";
+
+describe("http provider", () => {
+  const opts = { auth: "" };
+
+  // The HEAD request is best effort and its failure is swallowed, so these run
+  // offline; only the name derivation is under test.
+  it("derives distinct names for same-basename URLs on different hosts", async () => {
+    const a = (await http("https://a.example.com/x/template.tar.gz", opts)) as TemplateInfo;
+    const b = (await http("https://b.example.com/y/template.tar.gz", opts)) as TemplateInfo;
+    expect(a.name).not.toBe(b.name);
+  });
+
+  it("derives distinct names for same-basename URLs on the same host", async () => {
+    const a = (await http("https://example.com/x/template.tar.gz", opts)) as TemplateInfo;
+    const b = (await http("https://example.com/y/template.tar.gz", opts)) as TemplateInfo;
+    expect(a.name).not.toBe(b.name);
+  });
+
+  it("derives a stable, sanitization-safe name", async () => {
+    const first = (await http("https://example.com/x/template.tar.gz", opts)) as TemplateInfo;
+    const second = (await http("https://example.com/x/template.tar.gz", opts)) as TemplateInfo;
+    expect(first.name).toBe(second.name);
+    // `downloadTemplate` strips anything outside `[\da-z-]` from the name.
+    expect(first.name.replace("template.tar.gz-", "")).toMatch(/^[\da-f]{8}$/);
+  });
+});
 
 describe("gitlab provider", () => {
   const opts = { auth: "" };
