@@ -1,12 +1,21 @@
-import { expect, it, describe } from "vitest";
+import { expect, it, describe, vi } from "vitest";
 import { gitlab, http } from "../src/providers.ts";
 import type { TemplateInfo } from "../src/types.ts";
+
+// The `http` provider sends a best-effort HEAD request before deriving the
+// name. Stub it so the tests below stay offline and deterministic: a response
+// that is neither JSON nor carries a `content-disposition` filename leaves the
+// name derived from the URL, which is what is under test here.
+vi.mock("../src/_utils.ts", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../src/_utils.ts")>()),
+  sendFetch: vi.fn(
+    async () => new Response("", { headers: { "content-type": "application/gzip" } }),
+  ),
+}));
 
 describe("http provider", () => {
   const opts = { auth: "" };
 
-  // The HEAD request is best effort and its failure is swallowed, so these run
-  // offline; only the name derivation is under test.
   it("derives distinct names for same-basename URLs on different hosts", async () => {
     const a = (await http("https://a.example.com/x/template.tar.gz", opts)) as TemplateInfo;
     const b = (await http("https://b.example.com/y/template.tar.gz", opts)) as TemplateInfo;
