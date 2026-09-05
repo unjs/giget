@@ -28,20 +28,20 @@
     "test:types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@types/node": "^26.4.1",
+    "@vitest/coverage-v8": "^4.1.11",
     "changelogen": "^0.6.2",
     "citty": "^0.2.2",
     "eslint-config-unjs": "^0.6.2",
-    "nypm": "^0.6.8",
-    "obuild": "^0.4.38",
-    "oxfmt": ">=0.59.0",
-    "oxlint": "^1.75.0",
+    "nypm": "^0.6.9",
+    "obuild": "^0.4.39",
+    "oxfmt": ">=0.66.0",
+    "oxlint": "^1.81.0",
     "pathe": "^2.0.3",
-    "rolldown": "^1.2.0",
-    "tar": "^7.5.21",
+    "rolldown": "^1.2.7",
+    "tar": "^7.5.22",
     "typescript": "^7",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
-  "packageManager": "pnpm@11.15.1"
+  "packageManager": "pnpm@11.25.0"
 }
