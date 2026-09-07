@@ -63,6 +63,22 @@ export function debug(...args: unknown[]) {
   }
 }
 
+export function initEnvProxy(options?: boolean | { force?: boolean }) {
+  const force = typeof options === "boolean" ? options : options?.force;
+  if (
+    process.env.NODE_USE_ENV_PROXY === undefined &&
+    (force ||
+      process.env.HTTP_PROXY ||
+      process.env.HTTPS_PROXY ||
+      process.env.http_proxy ||
+      process.env.https_proxy ||
+      process.env.ALL_PROXY ||
+      process.env.all_proxy)
+  ) {
+    process.env.NODE_USE_ENV_PROXY = "1";
+  }
+}
+
 interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
   headers?: Record<string, string | undefined>;
   agent?: Agent;

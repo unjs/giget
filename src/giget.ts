@@ -5,7 +5,7 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
-import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
+import { cacheDirectory, download, debug, normalizeHeaders, initEnvProxy } from "./_utils.ts";
 import { providers } from "./providers.ts";
 import { registryProvider } from "./registry.ts";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
@@ -76,6 +76,8 @@ export async function downloadTemplate(
   input: string,
   options: DownloadTemplateOptions = {},
 ): Promise<DownloadTemplateResult> {
+  initEnvProxy();
+
   const ignore = resolveIgnore(options.ignore);
 
   options.registry = process.env.GIGET_REGISTRY ?? options.registry;

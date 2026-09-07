@@ -1,5 +1,5 @@
-import { expect, it, describe } from "vitest";
-import { parseGitURI } from "../src/_utils.ts";
+import { expect, it, describe, beforeEach, afterEach } from "vitest";
+import { parseGitURI, initEnvProxy } from "../src/_utils.ts";
 
 describe("parseGitURI", () => {
   const defaults = { repo: "org/repo", subdir: "/", ref: "main" };
@@ -115,4 +115,87 @@ describe("parseGitURI with expandRepo", () => {
       });
     });
   }
+});
+
+describe("initEnvProxy", () => {
+  const envKeys = [
+    "NODE_USE_ENV_PROXY",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+  ] as const;
+
+  const originalEnv: Record<string, string | undefined> = {};
+
+  beforeEach(() => {
+    for (const key of envKeys) {
+      originalEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
+
+  afterEach(() => {
+    for (const key of envKeys) {
+      if (originalEnv[key] !== undefined) {
+        process.env[key] = originalEnv[key];
+      } else {
+        delete process.env[key];
+      }
+    }
+  });
+
+  it("does not set NODE_USE_ENV_PROXY when no proxy variables exist", () => {
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBeUndefined();
+  });
+
+  it("sets NODE_USE_ENV_PROXY to 1 when HTTP_PROXY is present", () => {
+    process.env.HTTP_PROXY = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("sets NODE_USE_ENV_PROXY to 1 when HTTPS_PROXY is present", () => {
+    process.env.HTTPS_PROXY = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("sets NODE_USE_ENV_PROXY to 1 when http_proxy is present", () => {
+    process.env.http_proxy = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("sets NODE_USE_ENV_PROXY to 1 when https_proxy is present", () => {
+    process.env.https_proxy = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("sets NODE_USE_ENV_PROXY to 1 when all_proxy is present", () => {
+    process.env.all_proxy = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("does not overwrite existing NODE_USE_ENV_PROXY value", () => {
+    process.env.NODE_USE_ENV_PROXY = "0";
+    process.env.HTTP_PROXY = "http://proxy.example.com";
+    initEnvProxy();
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("0");
+  });
+
+  it("forces NODE_USE_ENV_PROXY when force is passed as boolean true", () => {
+    initEnvProxy(true);
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
+
+  it("forces NODE_USE_ENV_PROXY when force option is passed in object", () => {
+    initEnvProxy({ force: true });
+    expect(process.env.NODE_USE_ENV_PROXY).toBe("1");
+  });
 });

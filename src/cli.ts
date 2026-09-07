@@ -3,7 +3,9 @@ import { relative } from "pathe";
 import { defineCommand, runMain } from "citty";
 import pkg from "../package.json" with { type: "json" };
 import { downloadTemplate } from "./giget.ts";
-import { startShell } from "./_utils.ts";
+import { initEnvProxy, startShell } from "./_utils.ts";
+
+initEnvProxy();
 
 const mainCommand = defineCommand({
   meta: {
