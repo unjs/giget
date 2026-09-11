@@ -43,5 +43,5 @@
     "typescript": "^7",
     "vitest": "^4.1.10"
   },
-  "packageManager": "pnpm@11.15.1"
+  "packageManager": "pnpm@12.4.0"
 }
