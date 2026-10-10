@@ -1,5 +1,5 @@
 import { expect, it, describe } from "vitest";
-import { gitlab } from "../src/providers.ts";
+import { gitlab, github } from "../src/providers.ts";
 import type { TemplateInfo } from "../src/types.ts";
 
 describe("gitlab provider", () => {
@@ -60,5 +60,42 @@ describe("gitlab provider", () => {
         process.env.GIGET_GITLAB_URL = prev;
       }
     }
+  });
+});
+
+describe("github provider", () => {
+  it("uses token scheme for classic PATs (ghp_)", () => {
+    const result = github("org/repo", { auth: "ghp_abc123" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("token ghp_abc123");
+  });
+
+  it("uses token scheme for fine-grained PATs (github_pat_)", () => {
+    const result = github("org/repo", { auth: "github_pat_xyz789" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("token github_pat_xyz789");
+  });
+
+  it("uses Bearer for OAuth tokens (gho_)", () => {
+    const result = github("org/repo", { auth: "gho_oauth123" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("Bearer gho_oauth123");
+  });
+
+  it("uses Bearer for App tokens (ghs_)", () => {
+    const result = github("org/repo", { auth: "ghs_app456" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("Bearer ghs_app456");
+  });
+
+  it("uses Bearer for JWTs (eyJ)", () => {
+    const result = github("org/repo", { auth: "eyJ.payload.sig" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBe("Bearer eyJ.payload.sig");
+  });
+
+  it("omits Authorization when no auth", () => {
+    const result = github("org/repo", { auth: "" }) as TemplateInfo;
+    expect(result.headers?.Authorization).toBeUndefined();
+  });
+
+  it("builds correct tarball URL", () => {
+    const result = github("org/repo#v1.0", { auth: "" }) as TemplateInfo;
+    expect(result.tar).toBe("https://api.github.com/repos/org/repo/tarball/v1.0");
   });
 });

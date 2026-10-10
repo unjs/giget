@@ -57,6 +57,17 @@ const _httpJSON: TemplateProvider = async (input, options) => {
   return info;
 };
 
+// Personal access tokens (classic `ghp_…` and fine-grained `github_pat_…`)
+// require the `token` auth scheme on the GitHub tarball endpoint; `Bearer`
+// returns 401 on the 302 redirect to codeload.github.com. OAuth / App tokens
+// (`gho_`, `ghs_`, `ghu_`) and JWTs still use `Bearer`.
+// https://github.com/unjs/giget/issues/263
+function githubAuthHeader(auth: string | undefined): string | undefined {
+  if (!auth) return undefined;
+  const scheme = /^(ghp_|github_pat_)/.test(auth) ? "token" : "Bearer";
+  return `${scheme} ${auth}`;
+}
+
 export const github: TemplateProvider = (input, options) => {
   const parsed = parseGitURI(input);
 
@@ -69,7 +80,7 @@ export const github: TemplateProvider = (input, options) => {
     version: parsed.ref,
     subdir: parsed.subdir,
     headers: {
-      Authorization: options.auth ? `Bearer ${options.auth}` : undefined,
+      Authorization: githubAuthHeader(options.auth),
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
     },
