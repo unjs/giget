@@ -249,6 +249,17 @@ Subdirectories use sparse checkout with `--filter=blob:none` to avoid downloadin
 | --- | --- |
 | `GIGET_GIT_HOST` | Default HTTPS host (default: `https://github.com/`) |
 
+## Using a proxy
+
+The CLI respects the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables. Deno and Bun do this out of the box. Node.js only does it when `NODE_USE_ENV_PROXY` is set, so the CLI turns it on at runtime (Node.js 22.21 and 24.5 or newer). When you use the programmatic API, call `enableProxyFromEnv()` once to get the same behavior:
+
+```js
+import { enableProxyFromEnv, downloadTemplate } from "giget";
+
+enableProxyFromEnv();
+await downloadTemplate("gh:unjs/template");
+```
+
 ## Providing token for private repositories
 
 For private repositories and sources, you might need a token. In order to provide it, using CLI, you can use `--auth`, using programmatic API using `auth` option and in both modes also it is possible to use `GIGET_AUTH` environment variable to set it. The value will be set in `Authorization: Bearer ...` header by default.
