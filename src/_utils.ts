@@ -68,7 +68,7 @@ export function debug(...args: unknown[]) {
  * Make `fetch` follow the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables.
  *
  * Deno and Bun do this by default. Node.js only does it when `NODE_USE_ENV_PROXY` is set before it
- * starts, but it can also be turned on at runtime (Node.js 22.21 and 24.5 or newer). On runtimes
+ * starts, but it can also be turned on at runtime (Node.js 24.14 or newer). On runtimes
  * that can not do this, or when `NODE_USE_ENV_PROXY` is already set, this does nothing.
  */
 export function enableProxyFromEnv(): void {

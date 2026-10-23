@@ -251,7 +251,7 @@ Subdirectories use sparse checkout with `--filter=blob:none` to avoid downloadin
 
 ## Using a proxy
 
-The CLI respects the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables. Deno and Bun do this out of the box. Node.js only does it when `NODE_USE_ENV_PROXY` is set, so the CLI turns it on at runtime (Node.js 22.21 and 24.5 or newer). When you use the programmatic API, call `enableProxyFromEnv()` once to get the same behavior:
+The CLI respects the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables. Deno and Bun do this out of the box. Node.js only does it when `NODE_USE_ENV_PROXY` is set, so the CLI turns it on at runtime (Node.js 24.14 or newer). When you use the programmatic API, call `enableProxyFromEnv()` once to get the same behavior:
 
 ```js
 import { enableProxyFromEnv, downloadTemplate } from "giget";
