@@ -3,7 +3,7 @@ import { relative } from "pathe";
 import { defineCommand, runMain } from "citty";
 import pkg from "../package.json" with { type: "json" };
 import { downloadTemplate } from "./giget.ts";
-import { startShell } from "./_utils.ts";
+import { enableProxyFromEnv, startShell } from "./_utils.ts";
 
 const mainCommand = defineCommand({
   meta: {
@@ -67,6 +67,8 @@ const mainCommand = defineCommand({
     },
   },
   run: async ({ args }) => {
+    enableProxyFromEnv();
+
     if (args.verbose) {
       process.env.DEBUG = process.env.DEBUG || "true";
     }

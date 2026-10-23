@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { promisify } from "node:util";
+import * as http from "node:http";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import type { GitInfo } from "./types.ts";
@@ -61,6 +62,20 @@ export function debug(...args: unknown[]) {
   if (process.env.DEBUG) {
     console.debug("[giget]", ...args);
   }
+}
+
+/**
+ * Make `fetch` follow the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables.
+ *
+ * Deno and Bun do this by default. Node.js only does it when `NODE_USE_ENV_PROXY` is set before it
+ * starts, but it can also be turned on at runtime (Node.js 24.14 or newer). On runtimes
+ * that can not do this, or when `NODE_USE_ENV_PROXY` is already set, this does nothing.
+ */
+export function enableProxyFromEnv(): void {
+  if (process.env.NODE_USE_ENV_PROXY !== undefined) {
+    return;
+  }
+  (http as { setGlobalProxyFromEnv?: () => unknown }).setGlobalProxyFromEnv?.();
 }
 
 interface InternalFetchOptions extends Omit<RequestInit, "headers"> {
