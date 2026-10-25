@@ -1,6 +1,23 @@
 import { expect, it, describe } from "vitest";
-import { gitlab } from "../src/providers.ts";
+import { gitlab, github } from "../src/providers.ts";
 import type { TemplateInfo } from "../src/types.ts";
+
+describe("github provider", () => {
+  it("formats Authorization header correctly", () => {
+    expect((github("org/repo", { auth: "ghp_123" }) as TemplateInfo).headers?.Authorization).toBe(
+      "Bearer ghp_123",
+    );
+    expect(
+      (github("org/repo", { auth: "github_pat_123" }) as TemplateInfo).headers?.Authorization,
+    ).toBe("token github_pat_123");
+    expect(
+      (github("org/repo", { auth: "token custom_pat" }) as TemplateInfo).headers?.Authorization,
+    ).toBe("token custom_pat");
+    expect(
+      (github("org/repo", { auth: "Bearer custom_pat" }) as TemplateInfo).headers?.Authorization,
+    ).toBe("Bearer custom_pat");
+  });
+});
 
 describe("gitlab provider", () => {
   const opts = { auth: "" };
