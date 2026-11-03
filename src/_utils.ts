@@ -1,9 +1,8 @@
 import { createWriteStream, existsSync, renameSync } from "node:fs";
-import { pipeline } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { spawnSync } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, rename, rm, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
-import { promisify } from "node:util";
 import type { Agent } from "node:http";
 import { relative, resolve } from "pathe";
 import type { GitInfo } from "./types.ts";
@@ -33,10 +32,24 @@ export async function download(
     throw new Error(`Failed to download ${url}: ${response.status} ${response.statusText}`);
   }
 
-  const stream = createWriteStream(filePath);
-  await promisify(pipeline)(response.body as any, stream);
+  await writeStreamToFile(response.body as any, filePath);
 
   await writeFile(infoPath, JSON.stringify(info), "utf8");
+}
+
+/**
+ * Write a stream to a temporary file and move it to `filePath` once complete,
+ * so a failed or interrupted download does not replace an existing file.
+ */
+export async function writeStreamToFile(stream: NodeJS.ReadableStream, filePath: string) {
+  const tmpPath = `${filePath}.${process.pid}.tmp`;
+  try {
+    await pipeline(stream, createWriteStream(tmpPath));
+    await rename(tmpPath, filePath);
+  } catch (error) {
+    await rm(tmpPath, { force: true });
+    throw error;
+  }
 }
 
 const inputRegex = /^(?<repo>[-\w.]+\/[-\w.]+)(?<subdir>[^#]+)?(?<ref>#[-\w./@]+)?/;
