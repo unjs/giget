@@ -1,11 +1,9 @@
-import { createWriteStream } from "node:fs";
 import { mkdir, rm } from "node:fs/promises";
 import { existsSync, readdirSync } from "node:fs";
 import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
 import { resolve, dirname } from "pathe";
 import type { installDependencies } from "nypm";
-import { cacheDirectory, download, debug, normalizeHeaders } from "./_utils.ts";
+import { cacheDirectory, download, debug, normalizeHeaders, writeStreamToFile } from "./_utils.ts";
 import { providers } from "./providers.ts";
 import { registryProvider } from "./registry.ts";
 import type { TemplateInfo, TemplateProvider } from "./types.ts";
@@ -142,8 +140,7 @@ export async function downloadTemplate(
           stream instanceof Readable
             ? stream
             : Readable.fromWeb(stream as import("node:stream/web").ReadableStream);
-        const fileStream = createWriteStream(tarPath);
-        await pipeline(nodeStream, fileStream);
+        await writeStreamToFile(nodeStream, tarPath);
       })().catch((error) => {
         if (!existsSync(tarPath)) {
           throw error;
